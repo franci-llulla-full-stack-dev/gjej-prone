@@ -4,6 +4,8 @@ import Header from '../../components/Header.jsx';
 import Footer from '../../components/Footer.jsx';
 import { useForm } from '@inertiajs/react';
 import Select from 'react-select';
+import DatePicker from 'react-datepicker';
+import '../../../css/register.css';
 
 
 const Register = () => {
@@ -39,13 +41,17 @@ const Register = () => {
         surname: '',
         email: '',
         phone_number: '',
-        birth_date: '',
+        birth_date: null,
         company_name: '',
         password: '',
         password_confirmation: '',
         user_type: '',
     });
-
+    const [selectedDate, setSelectedDate] = useState(null);
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+        data.setData('birth_date', date); // sync with Inertia form
+    };
     const handleChange = (e) => {
         setData(e.target.name, e.target.value);
     };
@@ -193,14 +199,17 @@ const Register = () => {
                                                 className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                             />
                                             <ErrorText field="phone_number" />
-                                            <input
-                                                name="birth_date"
-                                                type="date"
-                                                value={data.birth_date}
-                                                onChange={handleChange}
-                                                placeholder="Datëlindja"
-                                                className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                            />
+                                                <DatePicker
+                                                    selected={selectedDate}
+                                                    onChange={handleDateChange}
+                                                    placeholderText="Datëlindja"
+                                                    className="w-full p-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    dateFormat="MM/dd/yyyy"
+                                                    showMonthDropdown
+                                                    showYearDropdown
+                                                    dropdownMode="select"
+                                                />
+
                                             <ErrorText field="birth_date" />
                                             {['agency', 'bank'].includes(userType.value) && (
                                                 <div>
