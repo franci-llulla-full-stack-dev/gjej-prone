@@ -53,6 +53,9 @@ class AuthController extends Controller
             'password' => bcrypt($validatedData['password']),
         ]);
 
+        if(!$user){
+           return back()->withErrors("Something went wrong.");
+        }
         auth()->login($user);
 
         session()->flash('success', 'Regjistrimi u krye me sukses!');

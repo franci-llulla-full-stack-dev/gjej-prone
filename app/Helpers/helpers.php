@@ -15,10 +15,10 @@ if(! function_exists('redirectByRole')) {
 
         $redirectRoute = match ($user->role->name) {
             'admin' => 'admin.dashboard',
-            'agency' => 'agency.dashboard',
-            'bank' => 'bank.dashboard',
-            'user' => 'user.dashboard',
-            default => 'home',
+            'agency' => 'properties.index',
+            'bank' => 'properties.index',
+            'user' => 'properties.index',
+            default => 'properties.index',
         };
         return $redirectRoute;
     }
