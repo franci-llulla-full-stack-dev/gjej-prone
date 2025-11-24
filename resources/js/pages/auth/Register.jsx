@@ -3,16 +3,37 @@ import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header.jsx';
 import Footer from '../../components/Footer.jsx';
 import { useForm } from '@inertiajs/react';
+import Select from 'react-select';
 
 
 const Register = () => {
+    const userTypeOptions = [
+        { value: 'individual', label: 'Individ' },
+        { value: 'agency', label: 'Agjenci' },
+        { value: 'bank', label: 'Banke' },
+    ];
+    const [filteredOptions, setFilteredOptions] = useState([]);
+    const [selectedOption, setSelectedOption] = useState(null);
     const [step, setStep] = useState(1);
     const [userType, setUserType] = useState(null);
     const [animateStep1, setAnimateStep1] = useState(false);
     useEffect(() => {
         if(step === 1) setAnimateStep1(true);
     }, [step]);
+    useEffect(() => {
+        if (!userType) return;
 
+        if (userType.value === 'buyer') {
+            const option = { value: 'user', label: 'Klient' };
+            setFilteredOptions([option]);
+            setSelectedOption(option);
+            if (data.user_type !== 'user') setData('user_type', 'user');
+        } else if (userType.value === 'seller') {
+            setFilteredOptions(userTypeOptions);
+            const option = userTypeOptions.find(opt => opt.value === data.user_type) || null;
+            setSelectedOption(option);
+        }
+    }, [userType]);
     const { data, setData, post, errors } = useForm({
         name: '',
         surname: '',
@@ -35,9 +56,6 @@ const Register = () => {
     };
     const handleSelectType = (option) => {
         setUserType(option);
-        if(option.value === 'buyer') {
-            setData('user_type', 'user');
-        }
         setStep(2);
     };
 
@@ -106,25 +124,38 @@ const Register = () => {
                                         </p>
 
                                         <div className="flex flex-col space-y-3">
-                                            <select
-                                                name="user_type"
-                                                value={data.user_type}
-                                                onChange={handleChange}
-                                                className={`px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400  ${userType.value === 'buyer' ? 'hidden' : ''}`}
-                                            >
-                                                <option value="" disabled> Selekto Tipin</option>
-                                                {userType.value === 'seller' && (
-                                                    <div>
-                                                        <option value="individual">Individ</option>
-                                                        <option value="agency">Agjenci</option>
-                                                        <option value="bank">Banke</option>
-                                                    </div>
-                                                )}
-                                                {userType.value === 'buyer' && (
-                                                    <option value="user" selected>Klient</option>
-                                                )}
-
-                                            </select>
+                                            {userType?.value !== 'buyer' && (
+                                                <Select
+                                                    name="user_type"
+                                                    value={selectedOption}
+                                                    onChange={(selected) => {
+                                                        setSelectedOption(selected);
+                                                        setData('user_type', selected.value);
+                                                    }}
+                                                    options={filteredOptions}
+                                                    placeholder="Selekto Tipin"
+                                                    classNamePrefix="react-select"
+                                                    styles={{
+                                                        control: (provided) => ({
+                                                            ...provided,
+                                                            backgroundColor: 'transparent',
+                                                            borderColor: '#d1d5db',
+                                                        }),
+                                                        menu: (provided) => ({
+                                                            ...provided,
+                                                            backgroundColor: 'white',
+                                                        }),
+                                                        singleValue: (provided) => ({
+                                                            ...provided,
+                                                            color: '#111827',
+                                                        }),
+                                                        placeholder: (provided) => ({
+                                                            ...provided,
+                                                            color: '#6b7280',
+                                                        }),
+                                                    }}
+                                                />
+                                            )}
                                             <ErrorText field="user_type" />
                                             <input
                                                 type="text"
