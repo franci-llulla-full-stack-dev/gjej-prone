@@ -35,7 +35,9 @@ const Register = () => {
     };
     const handleSelectType = (option) => {
         setUserType(option);
-        setData('user_type', option.value)
+        if(option.value === 'buyer') {
+            setData('user_type', 'user');
+        }
         setStep(2);
     };
 
@@ -72,12 +74,10 @@ const Register = () => {
                                             Zgjidhni llojin e përdoruesit për të filluar regjistrimin:
                                         </p>
 
-                                        <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-1 gap-4">
                                             {[
-                                                { value: 'individual', label: 'Individ' },
-                                                { value: 'agency', label: 'Agjenci' },
-                                                { value: 'bank', label: 'Banke' },
-                                                { value: 'user', label: 'Klient' },
+                                                { value: 'seller', label: 'Dua të Shes Pronën Time' },
+                                                { value: 'buyer', label: 'Dua të Blej Pronë' },
                                             ].map((option) => (
                                                 <button
                                                     key={option.value}
@@ -106,6 +106,26 @@ const Register = () => {
                                         </p>
 
                                         <div className="flex flex-col space-y-3">
+                                            <select
+                                                name="user_type"
+                                                value={data.user_type}
+                                                onChange={handleChange}
+                                                className={`px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400  ${userType.value === 'buyer' ? 'hidden' : ''}`}
+                                            >
+                                                <option value="" disabled> Selekto Tipin</option>
+                                                {userType.value === 'seller' && (
+                                                    <div>
+                                                        <option value="individual">Individ</option>
+                                                        <option value="agency">Agjenci</option>
+                                                        <option value="bank">Banke</option>
+                                                    </div>
+                                                )}
+                                                {userType.value === 'buyer' && (
+                                                    <option value="user" selected>Klient</option>
+                                                )}
+
+                                            </select>
+                                            <ErrorText field="user_type" />
                                             <input
                                                 type="text"
                                                 name="name"

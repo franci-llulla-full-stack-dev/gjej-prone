@@ -10,7 +10,7 @@ const Footer = () => {
 
                     {/* Brand */}
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900">PropertyMarket.al</h2>
+                        <h2 className="text-xl font-bold text-gray-900">GjejProne.al</h2>
                         <p className="text-gray-600 text-sm mt-2 max-w-xs">
                             Platforma #1 në Shqipëri për shitje dhe qira pronash.
                         </p>
@@ -20,7 +20,7 @@ const Footer = () => {
                     <div>
                         <h3 className="font-semibold text-gray-900 mb-2">Kontakt</h3>
                         <p className="text-gray-600 text-sm">📞 +355 68 123 4567</p>
-                        <p className="text-gray-600 text-sm">✉️ info@propertymarket.al</p>
+                        <p className="text-gray-600 text-sm">✉️ info@gjejprone.al</p>
                     </div>
 
                     {/* Social Links */}
