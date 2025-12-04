@@ -38,7 +38,7 @@ const Landing = () => {
                         className={`flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 transform transition-all duration-1000 delay-400 ease-out ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
                     >
                         <Link
-                            href="/properties"
+                            href="/listed-properties"
                             className="px-6 py-3 bg-blue-400 text-white rounded hover:bg-blue-600 transition"
                         >
                             Shiko Pronat

@@ -1,12 +1,16 @@
 import backgroundImage from '../media/background.jpeg';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 
 const Header = () => {
     const { auth } = usePage().props;
     const role = auth?.user?.role || 'guest';
     const [menuOpen, setMenuOpen] = useState(false);
-
+    useEffect(() => {
+        if (role === "guest") {
+            setMenuOpen(false);
+        }
+    }, [role]);
     return (
         <header className="bg-white/90 backdrop-blur shadow-sm fixed top-0 w-full z-50">
             <div className="container mx-auto px-2 py-4 flex justify-between items-center">

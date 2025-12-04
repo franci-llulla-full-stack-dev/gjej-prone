@@ -14,12 +14,11 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $query = $user->properties();
+        $query = Property::query();
 
         if ($request->city) {
-            $query->where('city', $request->city);
-        }
 
+        }
         $properties = $query->paginate();
 
         return Inertia::render('Properties', [
@@ -31,6 +30,17 @@ class PropertyController extends Controller
     public function create()
     {
         return Inertia::render('NewProperty', []);
+    }
+
+    public function listedProperties(Request $request)
+    {
+        $query = Property::query();
+
+        $properties = $query->paginate(10);
+        return Inertia::render('user/AllProperties', [
+            'properties' => $properties,
+            'filters' => request()->all(),
+        ]);
     }
 
     public function store(CreatePropertyRequest $request)

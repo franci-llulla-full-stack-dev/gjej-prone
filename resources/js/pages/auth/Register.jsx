@@ -50,12 +50,18 @@ const Register = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const handleDateChange = (date) => {
         setSelectedDate(date);
-        data.setData('birth_date', date); // sync with Inertia form
+        const formatted = formatDate(date);// YYYY-MM-DD
+        setData('birth_date', formatted);
     };
     const handleChange = (e) => {
         setData(e.target.name, e.target.value);
     };
-
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
     const handleSubmit = (e) => {
         e.preventDefault();
         post('/register');

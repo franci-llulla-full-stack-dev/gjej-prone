@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Models\Role;
+use App\Models\User;
+use App\Notifications\CustomVerifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -56,6 +58,7 @@ class AuthController extends Controller
         if(!$user){
            return back()->withErrors("Something went wrong.");
         }
+        $user->notify(new CustomVerifyEmail($user));
         auth()->login($user);
 
         session()->flash('success', 'Regjistrimi u krye me sukses!');
@@ -67,6 +70,21 @@ class AuthController extends Controller
     {
         Auth::logout();
         $request->session()->invalidate();
-        return Inertia::render('Landing', []);
+        return redirect()->to('/');
+    }
+
+    public function verifyEmail(Request $request, $id, $hash)
+    {
+        if (! $request->hasValidSignature()) {
+            abort(403, 'Invalid or expired verification link.');
+        }
+        if (! hash_equals(hash_hmac('sha256', $id, config('app.key')), $hash)) {
+            abort(403, 'Invalid verification link.');
+        }
+
+        $user = User::findOrFail($id);
+        $user->update(['email_verified_at' => now()]);
+
+        return redirect()->route(redirectByRole())->with('status', 'Email verified successfully. Please log in.');
     }
 }

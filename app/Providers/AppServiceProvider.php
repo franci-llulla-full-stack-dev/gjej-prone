@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
                 'user' => Auth::user() ? [
                     'name' => $user->name . ' ' . $user->surname,
                     'role' => $user->role->name,
+                    'email' => $user->email,
                 ] : null,
             ];
         });

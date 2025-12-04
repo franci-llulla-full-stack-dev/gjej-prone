@@ -18,9 +18,26 @@ if(! function_exists('redirectByRole')) {
             'individual' => 'properties.index',
             'agency' => 'properties.index',
             'bank' => 'properties.index',
-            'user' => 'user.properties.index',
+            'user' => 'properties.listed',
             default => 'properties.index',
         };
         return $redirectRoute;
+    }
+
+    function redirectByRoleVerification()
+    {
+        $user = Auth::user();
+
+        $redirectRoute = match ($user->role->name) {
+            'individual' => 'verification.sent',
+            'agency' => 'verification.sent',
+            'bank' => 'verification.sent',
+            'user' => 'properties.listed',
+            default => 'profile',
+        };
+        return $redirectRoute;
+    }
+    {
+
     }
 }
