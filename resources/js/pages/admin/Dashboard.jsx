@@ -32,7 +32,6 @@ const Dashboard = () => {
 
     return (
         <div className="pt-20 min-h-screen bg-gray-50">
-            <Header />
             <main className="pb-10 px-4 md:px-10">
                 <h1 className="text-3xl font-bold mb-8 text-gray-800">Dashboard</h1>
 
@@ -50,7 +49,6 @@ const Dashboard = () => {
                     ))}
                 </div>
             </main>
-            <Footer />
         </div>
     );
 };

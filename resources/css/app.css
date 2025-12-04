@@ -1,4 +1,27 @@
 @import "tailwindcss";
+@import 'leaflet/dist/leaflet.css';
+
+@layer utilities {
+    .animate-fade-in {
+        @apply opacity-100 transition-all duration-700 ease-out;
+        animation: fadeIn 0.7s ease-out forwards;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+}
+
 :root {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';

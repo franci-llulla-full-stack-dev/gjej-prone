@@ -1,0 +1,74 @@
+{
+    "cities": [
+        { "value": "tirane", "label": "Tiranë" },
+        { "value": "durres", "label": "Durrës" },
+        { "value": "elbasan", "label": "Elbasan" },
+        { "value": "berat", "label": "Berat" },
+        { "value": "dimal", "label": "Dimal" },
+        { "value": "kucove", "label": "Kuçovë" },
+        { "value": "polican", "label": "Poliçan" },
+        { "value": "skrapar", "label": "Skrapar" },
+
+        { "value": "bulqize", "label": "Bulqizë" },
+        { "value": "diber", "label": "Dibër" },
+        { "value": "klos", "label": "Klos" },
+        { "value": "mat", "label": "Mat" },
+
+        { "value": "kruje", "label": "Krujë" },
+        { "value": "shijak", "label": "Shijak" },
+
+        { "value": "cerrik", "label": "Cërrik" },
+        { "value": "belsh", "label": "Belsh" },
+        { "value": "peqin", "label": "Peqin" },
+        { "value": "gramsh", "label": "Gramsh" },
+        { "value": "librazhd", "label": "Librazhd" },
+        { "value": "prrenjas", "label": "Prrenjas" },
+
+        { "value": "divjake", "label": "Divjakë" },
+        { "value": "fier", "label": "Fier" },
+        { "value": "lushnje", "label": "Lushnjë" },
+        { "value": "mallakaster", "label": "Mallakastër" },
+        { "value": "patos", "label": "Patos" },
+        { "value": "roskovec", "label": "Roskovec" },
+
+        { "value": "dropull", "label": "Dropull" },
+        { "value": "gjirokaster", "label": "Gjirokastër" },
+        { "value": "kelcire", "label": "Këlcyrë" },
+        { "value": "libohove", "label": "Libohovë" },
+        { "value": "memaliaj", "label": "Memaliaj" },
+        { "value": "permet", "label": "Përmet" },
+        { "value": "tepelene", "label": "Tepelenë" },
+
+        { "value": "devoll", "label": "Devoll" },
+        { "value": "kolonje", "label": "Kolonjë" },
+        { "value": "korce", "label": "Korçë" },
+        { "value": "maliq", "label": "Maliq" },
+        { "value": "pogradec", "label": "Pogradec" },
+        { "value": "pustec", "label": "Pustec" },
+
+        { "value": "kukes", "label": "Kukës" },
+        { "value": "has", "label": "Has" },
+        { "value": "tropoje", "label": "Tropojë" },
+
+        { "value": "lezhe", "label": "Lezhë" },
+        { "value": "mirdite", "label": "Mirditë" },
+        { "value": "kurbin", "label": "Kurbin" },
+
+        { "value": "shkoder", "label": "Shkodër" },
+        { "value": "malesi_e_madhe", "label": "Malësi e Madhe" },
+        { "value": "puke", "label": "Pukë" },
+
+        { "value": "kashar", "label": "Kashar" },
+        { "value": "dajt", "label": "Dajt" },
+        { "value": "peze", "label": "Pezë" },
+        { "value": "vaqarr", "label": "Vaqarr" },
+
+        { "value": "vlore", "label": "Vlorë" },
+        { "value": "delvine", "label": "Delvinë" },
+        { "value": "sarande", "label": "Sarandë" },
+        { "value": "selenice", "label": "Selenicë" },
+        { "value": "himare", "label": "Himarë" },
+        { "value": "konispol", "label": "Konispol" },
+        { "value": "finiq", "label": "Finiq" }
+    ]
+}

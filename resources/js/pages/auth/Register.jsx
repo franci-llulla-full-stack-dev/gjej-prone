@@ -76,9 +76,7 @@ const Register = () => {
     return (
         <div className="overflow-hidden">
             <div className="min-h-screen grid">
-                <Header/>
-                <div className="grid">
-                    <main className="self-center">
+                <main className="">
                         <div
                             className="absolute inset-0 bg-cover bg-center"
                             style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -263,9 +261,7 @@ const Register = () => {
                             </div>
                         </div>
                     </main>
-                </div>
             </div>
-            <Footer/>
         </div>
     );
 };

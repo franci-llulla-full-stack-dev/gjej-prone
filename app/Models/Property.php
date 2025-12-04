@@ -3,30 +3,44 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Property extends Model
 {
     protected $table = 'properties';
 
     protected $fillable = [
-        'postal_code',
+        'type_of_sale',
+        'property_type',
+        'property_category',
         'city',
         'street',
-        'house_number',
-        'floor_number',
-        'apartment_number',
-        'building_name',
-        'building_type',
-        'year_built',
-        'description',
-        'currency',
+        'latitude',
+        'longitude',
+        'surface',
         'price',
+        'currency',
+        'description',
+        'total_rooms',
+        'total_bathrooms',
+        'total_balconies',
+        'floor_number',
+        'total_floors',
+        'year_built',
+        'badge_status',
+        'sold',
         'verified',
         'order',
-        'surface',
-        'rooms',
-        'bathrooms',
-        'garages',
-        'type_of_sale',
     ];
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(PropertyMedia::class, 'property_id');
+    }
 }

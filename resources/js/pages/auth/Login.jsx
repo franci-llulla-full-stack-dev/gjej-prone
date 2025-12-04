@@ -29,11 +29,9 @@ const Login = () => {
 
     return (
         <div>
-
             <div className="min-h-screen grid ">
-                <Header />
                 <div className="grid">
-                    <main className="self-center">
+                    <main className="">
                         {/* Background image */}
                         <div
                             className="absolute inset-0 bg-cover bg-center"
@@ -92,7 +90,6 @@ const Login = () => {
                     </main>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };

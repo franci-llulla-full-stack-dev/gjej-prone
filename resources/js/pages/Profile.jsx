@@ -29,9 +29,7 @@ const Profile = ({ user }) => {
     };
 
     return (
-        <div className="pt-20 min-h-screen bg-gray-50">
-            <Header />
-            <main className="max-w-3xl mx-auto p-6">
+        <div className="max-w-3xl mx-auto p-6">
                 <h1 className="text-2xl font-bold mb-6">Profili im</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -163,9 +161,7 @@ const Profile = ({ user }) => {
                         Ruaj Ndryshimet
                     </button>
                 </form>
-            </main>
-            <Footer />
-        </div>
+            </div>
     );
 };
 

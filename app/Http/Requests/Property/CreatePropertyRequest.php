@@ -11,7 +11,7 @@ class CreatePropertyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,25 @@ class CreatePropertyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'type_of_sale' => ['required', 'string'],
+            'property_type' => ['required', 'string'],
+            'property_category' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'street' => ['required', 'string'],
+            'surface' => ['required', 'numeric'],
+            'price' => ['required', 'numeric'],
+            'currency' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
+            'total_rooms' => ['nullable', 'numeric'],
+            'total_bathrooms' => ['nullable', 'numeric'],
+            'total_balconies' => ['nullable', 'numeric'],
+            'floor_number' => ['nullable', 'numeric'],
+            'total_floors' => ['nullable', 'numeric'],
+            'year_built' => ['nullable', 'numeric'],
+            'latitude' => ['required', 'numeric'],
+            'longitude' => ['required', 'numeric'],
+            'images' => ['required', 'array', 'min:5'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }
 }

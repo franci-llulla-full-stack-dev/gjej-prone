@@ -13,9 +13,7 @@ const Landing = () => {
     }, []);
 
     return (
-        <div className="grid grid-rows-[auto_1fr_auto] min-h-screen">
-            <Header/>
-            <main className="relative pb-25">
+        <div className="relative pb-25">
                 {/* Background image */}
                 <div
                     className="absolute inset-0 bg-cover bg-center"
@@ -53,9 +51,7 @@ const Landing = () => {
                         </Link>
                     </div>
                 </div>
-            </main>
-            <Footer/>
-        </div>
+            </div>
     );
 };
 

@@ -1,15 +1,23 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
+import { Toaster } from "react-hot-toast";
 import '../css/app.css';
 import 'react-datepicker/dist/react-datepicker.css';
+import Layout from './layouts/Layout.jsx';
 
 createInertiaApp({
     resolve: name => {
         const pages = import.meta.glob('./pages/**/*.jsx', { eager: true })
-        return pages[`./pages/${name}.jsx`];
+        let page = pages[`./pages/${name}.jsx`];
+
+        page.default.layout = page.default.layout || ((page) => (
+            <Layout children={page} />
+        ));
+
+        return page;
     },
-    setup({el, App, props}) {
+    setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />);
     },
 });

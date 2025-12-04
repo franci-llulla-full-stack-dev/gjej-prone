@@ -1,7 +1,5 @@
-import Header from '../components/Header.jsx';
-import Footer from '../components/Footer.jsx';
 import PropertyItem from '../components/PropertyItem.jsx';
-import { router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 const Properties = ({properties}) => {
@@ -46,13 +44,7 @@ const Properties = ({properties}) => {
     };
 
     return (
-        <div className="min-h-screen grid pt-20">
-            <Header/>
-
-            <main>
-                <div>
-                    <div>
-                    </div>
+        <div className="grid grid-cols-1">
                     <div className="bg-white shadow px-4 pb-4 rounded-xl mb-4">
                         <h4 className="pb-4 text-2xl font-bold">Pronat</h4>
                         {/* Search Bar */}
@@ -158,21 +150,35 @@ const Properties = ({properties}) => {
                             </div>
                         </div>
                     )}
-                    <button>
-                        Add a property
-                    </button>
-                </div>
-                <div>
-                    <h2>Current Listed Properties</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {properties.data.map(p => (
-                            <PropertyItem key={p.id} {...p} />
-                        ))}
+                    <div className="grid justify-items-center p-4">
+                        <Link href="/properties/create"
+                              className=" inline-flex items-center justify-center
+                            px-5 py-2.5
+                            rounded-xl
+                            font-semibold
+                            text-white
+                            bg-indigo-600
+                            hover:bg-indigo-700
+                            active:bg-indigo-800
+                            transition-all duration-200
+                            shadow-sm hover:shadow
+                            focus:outline-none focus:ring-2 focus:ring-indigo-400
+                            "
+                        >
+                            Add a property
+
+                        </Link>
+                    </div>
+
+                    <div className="p-4">
+                        <h2 className="font-bold text-lg">Current Listed Properties</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {properties.data.map(p => (
+                                <PropertyItem key={p.id} {...p} />
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </main>
-            <Footer/>
-        </div>
     );
 };
 
