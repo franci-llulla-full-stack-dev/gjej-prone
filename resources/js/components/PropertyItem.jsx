@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 
 const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms, total_balconies,
-  total_floors, floor_number, year_built, description, price, currency, type_of_sale, property_type, image_paths = []
+  total_floors, floor_number, year_built, description, price, currency, type_of_sale, property_type, image_paths = [],
+  canEdit = false, canDelete = false, onEdit = null, onDelete = null,
   }) => {
 
     const image = image_paths.length > 0
@@ -91,7 +92,27 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                 <p className="text-gray-600 text-sm line-clamp-3">
                     {description}
                 </p>
+                {(canEdit || canDelete) && (
+                    <div className="flex gap-2 pt-2">
+                        {canEdit && (
+                            <button
+                                onClick={() => onEdit?.(id)}
+                                className="flex-1 text-sm border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
+                            >
+                                Edit
+                            </button>
+                        )}
 
+                        {canDelete && (
+                            <button
+                                onClick={() => onDelete?.(id)}
+                                className="flex-1 text-sm border border-red-300 text-red-600 rounded-lg py-2 hover:bg-red-50 transition"
+                            >
+                                Delete
+                            </button>
+                        )}
+                    </div>
+                )}
                 {/* VIEW BUTTON */}
                 <div className="pt-2">
                     <Link

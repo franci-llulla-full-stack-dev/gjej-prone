@@ -87,4 +87,26 @@ class AuthController extends Controller
 
         return redirect()->route(redirectByRole())->with('status', 'Email verified successfully. Please log in.');
     }
+
+    public function forgotPassword()
+    {
+        return Inertia::render('auth/ForgotPassword', []);
+    }
+
+    public function sendResetLink(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $email = $request->input('email');
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'Nuk u gjet asnjë përdorues me këtë email.']);
+        }
+
+        // You can use Laravel's built-in notification or your custom one
+        $user->sendPasswordResetNotification(app('auth.password.broker')->createToken($user));
+
+        return back()->with('status', 'Lidhja për rivendosjen e fjalëkalimit u dërgua me sukses!');
+    }
 }

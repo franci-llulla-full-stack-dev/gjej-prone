@@ -8,6 +8,7 @@ const Profile = ({ user }) => {
     const { data, setData, post, processing, errors } = useForm({
         name: user.name || '',
         surname: user.surname || '',
+        email: user.email || '',
         phone_number: user.phone_number || '',
         company_name: user.company_name || '',
         birth_date: user.birth_date || '',
@@ -58,7 +59,17 @@ const Profile = ({ user }) => {
                             />
                             {errors.surname && <p className="text-red-500 text-sm">{errors.surname}</p>}
                         </div>
-
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Email</label>
+                            <input
+                                type="text"
+                                name="email"
+                                value={data.email}
+                                onChange={handleChange}
+                                className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+                            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                        </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Numri i telefonit</label>
                             <input

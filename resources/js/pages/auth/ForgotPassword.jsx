@@ -1,12 +1,10 @@
-import { InertiaLink } from '@inertiajs/inertia-react';
 import backgroundImage from '../../media/background.jpeg';
-import React, { useState } from 'react';
 import { Link, useForm } from '@inertiajs/react';
+import React from 'react';
 
-const Login = () => {
+const ForgotPassword = () => {
     const { data, setData, post, errors } = useForm({
         email: '',
-        password: '',
     });
     const handleChange = (e) => {
         setData(e.target.name, e.target.value);
@@ -14,7 +12,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/login');
+        post('/forgot-password/mail');
     };
 
     const ErrorText = ({ field }) => {
@@ -24,7 +22,6 @@ const Login = () => {
         const text = Array.isArray(err) ? err.join(' ') : err;
         return <p className="text-red-500 text-sm mt-1">{text}</p>;
     };
-
     return (
         <div>
             <div className="min-h-screen grid ">
@@ -41,13 +38,13 @@ const Login = () => {
                         {/* Content */}
                         <div className="relative z-10 flex flex-col items-center justify-center min-h-[70vh] px-6 pt-10 text-center overflow-hidden">
                             <div className="bg-white/90 backdrop-blur-lg px-8 py-12 rounded-2xl shadow-lg w-full max-w-md">
-                                <h2 className="text-2xl font-bold mb-6 text-gray-800">Identifikohu</h2>
+                                <h2 className="text-2xl font-bold mb-6 text-gray-800">Harrova fjalekalimin</h2>
 
                                 {/* Form */}
                                 <form className="space-y-4">
 
                                     <div className="text-left">
-                                        <label className="block text-gray-700 mb-1">Email/Nr.Tel</label>
+                                        <label className="block text-gray-700 mb-1">Email</label>
                                         <input
                                             name="email"
                                             type="email"
@@ -59,21 +56,6 @@ const Login = () => {
                                         <ErrorText field="email" />
                                     </div>
 
-
-                                    <div className="text-left pb-3">
-                                        <label className="block text-gray-700 mb-1">Fjalëkalimi</label>
-                                        <input
-                                            name="password"
-                                            type="password"
-                                            placeholder="Shkruaj fjalëkalimin"
-                                            value={data.name}
-                                            onChange={handleChange}
-                                            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        />
-                                        <ErrorText field="password" />
-                                    </div>
-
-
                                     <button
                                         type="submit"
                                         onClick={handleSubmit}
@@ -81,7 +63,6 @@ const Login = () => {
                                     >
                                         Hyr
                                     </button>
-                                    <Link href="/forgot-password"><p className="text-gray-700 underline">Harrova fjalekalimin</p></Link>
                                 </form>
                             </div>
                         </div>
@@ -92,4 +73,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default ForgotPassword;

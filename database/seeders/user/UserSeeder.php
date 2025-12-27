@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\user;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
@@ -20,11 +21,12 @@ class UserSeeder extends Seeder
         $bankRole = Role::where('name', 'bank')->first();
         $agencyRole = Role::where('name', 'agency')->first();
 
-        $adminRole->users()->updateOrCreate(
+        User::updateOrCreate(
             [
                 'email' => 'franci.llulla1@gmail.com'
             ],
             [
+                'role_id' => $adminRole->id,
                 'name' => 'Franci',
                 'surname' => 'Llulla',
                 'phone_number' => '+355694749463',

@@ -39,10 +39,57 @@ const Header = () => {
                             </Link>
                         </>
                     )}
+                    {role === 'admin' && (
+                        <>
+                            <Link
+                                href="/dashboard"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                            >
+                                Dashboard
+                            </Link>
+                            <Link
+                                href="/admin/properties"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                            >
+                                Pronat
+                            </Link>
+                            <Link
+                                href="/admin/users"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                            >
+                                Users
+                            </Link>
+                            <Link
+                                href="/dashboard"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                            >
+                                Logs
+                            </Link>
+                        </>
+                    )}
+                    {role === 'agency' || role === 'bank' || role === 'individual' &&
+                        (
+                            <>
+                                <Link
+                                    href="/properties"
+                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
+                                    Pronat e mia
+                                </Link>
+                            </>
+                        )
+                    }
                     {role !== 'guest' && (
-                        <Link href="/logout" method="post" as="button">
-                            Dil
-                        </Link>
+                        <>
+                            <Link
+                                href="/profile"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                            >
+                                Profil
+                            </Link>
+                            <Link href="/logout" method="post" as="button">
+                                Dil
+                            </Link>
+                        </>
                     )}
                 </nav>
                 {role === 'guest' && (
@@ -105,7 +152,7 @@ const Header = () => {
                                     Pronat
                                 </Link>
                                 <Link
-                                    href="/dashboard"
+                                    href="/admin/users"
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                                 >
                                     Users
@@ -118,13 +165,15 @@ const Header = () => {
                                 </Link>
                             </>
                         )}
-                        {role === 'agency' || role === 'bank' || role === 'individual' && (
-                            <Link
-                                href="/properties"
-                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
-                                Pronat e mia
-                            </Link>
-                        )}
+                        {role === 'agency' || role === 'bank' || role === 'individual' &&
+                            (
+                                <Link
+                                    href="/properties"
+                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
+                                    Pronat e mia
+                                </Link>
+                            )
+                        }
 
                         <Link
                             href="/profile"

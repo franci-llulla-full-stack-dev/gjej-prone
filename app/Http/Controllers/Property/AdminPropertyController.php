@@ -12,12 +12,16 @@ class AdminPropertyController extends Controller
     public function index(Request $request)
     {
         $query = Property::query();
-
-        $properties = $query->paginate(10);
+        $properties = $query->paginate($request->per_page ?? 10);
 
         return Inertia::render('admin/Properties', [
-            'properties' => $properties,
-            'filters' => $request->all(),
+            'properties' => $properties->items(),
+            'pagination' => [
+                'current_page' => $properties->currentPage(),
+                'per_page' => $properties->perPage(),
+                'total' => $properties->total(),
+            ],
+            'filters' => request()->all(),
         ]);
     }
 

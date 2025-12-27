@@ -174,7 +174,20 @@ const Properties = ({properties}) => {
                         <h2 className="font-bold text-lg">Current Listed Properties</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {properties.data.map(p => (
-                                <PropertyItem key={p.id} {...p} />
+                                <PropertyItem key={p.id} {...p} canEdit={true} canDelete={true}
+                                  onEdit={() => {
+                                      router.get(`/properties/${p.id}/edit`);
+                                  }}
+                                  onDelete={() => {
+                                      if (!confirm("Are you sure you want to delete this property?")) return;
+
+                                      router.post(`/properties/${p.id}/delete`, {
+                                          id: p.id,
+                                      }, {
+                                          preserveScroll: true,
+                                      });
+                                  }}
+                                />
                             ))}
                         </div>
                     </div>

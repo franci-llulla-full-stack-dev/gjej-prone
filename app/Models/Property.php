@@ -35,6 +35,10 @@ class Property extends Model
         'sold',
         'verified',
         'order',
+        'combo_package',
+        'virtual_tour',
+        'rivleresim',
+        'views',
     ];
 
     public function owner(): BelongsTo

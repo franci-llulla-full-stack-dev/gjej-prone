@@ -12,9 +12,4 @@ export default defineConfig({
         tailwindcss(),
         react()
     ],
-    server: {
-        hmr: {
-            host: 'gjej-prone-production.up.railway.app'
-        }
-    }
 });

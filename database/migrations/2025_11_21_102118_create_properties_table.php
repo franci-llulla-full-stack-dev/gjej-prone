@@ -35,6 +35,10 @@ return new class extends Migration
             $table->boolean('sold')->default(false);
             $table->boolean('verified')->default(false);
             $table->integer('order')->nullable();
+            $table->boolean('combo_package')->default(false);
+            $table->boolean('virtual_tour')->default(false);
+            $table->boolean('rivleresim')->default(false);
+            $table->integer('views')->default(0);
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

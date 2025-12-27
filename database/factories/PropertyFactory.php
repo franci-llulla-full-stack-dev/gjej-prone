@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-
+use App\Models\User;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Property>
  */
@@ -40,7 +40,7 @@ class PropertyFactory extends Factory
             'order'            => $this->faker->numberBetween(1, 1000),
 
             // If properties belong to a user:
-            'user_id'          => 1, // or random user
+            'user_id'          => User::first()->id, // or random user
         ];
     }
 }

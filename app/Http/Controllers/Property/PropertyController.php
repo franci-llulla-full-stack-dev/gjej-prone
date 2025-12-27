@@ -14,7 +14,7 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $query = Property::query();
+        $query = Property::query()->where('user_id', $user->id);
 
         if ($request->city) {
 
@@ -49,6 +49,7 @@ class PropertyController extends Controller
         $user = auth()->user();
 
         $images = $validated['images'] ?? [];
+
         unset($validated['images']);
 
         $newProperty = $user->properties()->create($validated);
@@ -75,6 +76,7 @@ class PropertyController extends Controller
 
         return Inertia::render('EditProperty', [
             'property' => $property,
+            'propertyImages' => $property->images,
         ]);
     }
 

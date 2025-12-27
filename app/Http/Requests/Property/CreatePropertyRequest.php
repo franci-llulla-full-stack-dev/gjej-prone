@@ -41,6 +41,9 @@ class CreatePropertyRequest extends FormRequest
             'longitude' => ['required', 'numeric'],
             'images' => ['required', 'array', 'min:5'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'virtual_tour' => ['nullable'],
+            'rivleresim' => ['nullable'],
+            'combo_package' => ['nullable']
         ];
     }
 }

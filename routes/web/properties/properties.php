@@ -12,7 +12,7 @@ Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])->c
     Route::post('/properties', 'store')->name('properties.store');
     Route::get('/properties/{property}/edit', 'edit')->name('properties.edit');
     Route::put('/properties/{property}', 'update')->name('properties.update');
-    Route::delete('/properties/{property}', 'destroy')->name('properties.destroy');
+    Route::post('/properties/{property}/delete', 'destroy')->name('properties.destroy');
 });
 Route::middleware(['auth', 'role:admin'])
     ->post('/properties/{property}/approve', [PropertyController::class,'approve'])
@@ -20,6 +20,7 @@ Route::middleware(['auth', 'role:admin'])
 
 Route::controller(PropertyController::class)->group(function () {
    Route::get('/listed-properties', 'listedProperties')->name('properties.listed');
+   Route::get('/property/new-request', 'showNewRequest')->name('properties.new.request');
 });
 
 Route::middleware(['auth', 'role:admin'])->controller(AdminPropertyController::class)->group(function () {
