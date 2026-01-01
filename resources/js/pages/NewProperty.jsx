@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import locations from '../../data/locations.json';
 import MapPicker from '../components/MapPicker.jsx';
 import toast from "react-hot-toast";
+import ErrorText from '../components/ErrorText.jsx';
 
 const inputBase =
     "w-full mt-1 px-4 py-1.5 border border-gray-300 bg-white text-gray-700 " +
@@ -24,7 +25,7 @@ export default function NewProperty() {
         street: '',
         surface: '',
         price: '',
-        currency: '',
+        currency: 'EUR',
         description: '',
         total_rooms: '',
         total_bathrooms: '',
@@ -39,7 +40,6 @@ export default function NewProperty() {
         rivlersim: false,
         combo_package: false,
     });
-    console.log(errors);
     const [coords,setCoords ] = useState({lat:null,lng:null});
     const [selectedBashki, setSelectedBashki] = useState(null);
     const [images, setImages] = useState([]);
@@ -152,16 +152,13 @@ export default function NewProperty() {
                         {...(isYearBuilt ? { min: 1900, max: 2050 } : {})}
                         className={inputBase}
                     />
+                    <ErrorText field={field.value} />
                 </div>
             );
         });
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (images.length < 5) {
-            alert("Ju lutem ngarkoni të paktën 5 foto.");
-            return;
-        }
         post('/properties');
     };
 
@@ -222,7 +219,7 @@ export default function NewProperty() {
                                 }}
                                 options={typeOfProperties}
                                 placeholder="Zgjidh llojin"
-                                classNamePrefix="react-select"
+                                classNamePrefix="react-select z-50"
                                 styles={{
                                     control: (provided) => ({
                                         ...provided,
@@ -257,7 +254,7 @@ export default function NewProperty() {
                                 options={data.property_type ? subTypeProperties[data.property_type] : []}
                                 isDisabled={!data.property_type}
                                 placeholder="Zgjidh kategorinë"
-                                classNamePrefix="react-select"
+                                classNamePrefix="react-select z-50"
                                 styles={{
                                     control: (provided) => ({
                                         ...provided,
@@ -290,7 +287,7 @@ export default function NewProperty() {
                                 menuPortalTarget={document.body}
                                 options={locations.cities}
                                 placeholder="Zgjidh Bashkinë"
-                                classNamePrefix="react-select"
+                                classNamePrefix="react-select z-50"
                                 isDisabled={!locations.cities.length}
                             />
                         </div>
@@ -301,6 +298,8 @@ export default function NewProperty() {
                             <MapPicker
                                 lat={coords.lat}
                                 lng={coords.lng}
+                                className="relative z-0"
+                                style={{zIndex: 0}}
                                 onSelect={(location) => {
                                     setCoords({ lat: location.lat, lng: location.lng });
 
@@ -384,12 +383,12 @@ export default function NewProperty() {
                                 onChange={(e) => handleImages(e.target.files)}
                             />
 
-                            {images.length < 5 && (
+                            {images.length < 2 && (
                                 <p className="text-red-500 text-sm mt-1">
-                                    Duhet te ngarkoni te pakten 5 foto.
+                                    Duhet te ngarkoni te pakten 2 foto.
                                 </p>
                             )}
-
+                            <ErrorText field="images" />
                             {/* Image Preview Grid */}
                             <div className="grid grid-cols-3 gap-3 mt-4">
                                 {images.map((img, index) => (

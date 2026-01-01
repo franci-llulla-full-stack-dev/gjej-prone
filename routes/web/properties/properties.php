@@ -14,9 +14,6 @@ Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])->c
     Route::put('/properties/{property}', 'update')->name('properties.update');
     Route::post('/properties/{property}/delete', 'destroy')->name('properties.destroy');
 });
-Route::middleware(['auth', 'role:admin'])
-    ->post('/properties/{property}/approve', [PropertyController::class,'approve'])
-    ->name('properties.approve');
 
 Route::controller(PropertyController::class)->group(function () {
    Route::get('/listed-properties', 'listedProperties')->name('properties.listed');
@@ -31,3 +28,6 @@ Route::middleware(['auth', 'role:admin'])->controller(AdminPropertyController::c
     Route::put('/admin/properties/{property}', 'update')->name('admin.properties.update');
     Route::delete('/admin/properties/{property}', 'destroy')->name('admin.properties.destroy');
 });
+Route::middleware(['auth', 'role:admin'])
+    ->post('/admin/properties/{property}/verify', [PropertyController::class, 'verify'])
+    ->name('properties.approve');

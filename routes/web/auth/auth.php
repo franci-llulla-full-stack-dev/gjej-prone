@@ -24,6 +24,9 @@ Route::middleware('auth.custom')->group( function () {
 
 Route::get('/verify-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('custom.verify');
 Route::middleware('auth')->get('/verify-email/sent', function () {
+    if(auth()->user()->email_verified_at){
+        return redirect()->route(redirectByRole());
+    }
     return inertia('auth/VerifySent');
 })->name('verification.sent');
 Route::post('/email/resend-verification', function () {

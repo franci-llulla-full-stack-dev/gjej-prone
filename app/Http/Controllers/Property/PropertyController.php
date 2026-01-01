@@ -14,7 +14,7 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $query = Property::query()->where('user_id', $user->id);
+        $query = Property::with('images')->where('user_id', $user->id);
 
         if ($request->city) {
 
@@ -100,5 +100,13 @@ class PropertyController extends Controller
         $property->delete();
         return redirect()->route('properties.index')
             ->with(['success' => 'Property deleted successfully.']);
+    }
+
+    public function verify(Property $property)
+    {
+        $property->verified = !$property->verified;
+        $property->save();
+
+        return back()->with(['success' => 'Property status updated!']);
     }
 }

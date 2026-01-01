@@ -39,7 +39,7 @@ class CreatePropertyRequest extends FormRequest
             'year_built' => ['nullable', 'numeric'],
             'latitude' => ['required', 'numeric'],
             'longitude' => ['required', 'numeric'],
-            'images' => ['required', 'array', 'min:5'],
+            'images' => ['required', 'array', 'min:2'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'virtual_tour' => ['nullable'],
             'rivleresim' => ['nullable'],

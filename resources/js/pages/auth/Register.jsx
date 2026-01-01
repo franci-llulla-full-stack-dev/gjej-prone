@@ -1,7 +1,7 @@
 import backgroundImage from '../../media/background.jpeg';
 import React, { useState, useEffect } from 'react';
-import Header from '../../components/Header.jsx';
-import Footer from '../../components/Footer.jsx';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
 import { useForm } from '@inertiajs/react';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
@@ -194,15 +194,16 @@ const Register = () => {
                                                 className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                             />
                                             <ErrorText field="email" />
-                                            <input
-                                                name="phone_number"
-                                                type="tel"
-                                                value={data.phone_number}
-                                                onChange={handleChange}
-                                                placeholder="Numri i telefonit"
-                                                className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                            />
-                                            <ErrorText field="phone_number" />
+
+                                                <PhoneInput
+                                                    international
+                                                    defaultCountry="AL"
+                                                    value={data.phone_number}
+                                                    onChange={(value) => setData('phone_number', value)}
+                                                    className="phone-input px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                                />
+                                                <ErrorText field="phone_number" />
+
                                                 <DatePicker
                                                     selected={selectedDate}
                                                     onChange={handleDateChange}

@@ -10,13 +10,13 @@ import {
     Tag,
 } from "lucide-react";
 
-const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms, total_balconies,
+const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms, total_balconies, verified,
   total_floors, floor_number, year_built, description, price, currency, type_of_sale, property_type, image_paths = [],
   canEdit = false, canDelete = false, onEdit = null, onDelete = null,
   }) => {
 
     const image = image_paths.length > 0
-        ? image_paths[0]
+        ? `/storage/${image_paths[0].path}`
         : "/placeholder/property.jpg";
 
     return (
@@ -35,6 +35,11 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                     className="absolute top-3 left-3 bg-black/70 backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg">
                     {price.toLocaleString()} {currency}
                 </span>
+                {canEdit && (
+                    <span className={`absolute top-3 right-3 ${verified ? 'bg-green-600' : 'bg-red-700'} backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg`}>
+                        {verified ? "Verified" : "Not Verified"}
+                    </span>
+                )}
             </div>
 
             {/* CONTENT */}

@@ -26,3 +26,6 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
+.leaflet-pane { z-index: 0; }
+.leaflet-top,
+.leaflet-bottom { z-index: 0; }
