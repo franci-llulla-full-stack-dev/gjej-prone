@@ -1,5 +1,3 @@
-import Header from '../components/Header.jsx';
-import Footer from '../components/Footer.jsx';
 import { useForm } from '@inertiajs/react';
 import Select from 'react-select';
 import React, { useState, useEffect } from 'react';
@@ -25,6 +23,9 @@ export default function NewProperty() {
         street: '',
         surface: '',
         price: '',
+        ashensor: false,
+        hipoteke: false,
+        floor_plan: [],
         currency: 'EUR',
         description: '',
         total_rooms: '',
@@ -35,10 +36,12 @@ export default function NewProperty() {
         year_built: '',
         latitude: '',
         longitude: '',
+        virtual_tour_link: '',
         images: [],
         virtual_tour: false,
         rivlersim: false,
         combo_package: false,
+        hipoteke_file: [],
     });
     const [coords,setCoords ] = useState({lat:null,lng:null});
     const [selectedBashki, setSelectedBashki] = useState(null);
@@ -152,7 +155,7 @@ export default function NewProperty() {
                         {...(isYearBuilt ? { min: 1900, max: 2050 } : {})}
                         className={inputBase}
                     />
-                    <ErrorText field={field.value} />
+                    <ErrorText field={field.value} errors={errors}/>
                 </div>
             );
         });
@@ -164,7 +167,6 @@ export default function NewProperty() {
 
     return (
         <div className="pt-20 bg-gray-50 min-h-screen">
-            <Header />
 
             <main className="max-w-4xl mx-auto px-4 pb-20">
                 <h1 className="text-3xl font-bold mb-5 pt-4 text-gray-800 opacity-0 animate-fade-in-up">
@@ -207,6 +209,8 @@ export default function NewProperty() {
                                     }),
                                 }}
                             />
+                            <ErrorText field="type_of_sale" errors={errors} />
+
                         </div>
                         <div>
                             <label className={labelBase}>Lloji i Pronës *</label>
@@ -240,6 +244,8 @@ export default function NewProperty() {
                                     }),
                                 }}
                             />
+                            <ErrorText field="property_type" errors={errors} />
+
                         </div>
                         <div>
                             <label className={labelBase}>Kategoria e Pronës *</label>
@@ -275,6 +281,8 @@ export default function NewProperty() {
                                     }),
                                 }}
                             />
+                            <ErrorText field="property_category" errors={errors} />
+
                         </div>
                         <div >
                             <label className={labelBase}>Qyteti *</label>
@@ -290,6 +298,8 @@ export default function NewProperty() {
                                 classNamePrefix="react-select z-50"
                                 isDisabled={!locations.cities.length}
                             />
+                            <ErrorText field="city" errors={errors} />
+
                         </div>
 
                         <div className="mt-4">
@@ -311,11 +321,11 @@ export default function NewProperty() {
                             />
 
                             {errors.latitude && <p className={errorBase}>{errors.latitude}</p>}
+
                         </div>
                         <div>
                             <label className={labelBase}>Sipërfaqja *</label>
                             <input className={inputBase}
-                                required
                                 name="surface"
                                 type="number"
                                 value={data.surface}
@@ -323,12 +333,12 @@ export default function NewProperty() {
                                 placeholder="Sipërfaqja në m²"
                                 autoComplete="off"
                             />
+                            <ErrorText field="surface" errors={errors} />
                         </div>
                         <div>
                             <label className={labelBase}>Çmimi *</label>
                             <div className="flex items-center">
                                 <input className={inputBase}
-                                       required
                                        type="number"
                                        value={data.price}
                                        onChange={(e) => setData('price', e.target.value)}
@@ -368,8 +378,9 @@ export default function NewProperty() {
                                         }),
                                     }}
                                 />
-                            </div>
 
+                            </div>
+                            <ErrorText field="price" errors={errors} />
                         </div>
                         {renderDynamicFields(data.property_category, data, setData)}
 
@@ -388,7 +399,7 @@ export default function NewProperty() {
                                     Duhet te ngarkoni te pakten 2 foto.
                                 </p>
                             )}
-                            <ErrorText field="images" />
+                            <ErrorText field="images" errors={errors} />
                             {/* Image Preview Grid */}
                             <div className="grid grid-cols-3 gap-3 mt-4">
                                 {images.map((img, index) => (
@@ -412,6 +423,42 @@ export default function NewProperty() {
                             </div>
                         </div>
                     </div>
+                    <div className="mt-4">
+                        <label className={labelBase}>
+                            Plani i Katit (opsional)
+                        </label>
+
+                        <input
+                            type="file"
+                            accept=".pdf,image/*"
+                            onChange={(e) => setData('floor_plan', e.target.files[0])}
+                            className="mt-1"
+                        />
+
+                        <p className="text-xs text-gray-500 mt-1">
+                            Lejohet PDF ose foto (max 5MB)
+                        </p>
+
+                        <ErrorText field="floor_plan" errors={errors} />
+                    </div>
+                    <div className="mt-4">
+                        <label className={labelBase}>
+                            Hipoteke (opsional)
+                        </label>
+
+                        <input
+                            type="file"
+                            accept=".pdf,image/*"
+                            onChange={(e) => setData('hipoteke_file', e.target.files[0])}
+                            className="mt-1"
+                        />
+
+                        <p className="text-xs text-gray-500 mt-1">
+                            Lejohet max 5MB
+                        </p>
+
+                        <ErrorText field="hipoteke_file" errors={errors} />
+                    </div>
 
                     <div className="mt-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
                         <label className={labelBase}>Përshkrimi</label>
@@ -422,6 +469,33 @@ export default function NewProperty() {
                             placeholder="Shkruani detaje të pronës..."
                         />
                         {errors.description && <p className={errorBase}>{errors.description}</p>}
+                    </div>
+                    <div className="mt-6 bg-gray-50 p-4 rounded-xl border">
+                        <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                            Detaje Teknike
+                        </h3>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.ashensor}
+                                onChange={(e) => setData('ashensor', e.target.checked)}
+                            />
+                            <span className="text-gray-700">
+                                Ka ashensor
+                            </span>
+                        </label>
+
+                        <label className="flex items-center gap-3">
+                            <input
+                                type="checkbox"
+                                checked={data.hipoteke}
+                                onChange={(e) => setData('hipoteke', e.target.checked)}
+                            />
+                            <span className="text-gray-700">
+                                Ka hipoteke
+                            </span>
+                        </label>
                     </div>
                     <div className="mt-8 bg-gray-50 p-4 rounded-xl border">
                         <h3 className="text-lg font-semibold mb-3 text-gray-800">
@@ -486,7 +560,6 @@ export default function NewProperty() {
                     </button>
                 </form>
             </main>
-            <Footer />
         </div>
     );
 }

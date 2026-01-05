@@ -24,6 +24,7 @@ return new class extends Migration
             $table->double('surface')->nullable();
             $table->double('price')->nullable();
             $table->string('currency')->nullable();
+            $table->string('virtual_tour_link')->nullable();
             $table->text('description')->nullable();
             $table->integer('total_rooms')->nullable();
             $table->integer('total_bathrooms')->nullable();
@@ -33,6 +34,8 @@ return new class extends Migration
             $table->integer('year_built')->nullable();
             $table->string('badge_status')->nullable();
             $table->boolean('sold')->default(false);
+            $table->boolean('ashensor')->default(false);
+            $table->boolean('hipoteke')->default(false);
             $table->boolean('verified')->default(false);
             $table->integer('order')->nullable();
             $table->boolean('combo_package')->default(false);

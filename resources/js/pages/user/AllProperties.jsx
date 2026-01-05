@@ -153,7 +153,7 @@ const AllProperties = ({ properties }) => {
                     <h2 className="font-bold text-lg">Properties</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {properties && properties.data.map(p => (
-                            <PropertyItem key={p.id} {...p} />
+                            <PropertyItem key={p.id} {...p} image_paths={p.images} />
                         ))}
                     </div>
                 </div>

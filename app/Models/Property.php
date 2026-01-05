@@ -39,6 +39,9 @@ class Property extends Model
         'virtual_tour',
         'rivleresim',
         'views',
+        'ashensor',
+        'hipoteke',
+        'virtual_tour_link',
     ];
 
     public function owner(): BelongsTo
@@ -49,5 +52,10 @@ class Property extends Model
     public function images(): HasMany
     {
         return $this->hasMany(PropertyMedia::class, 'property_id');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(PropertyDocument::class, 'property_id');
     }
 }

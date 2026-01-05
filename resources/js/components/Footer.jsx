@@ -10,7 +10,7 @@ const Footer = () => {
 
                     {/* Brand */}
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900">GjejProne.al</h2>
+                        <h2 className="text-xl font-bold text-gray-900">Gjej-Prone.com</h2>
                         <p className="text-gray-600 text-sm mt-2 max-w-xs">
                             Platforma #1 në Shqipëri për shitje dhe qira pronash.
                         </p>
@@ -59,7 +59,7 @@ const Footer = () => {
 
                 {/* Bottom */}
                 <div className="border-t border-gray-200 mt-8 pt-4 text-center text-gray-500 text-sm">
-                    © 2025 PropertyMarket.al — Të gjitha të drejtat e rezervuara.
+                    © 2025 gjej-prone.com — Të gjitha të drejtat e rezervuara.
                 </div>
 
             </div>

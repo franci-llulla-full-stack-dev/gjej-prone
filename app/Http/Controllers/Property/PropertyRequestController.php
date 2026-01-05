@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Property;
 use App\Http\Requests\Property\CreatePropertyRequest;
 use App\Models\PropertyRequest;
 use Faker\Provider\en_UG\PhoneNumber;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PropertyRequestController
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-        $propertyRequests = $user->propertyRequest;
+
+        $propertyRequests = PropertyRequest::where('user_id', $user->id)
+            ->latest()
+            ->paginate(12);
 
         return Inertia::render('user/PropertyRequests', [
             'propertyRequests' => $propertyRequests,

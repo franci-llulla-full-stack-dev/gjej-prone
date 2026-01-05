@@ -34,7 +34,7 @@ class PropertyController extends Controller
 
     public function listedProperties(Request $request)
     {
-        $query = Property::query();
+        $query = Property::with('images');
 
         $properties = $query->paginate(10);
         return Inertia::render('user/AllProperties', [
@@ -49,13 +49,29 @@ class PropertyController extends Controller
         $user = auth()->user();
 
         $images = $validated['images'] ?? [];
-
-        unset($validated['images']);
+        $document = $validated['floor_plan'] ?? null;
+        $hipoteka = $validated['hipoteke_file'] ?? null;
+        unset($validated['images'], $validated['floor_plan']);
 
         $newProperty = $user->properties()->create($validated);
-
+        if($document) {
+            $documentPath = $document->store("properties/document/{$newProperty->id}", 'public');
+            $newProperty->documents()->create([
+                'path' => $documentPath,
+                'file_name' => $document->getClientOriginalName(),
+                'file_type' => 'floor_plan',
+            ]);
+        }
+        if($hipoteka) {
+            $documentPathHipoteke = $hipoteka->store("properties/document/hipoteka/{$newProperty->id}", 'public');
+            $newProperty->documents()->create([
+                'path' => $documentPathHipoteke,
+                'file_name' => $hipoteka->getClientOriginalName(),
+                'file_type' => 'hipoteka',
+            ]);
+        }
         foreach ($images as $image) {
-            $path = $image->store('properties', 'public');
+            $path = $image->store("properties/{$newProperty->id}", 'public');
             $newProperty->images()->create([
                 'path' => $path,
                 'file_name' => $image->getClientOriginalName(),
@@ -108,5 +124,12 @@ class PropertyController extends Controller
         $property->save();
 
         return back()->with(['success' => 'Property status updated!']);
+    }
+
+    public function show(Property $property)
+    {
+        return Inertia::render('PropertyDetails',
+            ['property' => $property->load(['images', 'owner', 'documents']),]
+        );
     }
 }

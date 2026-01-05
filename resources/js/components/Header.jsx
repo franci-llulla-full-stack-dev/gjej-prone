@@ -15,9 +15,9 @@ const Header = () => {
         <header className="bg-white/90 backdrop-blur shadow-sm fixed top-0 w-full z-50">
             <div className="container mx-auto px-2 py-4 flex justify-between items-center">
                 <Link href="/" className="flex items-center">
-                    <img src="/logo-2.png" alt="Logo" className="h-10 w-auto mr-2" />
-                    <h1 className="text-lg sm:text-2xl font-extrabold tracking-tight text-gray-900">
-                        Gjej<span className="text-blue-400">Prone</span>.al
+                    <img src="/logo-2.png" alt="Logo" className="h-10 w-auto md:mr-2" />
+                    <h1 className="text-sm sm:text-2xl font-extrabold tracking-tight text-gray-900">
+                        Gjej-<span className="text-blue-400">Prone</span>.com
                     </h1>
                 </Link>
 
@@ -81,6 +81,12 @@ const Header = () => {
                     {role !== 'guest' && (
                         <>
                             <Link
+                                href="/property/requests"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                                >
+                                Kerkesat e pronave
+                            </Link>
+                            <Link
                                 href="/profile"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
@@ -96,13 +102,13 @@ const Header = () => {
                     <div className="sm:hidden">
                         <Link
                             href="/login"
-                            className="px-1 py-1.5 text-gray-700 hover:text-blue-400 transition"
+                            className="px-1 py-1.5 text-gray-700 text-sm hover:text-blue-400 transition"
                         >
                             Identifikohu
                         </Link>
                         <Link
                             href="/register"
-                            className="px-4 py-1.5 bg-blue-400 text-white rounded-md hover:bg-blue-600 transition shadow-sm"
+                            className="px-4 py-1.5 bg-blue-400 text-sm text-white rounded-md hover:bg-blue-600 transition shadow-sm"
                         >
                             Regjistrohu
                         </Link>
@@ -174,6 +180,14 @@ const Header = () => {
                                 </Link>
                             )
                         }
+                        {role === 'user' && (
+                            <Link
+                                href="/property/requests"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                            >
+                                Kerkesat e pronave
+                            </Link>
+                        )}
 
                         <Link
                             href="/profile"

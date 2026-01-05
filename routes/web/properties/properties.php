@@ -5,15 +5,16 @@ use App\Http\Controllers\Property\{
     AdminPropertyController
 };
 use Illuminate\Support\Facades\Route;
-
 Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])->controller(PropertyController::class)->group(function () {
     Route::get('/properties', 'index')->name('properties.index');
     Route::get('/properties/create', 'create')->name('properties.create');
     Route::post('/properties', 'store')->name('properties.store');
     Route::get('/properties/{property}/edit', 'edit')->name('properties.edit');
     Route::put('/properties/{property}', 'update')->name('properties.update');
+
     Route::post('/properties/{property}/delete', 'destroy')->name('properties.destroy');
 });
+Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
 Route::controller(PropertyController::class)->group(function () {
    Route::get('/listed-properties', 'listedProperties')->name('properties.listed');

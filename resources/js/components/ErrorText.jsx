@@ -1,4 +1,4 @@
-const ErrorText = ({ field }) => {
+const ErrorText = ({ field, errors }) => {
     const err = errors?.[field];
     if (!err) return null;
     // errors sometimes come as array
