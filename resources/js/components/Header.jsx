@@ -1,8 +1,15 @@
 import backgroundImage from '../media/background.jpeg';
 import React, { useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
+import Breadcrumb from '../components/Breadcrumb.jsx';
 
-const Header = () => {
+
+const Header = ({breadcrumbItems}) => {
+    const defaultBreadcrumb = [
+        { label: 'Home', href: '/' }
+    ];
+
+    const items = breadcrumbItems || defaultBreadcrumb;
     const { auth } = usePage().props;
     const role = auth?.user?.role || 'guest';
     const [menuOpen, setMenuOpen] = useState(false);
@@ -206,6 +213,7 @@ const Header = () => {
                     </div>
                 </div>
             )}
+            { role !== 'admin' && <Breadcrumb items={items} /> }
         </header>
     );
 };

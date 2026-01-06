@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { useEffect } from 'react';
 
 
-export default function Layout({ children }) {
+export default function Layout({ children, breadcrumbItems }) {
     const { flash } = usePage().props;
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export default function Layout({ children }) {
     }, [flash]);
     return (
         <div className="pt-20 grid">
-            <Header />
+            <Header breadcrumbItems={breadcrumbItems} />
             <Toaster
                 position="top-right"
                 toastOptions={{

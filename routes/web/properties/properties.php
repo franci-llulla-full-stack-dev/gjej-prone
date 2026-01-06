@@ -1,19 +1,32 @@
 <?php
 
-use App\Http\Controllers\Property\{
-    PropertyController,
-    AdminPropertyController
-};
+use App\Http\Controllers\Property\{PropertyController,
+    AdminPropertyController,
+    PropertyDocumentController,
+    PropertyMediaController};
 use Illuminate\Support\Facades\Route;
+
 Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])->controller(PropertyController::class)->group(function () {
     Route::get('/properties', 'index')->name('properties.index');
     Route::get('/properties/create', 'create')->name('properties.create');
     Route::post('/properties', 'store')->name('properties.store');
     Route::get('/properties/{property}/edit', 'edit')->name('properties.edit');
     Route::put('/properties/{property}', 'update')->name('properties.update');
-
     Route::post('/properties/{property}/delete', 'destroy')->name('properties.destroy');
 });
+
+Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])->controller(PropertyMediaController::class)->group(function () {
+    Route::post('/property/{property}/images','store');
+    Route::delete('/property/{property}/images/{propertyMedia}', 'destroy');
+});
+
+Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])->controller(PropertyDocumentController::class)->group(function () {
+    Route::post('/property/{property}/document/hipoteke','storeHipoteke');
+    Route::delete('/property/{property}/document/hipoteke/{propertyDocument}','destroyHipoteke');
+    Route::post('/property/{property}/document/plan', 'storePlan');
+    Route::delete('/property/{property}/document/plan/{propertyDocument}', 'destroyPlan');
+});
+
 Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
 Route::controller(PropertyController::class)->group(function () {

@@ -1,11 +1,12 @@
-import Header from '../components/Header.jsx';
-import Footer from '../components/Footer.jsx';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
+import axios from 'axios';
 import Select from 'react-select';
 import React, { useState, useEffect } from 'react';
 import locations from '../../data/locations.json';
 import MapPicker from '../components/MapPicker.jsx';
 import toast from "react-hot-toast";
+import ErrorText from '../components/ErrorText.jsx';
+import Swal from 'sweetalert2';
 
 const inputBase =
     "w-full mt-1 px-4 py-1.5 border border-gray-300 bg-white text-gray-700 " +
@@ -15,34 +16,61 @@ const inputBase =
 const labelBase = "block text-sm font-medium text-gray-700 mb-1";
 const errorBase = "text-sm text-red-500 mt-1";
 
-export default function EditProperty({property}) {
-    const { data, setData, post, processing, errors } = useForm({
+export default function EditProperty({property, propertyImages, floorPlan, hipotekeFile}) {
+    console.log(hipotekeFile);
+    const { data, setData, put, processing, errors } = useForm({
         type_of_sale: property.type_of_sale,
         property_type: property.property_type,
         property_category: property.property_category,
-        city: '',
-        street: '',
-        surface: '',
-        price: '',
-        currency: '',
-        description: '',
-        total_rooms: '',
-        total_bathrooms: '',
-        total_balconies: '',
-        floor_number: '',
-        total_floors: '',
-        year_built: '',
-        latitude: '',
-        longitude: '',
-        images: [],
-        virtual_tour: false,
-        rivlersim: false,
-        combo_package: false,
+        city: property.city,
+        street: property.street,
+        surface: property.surface,
+        price: property.price,
+        ashensor: property.ashensor,
+        hipoteke: property.hipoteke,
+        floor_plan: floorPlan,
+        currency: property.currency,
+        description: property.description,
+        total_rooms: property.total_rooms,
+        total_bathrooms: property.total_bathrooms,
+        total_balconies: property.total_balconies,
+        floor_number: property.floor_number,
+        total_floors: property.total_floors,
+        year_built: property.year_built,
+        latitude: property.latitude,
+        longitude: property.longitude,
+        virtual_tour_link: property.virtual_tour_link,
+        images: propertyImages,
+        virtual_tour: property.virtual_tour,
+        rivlersim: property.rivlersim,
+        combo_package: property.combo_package,
+        hipoteke_file: hipotekeFile,
     });
-    console.log(errors);
-    const [coords,setCoords ] = useState({lat:null,lng:null});
-    const [selectedBashki, setSelectedBashki] = useState(null);
-    const [images, setImages] = useState([]);
+    const [coords,setCoords ] = useState({lat:property.latitude,lng:property.longitude});
+
+    const [images, setImages] = useState(() =>
+        propertyImages.map(img => ({
+            id: img.id,
+            url: `/storage/${img.path}`,
+            isNew: false,
+        }))
+    );
+    const [hipotekaFile, setHipotekaFile] = useState(() =>
+        hipotekeFile.map(hipo => ({
+            id: hipo.id,
+            file_name: hipo.file_name,
+            url: `/storage/${hipo.path}`,
+            isNew: false,
+        }))
+    );
+    const [planFile, setplanFile] = useState(() =>
+        floorPlan.map(pl => ({
+            id: pl.id,
+            file_name: pl.file_name,
+            url: `/storage/${pl.path}`,
+            isNew: false,
+        }))
+    );
     const MAX_FILES = 10;
     const MAX_SIZE_MB = 5;
     const saleOptions = [
@@ -56,32 +84,250 @@ export default function EditProperty({property}) {
 
         arr.forEach(file => {
             if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-                return toast.error(
-                    `Foto "${file.name}" eshte me e madhe se ${MAX_SIZE_MB}MB`
-                );
+                toast.error(`Foto "${file.name}" eshte me e madhe se ${MAX_SIZE_MB}MB`);
+                return;
             }
 
             newImages.push({
                 file,
-                preview: URL.createObjectURL(file)
+                url: URL.createObjectURL(file),
+                isNew: true,
             });
         });
 
         const combined = [...images, ...newImages];
 
         if (combined.length > MAX_FILES) {
-            return toast.error(`Maksimumi lejohet ${MAX_FILES} foto`);
+            toast.error(`Maksimumi lejohet ${MAX_FILES} foto`);
+            return;
         }
 
+        // Optimistic preview
         setImages(combined);
-        setData("images", combined.map(item => item.file));
-        toast.success("Foto u ngarkuan!");
+
+        // Prepare FormData
+        const formData = new FormData();
+        newImages.forEach(img => formData.append('images[]', img.file));
+
+        axios.post(`/property/${property.id}/images`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+            .then(res => {
+                // replace preview images with real ones from backend
+                const uploaded = res.data.uploadedImages.map(img => ({ ...img, isNew: false }));
+                setImages(prev => {
+                    const existing = prev.filter(img => !img.isNew);
+                    return [...existing, ...uploaded];
+                });
+                toast.success(res.data.message || 'Foto u ngarkuan me sukses');
+            })
+            .catch(err => {
+                toast.error('Ngarkimi i fotos deshtoi');
+                console.error(err);
+                // remove failed previews
+                setImages(prev => prev.filter(img => !img.isNew));
+            });
     }
+
     function removeImage(index) {
-        const updated = images.filter((_, i) => i !== index);
-        setImages(updated);
-        setData("images", updated.map(item => item.file));
+        const img = images[index];
+
+        Swal.fire({
+            title: 'A jeni i sigurt?',
+            text: 'Kjo foto do te fshihet pergjithmone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Po, fshije',
+            cancelButtonText: 'Anullo',
+            reverseButtons: true,
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            // 🆕 NEW IMAGE → frontend only
+            if (img.isNew) {
+                const updated = images.filter((_, i) => i !== index);
+                setImages(updated);
+
+                setData(
+                    "images",
+                    updated.filter(i => i.isNew).map(i => i.file)
+                );
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Foto u hoq',
+                    timer: 1200,
+                    showConfirmButton: false,
+                });
+
+                return;
+            }
+
+            // 🗂 EXISTING IMAGE → backend delete
+            router.delete(`/property/${property.id}/images/${img.id}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setImages(prev => prev.filter((_, i) => i !== index));
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Foto u fshi',
+                        timer: 1200,
+                        showConfirmButton: false,
+                    });
+                },
+                onError: () => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gabim',
+                        text: 'Ndodhi nje problem gjate fshirjes.',
+                    });
+                },
+            });
+        });
     }
+
+    function handleHipotek(file) {
+        if (!file) return;
+
+        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+            toast.error(`Dokumenti "${file.name}" eshte me i madhe se ${MAX_SIZE_MB}MB`);
+            return;
+        }
+
+        const newFile = {
+            file,
+            file_name: file.name,
+            url: URL.createObjectURL(file),
+            isNew: true,
+        };
+
+        // Replace existing
+        setHipotekaFile([newFile]);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        axios.post(`/property/${property.id}/document/hipoteke`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+            .then(res => {
+                const uploaded = { ...res.data.document, isNew: false };
+                setHipotekaFile([uploaded]);
+                toast.success(res.data.message || 'Dokumenti u ngarkua me sukses');
+            })
+            .catch(err => {
+                toast.error('Ngarkimi i dokumentit deshtoi');
+                console.error(err);
+                setHipotekaFile([]);
+            });
+    }
+
+    function removeHipotek() {
+        if (!hipotekaFile[0]) return;
+
+        const img = hipotekaFile[0];
+
+        Swal.fire({
+            title: 'A jeni i sigurt?',
+            text: 'Ky dokument do te fshihet pergjithmone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Po, fshije',
+            cancelButtonText: 'Anullo',
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            if (img.isNew) {
+                setHipotekaFile([]);
+                Swal.fire({ icon: 'success', title: 'Dokumenti u hoq', timer: 1200, showConfirmButton: false });
+                return;
+            }
+
+            router.delete(`/property/${property.id}/document/hipoteke/${img.id}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setHipotekaFile([]);
+                    Swal.fire({ icon: 'success', title: 'Dokumenti u hoq', timer: 1200, showConfirmButton: false });
+                },
+                onError: () => Swal.fire({ icon: 'error', title: 'Gabim', text: 'Ndodhi nje problem gjate fshirjes.' })
+            });
+        });
+    }
+
+    function handlePlan(file) {
+        if (!file) return;
+
+        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+            toast.error(`Dokumenti "${file.name}" eshte me i madhe se ${MAX_SIZE_MB}MB`);
+            return;
+        }
+
+        const newFile = {
+            file,
+            file_name: file.name,
+            url: URL.createObjectURL(file),
+            isNew: true,
+        };
+
+        setplanFile([newFile]);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        axios.post(`/property/${property.id}/document/plan`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+            .then(res => {
+                const uploaded = { ...res.data.document, isNew: false };
+                setplanFile([uploaded]);
+                toast.success(res.data.message || 'Plani u ngarkua me sukses');
+            })
+            .catch(err => {
+                toast.error('Ngarkimi i planit deshtoi');
+                console.error(err);
+                setplanFile([]);
+            });
+    }
+
+    function removePlan() {
+        if (!planFile[0]) return;
+
+        const img = planFile[0];
+
+        Swal.fire({
+            title: 'A jeni i sigurt?',
+            text: 'Ky dokument do te fshihet pergjithmone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Po, fshije',
+            cancelButtonText: 'Anullo',
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            if (img.isNew) {
+                setplanFile([]);
+                Swal.fire({ icon: 'success', title: 'Dokumenti u hoq', timer: 1200, showConfirmButton: false });
+                return;
+            }
+
+            router.delete(`/property/${property.id}/document/plan/${img.id}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setplanFile([]);
+                    Swal.fire({ icon: 'success', title: 'Dokumenti u hoq', timer: 1200, showConfirmButton: false });
+                },
+                onError: () => Swal.fire({ icon: 'error', title: 'Gabim', text: 'Ndodhi nje problem gjate fshirjes.' })
+            });
+        });
+    }
+
     const typeOfProperties = [
         { value: 'residential', label: 'Rezidenciale' },
         { value: 'commercial', label: 'Komerciale' },
@@ -152,22 +398,18 @@ export default function EditProperty({property}) {
                         {...(isYearBuilt ? { min: 1900, max: 2050 } : {})}
                         className={inputBase}
                     />
+                    <ErrorText field={field.value} errors={errors}/>
                 </div>
             );
         });
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (images.length < 5) {
-            alert("Ju lutem ngarkoni të paktën 5 foto.");
-            return;
-        }
-        post('/properties');
+        put(`/properties/${property.id}`);
     };
 
     return (
         <div className="pt-20 bg-gray-50 min-h-screen">
-            <Header />
 
             <main className="max-w-4xl mx-auto px-4 pb-20">
                 <h1 className="text-3xl font-bold mb-5 pt-4 text-gray-800 opacity-0 animate-fade-in-up">
@@ -178,7 +420,7 @@ export default function EditProperty({property}) {
                     onSubmit={handleSubmit}
                     className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 opacity-0 animate-fade-in"
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-3 border-b">
                         <div>
                             <label className={labelBase}>Lloji i Transaksionit *</label>
                             <Select
@@ -210,6 +452,8 @@ export default function EditProperty({property}) {
                                     }),
                                 }}
                             />
+                            <ErrorText field="type_of_sale" errors={errors} />
+
                         </div>
                         <div>
                             <label className={labelBase}>Lloji i Pronës *</label>
@@ -222,7 +466,7 @@ export default function EditProperty({property}) {
                                 }}
                                 options={typeOfProperties}
                                 placeholder="Zgjidh llojin"
-                                classNamePrefix="react-select"
+                                classNamePrefix="react-select z-50"
                                 styles={{
                                     control: (provided) => ({
                                         ...provided,
@@ -243,6 +487,8 @@ export default function EditProperty({property}) {
                                     }),
                                 }}
                             />
+                            <ErrorText field="property_type" errors={errors} />
+
                         </div>
                         <div>
                             <label className={labelBase}>Kategoria e Pronës *</label>
@@ -257,7 +503,7 @@ export default function EditProperty({property}) {
                                 options={data.property_type ? subTypeProperties[data.property_type] : []}
                                 isDisabled={!data.property_type}
                                 placeholder="Zgjidh kategorinë"
-                                classNamePrefix="react-select"
+                                classNamePrefix="react-select z-50"
                                 styles={{
                                     control: (provided) => ({
                                         ...provided,
@@ -278,21 +524,28 @@ export default function EditProperty({property}) {
                                     }),
                                 }}
                             />
+                            <ErrorText field="property_category" errors={errors} />
+
                         </div>
                         <div >
                             <label className={labelBase}>Qyteti *</label>
                             <Select
-                                value={selectedBashki}
+                                value={
+                                    locations.cities.find(
+                                        city => city.label === data.city
+                                    ) || null
+                                }
                                 onChange={(selected) => {
-                                    setSelectedBashki(selected);
                                     setData('city', selected ? selected.label : '');
                                 }}
                                 menuPortalTarget={document.body}
                                 options={locations.cities}
                                 placeholder="Zgjidh Bashkinë"
-                                classNamePrefix="react-select"
+                                classNamePrefix="react-select z-50"
                                 isDisabled={!locations.cities.length}
                             />
+                            <ErrorText field="city" errors={errors} />
+
                         </div>
 
                         <div className="mt-4">
@@ -301,22 +554,25 @@ export default function EditProperty({property}) {
                             <MapPicker
                                 lat={coords.lat}
                                 lng={coords.lng}
+                                className="relative z-0"
+                                style={{ zIndex: 0 }}
                                 onSelect={(location) => {
-                                    setCoords({ lat: location.lat, lng: location.lng });
+                                    const lat = Number(location.lat);
+                                    const lng = Number(location.lng);
 
-                                    setData("latitude", location.lat);
-                                    setData("longitude", location.lng);
+                                    setCoords({ lat, lng });
 
+                                    setData("latitude", lat);
+                                    setData("longitude", lng);
                                     setData("street", location.road);
                                 }}
                             />
-
                             {errors.latitude && <p className={errorBase}>{errors.latitude}</p>}
+
                         </div>
                         <div>
                             <label className={labelBase}>Sipërfaqja *</label>
                             <input className={inputBase}
-                                   required
                                    name="surface"
                                    type="number"
                                    value={data.surface}
@@ -324,12 +580,12 @@ export default function EditProperty({property}) {
                                    placeholder="Sipërfaqja në m²"
                                    autoComplete="off"
                             />
+                            <ErrorText field="surface" errors={errors} />
                         </div>
                         <div>
                             <label className={labelBase}>Çmimi *</label>
                             <div className="flex items-center">
                                 <input className={inputBase}
-                                       required
                                        type="number"
                                        value={data.price}
                                        onChange={(e) => setData('price', e.target.value)}
@@ -369,8 +625,9 @@ export default function EditProperty({property}) {
                                         }),
                                     }}
                                 />
-                            </div>
 
+                            </div>
+                            <ErrorText field="price" errors={errors} />
                         </div>
                         {renderDynamicFields(data.property_category, data, setData)}
 
@@ -384,18 +641,18 @@ export default function EditProperty({property}) {
                                 onChange={(e) => handleImages(e.target.files)}
                             />
 
-                            {images.length < 5 && (
+                            {images.length < 2 && (
                                 <p className="text-red-500 text-sm mt-1">
-                                    Duhet te ngarkoni te pakten 5 foto.
+                                    Duhet te ngarkoni te pakten 2 foto.
                                 </p>
                             )}
-
+                            <ErrorText field="images" errors={errors} />
                             {/* Image Preview Grid */}
                             <div className="grid grid-cols-3 gap-3 mt-4">
                                 {images.map((img, index) => (
                                     <div key={index} className="relative group">
                                         <img
-                                            src={img.preview}
+                                            src={img.url}
                                             className="w-full h-24 object-cover rounded-lg border"
                                         />
 
@@ -413,6 +670,70 @@ export default function EditProperty({property}) {
                             </div>
                         </div>
                     </div>
+                    <div className="my-5 pb-2 border-b">
+                        <label className={labelBase}>
+                            Plani i Katit (opsional)
+                        </label>
+
+                        <input
+                            type="file"
+                            accept=".pdf,image/*"
+                            onChange={(e) => handlePlan(e.target.files[0])}
+                            className="mt-1"
+                        />
+
+                        <p className="text-xs text-gray-500 mt-1">
+                            Lejohet PDF ose foto (max 5MB)
+                        </p>
+
+                        <ErrorText field="floor_plan" errors={errors} />
+                        <div className="grid grid-cols-3 gap-3 mt-4">
+                            {planFile[0] && (
+                                <div className="relative mt-2">
+                                    <h1>{planFile[0].file_name}</h1>
+                                    <button
+                                        type="button"
+                                        onClick={removePlan}
+                                        className="absolute top-0 right-0 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="my-5 pb-2 border-b">
+                        <label className={labelBase}>
+                            Hipoteke (opsional)
+                        </label>
+
+                        <input
+                            type="file"
+                            accept=".pdf,image/*"
+                            onChange={(e) => handleHipotek(e.target.files[0])}
+                            className="mt-1"
+                        />
+
+                        <p className="text-xs text-gray-500 mt-1">
+                            Lejohet max 5MB
+                        </p>
+
+                        <ErrorText field="hipoteke_file" errors={errors} />
+                        <div className="grid grid-cols-3 gap-3 mt-4">
+                            {hipotekaFile[0] && (
+                                <div className="relative mt-2">
+                                    <h1>{hipotekaFile[0].file_name}</h1>
+                                    <button
+                                        type="button"
+                                        onClick={removeHipotek}
+                                        className="absolute top-0 right-0 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
                     <div className="mt-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
                         <label className={labelBase}>Përshkrimi</label>
@@ -423,6 +744,33 @@ export default function EditProperty({property}) {
                             placeholder="Shkruani detaje të pronës..."
                         />
                         {errors.description && <p className={errorBase}>{errors.description}</p>}
+                    </div>
+                    <div className="mt-6 bg-gray-50 p-4 rounded-xl border">
+                        <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                            Detaje Teknike
+                        </h3>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.ashensor}
+                                onChange={(e) => setData('ashensor', e.target.checked)}
+                            />
+                            <span className="text-gray-700">
+                                Ka ashensor
+                            </span>
+                        </label>
+
+                        <label className="flex items-center gap-3">
+                            <input
+                                type="checkbox"
+                                checked={data.hipoteke}
+                                onChange={(e) => setData('hipoteke', e.target.checked)}
+                            />
+                            <span className="text-gray-700">
+                                Ka hipoteke
+                            </span>
+                        </label>
                     </div>
                     <div className="mt-8 bg-gray-50 p-4 rounded-xl border">
                         <h3 className="text-lg font-semibold mb-3 text-gray-800">
@@ -487,7 +835,6 @@ export default function EditProperty({property}) {
                     </button>
                 </form>
             </main>
-            <Footer />
         </div>
     );
 }

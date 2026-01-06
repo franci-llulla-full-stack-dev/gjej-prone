@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Property\CreatePropertyRequest;
 use App\Http\Requests\Property\UpdatePropertyRequest;
 use App\Models\Property;
+use App\Models\PropertyMedia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PropertyController extends Controller
@@ -93,6 +95,8 @@ class PropertyController extends Controller
         return Inertia::render('EditProperty', [
             'property' => $property,
             'propertyImages' => $property->images,
+            'floorPlan' => $property->documents()->where('file_type', 'floor_plan')->get(),
+            'hipotekeFile' => $property->documents()->where('file_type', 'hipoteka')->get(),
         ]);
     }
 
@@ -117,6 +121,7 @@ class PropertyController extends Controller
         return redirect()->route('properties.index')
             ->with(['success' => 'Property deleted successfully.']);
     }
+
 
     public function verify(Property $property)
     {
