@@ -10,8 +10,8 @@ import {
     Tag,
 } from "lucide-react";
 
-const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms, total_balconies,
-                          total_floors, floor_number, year_built, description, price, currency, type_of_sale, property_type,
+const PropertyItem = ({ id, city, street, surface, surface_2, total_rooms, total_rooms_2, total_bathrooms, total_bathrooms_2, total_balconies, total_balconies_2,
+                          total_floors, floor_number, year_built, description, price, price_2, currency, type_of_sale, property_type,
                           canEdit = false, canDelete = false, onEdit = null, onDelete = null,
                       }) => {
     return (
@@ -21,11 +21,17 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
             <div className=" grid grid-cols-1 p-5 space-y-3">
 
                 {/* TITLE */}
-                <div className="flex items-center gap-2">
-                    <Tag size={16} className="text-gray-500"/>
-                    <span className="text-sm uppercase text-gray-600">
+                <div className="flex justify-between items-center gap-2">
+                    <div>
+                        <Tag size={16} className="text-gray-500"/>
+                        <span className="text-sm uppercase text-gray-600">
                         {type_of_sale === "sale" ? "Në Shitje" : "Me Qira"}
                     </span>
+                    </div>
+                    <span
+                        className="bg-black/70 backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg">
+                    {price.toLocaleString()}-{price_2.toLocaleString()} {currency}
+                </span>
                 </div>
 
                 {/* LOCATION */}
@@ -42,30 +48,28 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                 <div className="flex flex-wrap gap-4 text-gray-600 text-sm mt-2">
 
                     <span className="flex items-center gap-1">
-                        <Bed size={16}/> {total_rooms} dhoma
+                        <Bed size={16}/> {total_rooms}-{total_rooms_2} dhoma
                     </span>
 
                     <span className="flex items-center gap-1">
-                        <Bath size={16}/> {total_bathrooms} banjo
+                        <Bath size={16}/> {total_bathrooms}-{total_bathrooms_2} banjo
                     </span>
 
                     {total_balconies > 0 && (
                         <span className="flex items-center gap-1">
-                            <Home size={16}/> {total_balconies} ballkone
+                            <Home size={16}/> {total_balconies}-{total_balconies_2} ballkone
                         </span>
                     )}
 
                     <span className="flex items-center gap-1">
-                        <Maximize2 size={16}/> {surface} m²
+                        <Maximize2 size={16}/> {surface}-{surface_2} m²
                     </span>
 
                     <span className="flex items-center gap-1">
-                        <Layers size={16}/> Kati {floor_number}/{total_floors}
+                        <Layers size={16}/> Kati {floor_number}
                     </span>
 
-                    <span className="flex items-center gap-1">
-                        <Building2 size={16}/> Ndërtuar: {year_built}
-                    </span>
+
                 </div>
 
                 {/* DESCRIPTION */}
@@ -96,7 +100,7 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                 {/* VIEW BUTTON */}
                 <div className="pt-2">
                     <Link
-                        href={`/properties/${id}`}
+                        href={`/property/request/${id}`}
                         className="block w-full text-center bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
                     >
                         Shiko detajet

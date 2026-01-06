@@ -1,10 +1,13 @@
 import { useForm } from '@inertiajs/react';
+import { Range } from 'react-range';
 import Select from 'react-select';
 import React, { useState, useEffect } from 'react';
 import locations from '../../../data/locations.json';
-import MapPicker from '../../components/MapPicker.jsx';
+import MapPickerRange from '../../components/MapPickerRange.jsx';
 import toast from "react-hot-toast";
 import ErrorText from '../../components/ErrorText.jsx';
+import SurfaceRange from '../../components/SurfaceRange.jsx';
+import PriceRange from '../../components/PriceRange.jsx';
 
 const inputBase =
     "w-full mt-1 px-4 py-1.5 border border-gray-300 bg-white text-gray-700 " +
@@ -21,25 +24,33 @@ export default function PropertyRequest() {
         property_category: '',
         city: '',
         street: '',
+        latitude: '',
+        longitude: '',
+        zone_radious: '',
         surface: '',
+        surface_2: '',
         price: '',
-        ashensor: false,
-        hipoteke: false,
-        floor_plan: [],
+        price_2: '',
         currency: 'EUR',
         description: '',
         total_rooms: '',
+        total_rooms_2: '',
         total_bathrooms: '',
+        total_bathrooms_2: '',
         total_balconies: '',
+        total_balconies_2: '',
         floor_number: '',
         total_floors: '',
         year_built: '',
-        latitude: '',
-        longitude: '',
-        virtual_tour: false,
-        rivlersim: false,
-        combo_package: false,
+        ashensor: false,
+        hipoteke: false,
+        interior_design: false,
+        architect: false,
     });
+    const [zoneRadius, setZoneRadius] = useState(500);
+    const STEP = 1;
+    const MIN = 0;
+    const MAX = 5;
     const [coords,setCoords ] = useState({lat:null,lng:null});
     const [selectedBashki, setSelectedBashki] = useState(null);
     const saleOptions = [
@@ -76,19 +87,17 @@ export default function PropertyRequest() {
 
     const dynamicFieldsMap = {
         apartment: [
-            { value: 'total_rooms', type: 'number', label: 'Numri i dhomave', placeholder: 'p.sh. 3' },
-            { value: 'total_bathrooms', type: 'number', label: 'Numri i Banjove', placeholder: 'p.sh. 1' },
-            { value: 'total_balconies', type: 'number', label: 'Numri i Ballkoneve', placeholder: 'p.sh. 2' },
+            { value: ['total_rooms', 'total_rooms_2'], data: [data.total_rooms || MIN, data.total_rooms_2 || MAX], type: 'range', label: 'Numri i dhomave', placeholder: 'p.sh. 3' },
+            { value: ['total_bathrooms', 'total_bathrooms_2'], data: [data.total_bathrooms || MIN, data.total_bathrooms_2 || MAX], type: 'range', label: 'Numri i Banjove', placeholder: 'p.sh. 1' },
+            { value: ['total_balconies', 'total_balconies_2'], data: [data.total_balconies || MIN, data.total_balconies_2 || MAX], type: 'range', label: 'Numri i Ballkoneve', placeholder: 'p.sh. 2' },
             { value: 'floor_number', type: 'number', label: 'Kati', placeholder: 'p.sh. 5' },
-            { value: 'year_built', type: 'number', label: 'Viti i Ndërtimit', placeholder: 'p.sh. 2008' },
         ],
 
         house: [
-            { value: 'total_rooms', type: 'number', label: 'Numri i dhomave', placeholder: 'p.sh. 5' },
-            { value: 'total_bathrooms', type: 'number', label: 'Numri i Banjove', placeholder: 'p.sh. 2' },
+            { value: ['total_rooms', 'total_rooms_2'], data: [data.total_rooms || MIN, data.total_rooms_2 || MAX], type: 'range', label: 'Numri i dhomave', placeholder: 'p.sh. 5' },
+            { value: ['total_bathrooms', 'total_bathrooms_2'], data: [data.total_bathrooms || MIN, data.total_bathrooms_2 || MAX], type: 'range', label: 'Numri i Banjove', placeholder: 'p.sh. 2' },
             { value: 'total_floors', type: 'number', label: 'Numri i Kateve të Ndërtimit', placeholder: 'p.sh. 3' },
-            { value: 'year_built', type: 'number', label: 'Viti i Ndërtimit', placeholder: 'p.sh. 1995' },
-            { value: 'total_balconies', type: 'number', label: 'Numri i Ballkoneve', placeholder: 'p.sh. 1' },
+            { value: ['total_balconies', 'total_balconies_2'], data: [data.total_balconies || MIN, data.total_balconies_2 || MAX], type: 'range', label: 'Numri i Ballkoneve', placeholder: 'p.sh. 1' },
         ],
 
         office: [
@@ -103,28 +112,76 @@ export default function PropertyRequest() {
 
         return dynamicFieldsMap[selectedSubtype].map((field) => {
             const isYearBuilt = field.value === "year_built";
+
             return (
                 <div key={field.value}>
                     <label className={labelBase}>
                         {field.label}
                     </label>
+                    {field.type === 'range' &&
+                        <div className="mb-2">
+                            <Range
+                                step={STEP}
+                                min={MIN}
+                                max={MAX}
+                                values={field.data}
+                                onChange={(newValues) => {
+                                    setData(field.value[0], newValues[0]);
+                                    setData(field.value[1], newValues[1]);
+                                }}
+                                renderTrack={({ props, children }) => (
+                                    <div
+                                        {...props}
+                                        className="h-2 w-full bg-gray-300 rounded relative"
+                                        style={{ ...props.style }}
+                                    >
+                                        <div
+                                            className="absolute h-2 bg-blue-500 rounded"
+                                            style={{
+                                                left: `${((field.data[0] - MIN) / (MAX - MIN)) * 100}%`,
+                                                width: `${((field.data[1] - field.data[0]) / (MAX - MIN)) * 100}%`,
+                                            }}
+                                        />
+                                        {children}
+                                    </div>
+                                )}
+                                renderThumb={({ props }) => (
+                                    <div
+                                        {...props}
+                                        className="h-5 w-5 bg-blue-600 rounded-full border-2 border-white shadow-md"
+                                    />
+                                )}
+                            />
 
-                    <input
+                            <div className="flex justify-between text-sm mt-1">
+                                <span>{field.data[0].toLocaleString()} </span>
+                                <span>{field.data[1].toLocaleString()} </span>
+                            </div>
+
+                            {errors.total_rooms && <p className="text-sm text-red-500 mt-1">{errors.total_rooms}</p>}
+                            {errors.total_rooms_2 && <p className="text-sm text-red-500 mt-1">{errors.total_rooms_2}</p>}
+                        </div>
+                    }
+                    {field.type !== 'range' &&
+                        <>
+                        <input
                         type={field.type}
                         value={data[field.value] || ""}
                         placeholder={field.placeholder || ""}
                         onChange={(e) => setData(field.value, e.target.value)}
                         {...(isYearBuilt ? { min: 1900, max: 2050 } : {})}
                         className={inputBase}
-                    />
-                    <ErrorText field={field.value} errors={errors}/>
+                        />
+                        <ErrorText field={field.value} errors={errors}/>
+                        </>
+                    }
                 </div>
             );
         });
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/properties');
+        post('/property/request');
     };
 
     return (
@@ -264,49 +321,16 @@ export default function PropertyRequest() {
 
                         </div>
 
-                        <div className="mt-4">
-                            <label className={labelBase}>Vendndodhja në hartë *</label>
-
-                            <MapPicker
-                                lat={coords.lat}
-                                lng={coords.lng}
-                                className="relative z-0"
-                                style={{zIndex: 0}}
-                                onSelect={(location) => {
-                                    setCoords({ lat: location.lat, lng: location.lng });
-
-                                    setData("latitude", location.lat);
-                                    setData("longitude", location.lng);
-
-                                    setData("street", location.road);
-                                }}
-                            />
-
-                            {errors.latitude && <p className={errorBase}>{errors.latitude}</p>}
-
-                        </div>
                         <div>
                             <label className={labelBase}>Sipërfaqja *</label>
-                            <input className={inputBase}
-                                   name="surface"
-                                   type="number"
-                                   value={data.surface}
-                                   onChange={(e) => setData('surface', e.target.value)}
-                                   placeholder="Sipërfaqja në m²"
-                                   autoComplete="off"
-                            />
+                            <SurfaceRange data={data} setData={setData} errors={errors} />
+
                             <ErrorText field="surface" errors={errors} />
                         </div>
                         <div>
                             <label className={labelBase}>Çmimi *</label>
-                            <div className="flex items-center">
-                                <input className={inputBase}
-                                       type="number"
-                                       value={data.price}
-                                       onChange={(e) => setData('price', e.target.value)}
-                                       placeholder="Çmimi"
-                                       autoComplete="off"
-                                />
+                            <div className="grid grid-cols-1 gap-4items-center">
+                                <PriceRange data={data} setData={setData} errors={errors} />
                                 <Select
                                     name="currency"
                                     className="mt-1 min-w-24"
@@ -344,7 +368,46 @@ export default function PropertyRequest() {
                             </div>
                             <ErrorText field="price" errors={errors} />
                         </div>
+
                         {renderDynamicFields(data.property_category, data, setData)}
+                        <div className="mt-4">
+                            <label className={labelBase}>Vendndodhja në hartë *</label>
+
+                            <MapPickerRange
+                                lat={coords.lat}
+                                lng={coords.lng}
+                                zoneRadius={zoneRadius}
+                                className="relative z-0"
+                                style={{zIndex: 0}}
+                                onSelect={(location) => {
+                                    setCoords({ lat: location.lat, lng: location.lng });
+
+                                    setData("latitude", location.lat);
+                                    setData("longitude", location.lng);
+
+                                    setData("street", location.road);
+                                }}
+                            />
+
+                            {errors.latitude && <p className={errorBase}>{errors.latitude}</p>}
+                            <div className="mt-2">
+                                <label className={labelBase}>Zgjedh rrezen (m)</label>
+                                <input
+                                    type="range"
+                                    min={100}
+                                    max={5000}
+                                    step={50}
+                                    value={zoneRadius}
+                                    onChange={(e) => {
+                                        setZoneRadius(e.target.value);
+                                        setData('zone_radious', e.target.value);
+                                    }}
+                                    className="w-full"
+                                />
+                                <p className="text-sm text-gray-500">Rreze: {zoneRadius}m</p>
+                            </div>
+                        </div>
+
 
                     </div>
 
@@ -394,14 +457,13 @@ export default function PropertyRequest() {
                         <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
-                                checked={data.virtual_tour}
+                                checked={data.interior_design}
                                 onChange={(e) => {
-                                    setData('virtual_tour', e.target.checked);
-                                    if (e.target.checked) setData('combo_package', false);
+                                    setData('interior_design', e.target.checked);
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj Virtual Tour – <strong>150€</strong> (Rankim Gold)
+                                Me nevojitet Interior Design
                             </span>
                         </label>
 
@@ -409,32 +471,13 @@ export default function PropertyRequest() {
                         <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
-                                checked={data.rivlersim}
+                                checked={data.architect}
                                 onChange={(e) => {
-                                    setData('rivlersim', e.target.checked);
-                                    if (e.target.checked) setData('combo_package', false);
+                                    setData('', e.target.checked);
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj Rivlersim – <strong>150€</strong> (Rankim Silver)
-                            </span>
-                        </label>
-
-                        {/* 3. Combo – të dyja bashkë */}
-                        <label className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                checked={data.combo_package}
-                                onChange={(e) => {
-                                    setData('combo_package', e.target.checked);
-                                    if (e.target.checked) {
-                                        setData('virtual_tour', false);
-                                        setData('rivlersim', false);
-                                    }
-                                }}
-                            />
-                            <span className="text-gray-700">
-                                Dëshiroj të dyja bashkë – <strong>250€</strong> (Rankim Platinum)
+                                Me nevojitet Arkitekt
                             </span>
                         </label>
                     </div>

@@ -28,27 +28,27 @@ class CreatePropertyRequest extends FormRequest
             'city' => ['required', 'string'],
             'street' => ['required', 'string'],
             'surface' => ['required', 'numeric'],
+            'surface_2' => ['required', 'numeric'],
             'price' => ['required', 'numeric'],
+            'price_2' => ['required', 'numeric'],
             'currency' => ['required', 'string'],
             'description' => ['nullable', 'string'],
             'total_rooms' => ['nullable', 'numeric'],
+            'total_rooms_2' => ['nullable', 'numeric'],
             'total_bathrooms' => ['nullable', 'numeric'],
+            'total_bathrooms_2' => ['nullable', 'numeric'],
             'total_balconies' => ['nullable', 'numeric'],
+            'total_balconies_2' => ['nullable', 'numeric'],
             'floor_number' => ['nullable', 'numeric'],
             'total_floors' => ['nullable', 'numeric'],
             'year_built' => ['nullable', 'numeric'],
             'latitude' => ['required', 'numeric'],
             'longitude' => ['required', 'numeric'],
-            'images' => ['required', 'array', 'min:2'],
-            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            'virtual_tour' => ['nullable'],
-            'rivleresim' => ['nullable'],
-            'combo_package' => ['nullable'],
-            'virtual_tour_link' => ['nullable', 'url'],
+            'zone_radious' => ['nullable', 'numeric'],
             'ashensor' => ['nullable', 'boolean'],
             'hipoteke' => ['nullable', 'boolean'],
-            'floor_plan' => ['nullable', 'image', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
-            'hipoteke_file' => ['nullable', 'file', 'max:5120'],
+            'interior_design' => ['nullable', 'boolean'],
+            'architect' => ['nullable', 'boolean'],
         ];
     }
 
@@ -95,19 +95,6 @@ class CreatePropertyRequest extends FormRequest
 
             'longitude.required' => 'Vendndodhja eshte e detyrueshme.',
             'longitude.numeric' => 'Longitude duhet te jete numer.',
-
-            'images.required' => 'Duhet te ngarkoni te pakten 2 foto.',
-            'images.array' => 'Fotot duhet te jene ne format liste.',
-            'images.min' => 'Duhet te ngarkoni te pakten 2 foto.',
-
-            'images.*.image' => 'Cdo file duhet te jete imazh.',
-            'images.*.mimes' => 'Fotot duhet te jene ne format jpg, jpeg, png ose webp.',
-            'images.*.max' => 'Madhesia e fotos nuk duhet te kaloje 5MB.',
-
-            'virtual_tour.string' => 'Virtual tour duhet te jete tekst ose link i vlefshem.',
-            'rivleresim.string' => 'Rivleresimi duhet te jete tekst.',
-            'combo_package.string' => 'Combo package duhet te jete tekst.',
-
         ];
     }
 

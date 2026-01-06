@@ -1,6 +1,7 @@
 import { Link, router } from '@inertiajs/react';
 import PropertyRequestItem from '../../components/PropertyRequestItem.jsx';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 
 const PropertyRequests = ({ propertyRequests }) => {
     const [filters, setFilters] = useState({
@@ -175,18 +176,43 @@ const PropertyRequests = ({ propertyRequests }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {propertyRequests.data.map(p => (
                         <PropertyRequestItem key={p.id} {...p} canEdit={true} canDelete={true}
-                                      onEdit={() => {
-                                          router.get(`/property/request/${p.id}/edit`);
-                                      }}
-                                      onDelete={() => {
-                                          if (!confirm("Are you sure you want to delete this property?")) return;
-
-                                          router.post(`/property/request/${p.id}/delete`, {
-                                              id: p.id,
-                                          }, {
-                                              preserveScroll: true,
-                                          });
-                                      }}
+                              onEdit={() => {
+                                  router.get(`/property/request/${p.id}/edit`);
+                              }}
+                              onDelete={() => {
+                                  Swal.fire({
+                                      title: 'A jeni i sigurt?',
+                                      text: 'Kjo Kerkese do te fshihet pergjithmone.',
+                                      icon: 'warning',
+                                      showCancelButton: true,
+                                      confirmButtonColor: '#dc2626',
+                                      cancelButtonColor: '#6b7280',
+                                      confirmButtonText: 'Po, fshije',
+                                      cancelButtonText: 'Anullo',
+                                      reverseButtons: true,
+                                  }).then((result) => {
+                                      if (!result.isConfirmed) return;
+                                      router.delete(`/property/request/${p.id}`, {
+                                          id: p.id,
+                                      },{
+                                          onSuccess: () => {
+                                              Swal.fire({
+                                                  icon: 'success',
+                                                  title: 'Kerkesa u fshi',
+                                                  timer: 1200,
+                                                  showConfirmButton: false,
+                                              });
+                                          },
+                                          onError: () => {
+                                              Swal.fire({
+                                                  icon: 'error',
+                                                  title: 'Gabim',
+                                                  text: 'Ndodhi nje problem gjate fshirjes.',
+                                              });
+                                          },
+                                      });
+                                  });
+                              }}
                         />
                     ))}
                 </div>

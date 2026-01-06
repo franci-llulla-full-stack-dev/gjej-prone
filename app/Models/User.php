@@ -66,7 +66,7 @@ class User extends Authenticatable
         return $this->hasMany(Property::class, 'user_id');
     }
 
-    public function properyRequests(): HasMany
+    public function propertyRequests(): HasMany
     {
         return $this->hasMany(PropertyRequest::class, 'user_id');
     }

@@ -213,7 +213,7 @@ const Header = ({breadcrumbItems}) => {
                     </div>
                 </div>
             )}
-            { role !== 'admin' && <Breadcrumb items={items} /> }
+            { role !== 'admin' && role !== 'guest' && <Breadcrumb items={items} /> }
         </header>
     );
 };
