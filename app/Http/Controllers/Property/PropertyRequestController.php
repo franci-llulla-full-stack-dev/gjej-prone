@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Property;
 
 use App\Http\Requests\Property\CreatePropertyRequestRequest;
 use App\Models\PropertyRequest;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,9 +14,13 @@ class PropertyRequestController
     public function index(Request $request)
     {
         $user = auth()->user();
-
-        $propertyRequests = PropertyRequest::where('user_id', $user->id)
-            ->latest()
+        $role = $user->role->name;
+        if($role === 'admin') {
+            $query = PropertyRequest::query();
+        }else {
+            $query = PropertyRequest::where('user_id', $user->id);
+        }
+        $propertyRequests = $query->latest()
             ->paginate(12);
 
         return Inertia::render('user/PropertyRequests', [
@@ -38,40 +44,72 @@ class PropertyRequestController
 
     public function create()
     {
-        return Inertia::render('user/PropertyRequest', []);
+        $isAdmin = auth()->user()->role->name === 'admin';
+        if($isAdmin) {
+            $users = Role::where('name', 'user')->first()->users()->select('id', 'name', 'surname')->get();
+        }else {
+            $users = [];
+        }
+        return Inertia::render('user/PropertyRequest', [
+            'isAdmin' => $isAdmin,
+            'users' => $users
+        ]);
     }
 
     public function store(CreatePropertyRequestRequest $request)
     {
         $user = auth()->user();
-        $user->propertyRequests()->create($request->validated());
+        $isAdmin = $user->role->name === 'admin';
+        if($isAdmin) {
+            $belongingRequestUser = User::find((int)$request->user_id);
+            if(!$belongingRequestUser) {
+                return redirect()->back()->withErrors(['user_id' => 'User not found.'])->withInput();
+            }
+           $belongingRequestUser->propertyRequests()->create($request->except('user_id'));
+            return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u shtua!');
+        }
+        $user->propertyRequests()->create($request->except('user_id'));
 
         return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u shtua!');
     }
 
     public function edit(PropertyRequest $propertyRequest)
     {
-        if(auth()->id() !== $propertyRequest->user_id) {
+        if(auth()->id() !== $propertyRequest->user_id && auth()->user()->role->name !== 'admin') {
             abort(403);
         }
+        if(auth()->user()->role->name === 'admin') {
+            $users = Role::where('name', 'user')->first()->users()->select('id', 'name', 'surname')->get();
+        }else {
+            $users = [];
+        }
+        $isAdmin = auth()->user()->role->name === 'admin';
         return Inertia::render('user/PropertyRequestEdit', [
             'propertyRequest' => $propertyRequest,
+            'users' => $users,
+            'isAdmin' => $isAdmin
         ]);
     }
 
     public function update(CreatePropertyRequestRequest $request, PropertyRequest $propertyRequest)
     {
-        if(auth()->id() !== $propertyRequest->user_id) {
+        if(auth()->id() !== $propertyRequest->user_id && auth()->user()->role->name !== 'admin') {
             abort(403);
         }
-        $propertyRequest->update($request->validated());
+        $user = auth()->user();
+        $isAdmin = $user->role->name === 'admin';
+        if($isAdmin) {
+            $propertyRequest->update($request->validated());
+            return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u perditesua!');
+        }
+        $propertyRequest->update($request->validated()->except('user_id'));
 
-        return redirect()->route('property.requests.index')->with('success', 'Property request updated successfully.');
+        return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u perditesua!');
     }
 
     public function destroy(PropertyRequest $propertyRequest)
     {
-        if(auth()->id() !== $propertyRequest->user_id) {
+        if(auth()->id() !== $propertyRequest->user_id && auth()->user()->role->name !== 'admin') {
             abort(403);
         }
         $propertyRequest->delete();

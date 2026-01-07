@@ -62,7 +62,7 @@ const Header = ({breadcrumbItems}) => {
                                 Pronat
                             </Link>
                             <Link
-                                href="/property/requests/all"
+                                href="/property/requests"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
                                 Kërkesat e blerësve
@@ -185,6 +185,12 @@ const Header = ({breadcrumbItems}) => {
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                                 >
                                     Pronat
+                                </Link>
+                                <Link
+                                    href="/property/requests"
+                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                                >
+                                    Kërkesat e blerësve
                                 </Link>
                                 <Link
                                     href="/admin/users"

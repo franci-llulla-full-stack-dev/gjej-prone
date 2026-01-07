@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import ErrorText from '../../components/ErrorText.jsx';
 import SurfaceRange from '../../components/SurfaceRange.jsx';
 import PriceRange from '../../components/PriceRange.jsx';
+import AsyncSelect from 'react-select/async';
 
 const inputBase =
     "w-full mt-1 px-4 py-1.5 border border-gray-300 bg-white text-gray-700 " +
@@ -17,9 +18,10 @@ const inputBase =
 const labelBase = "block text-sm font-medium text-gray-700 mb-1";
 const errorBase = "text-sm text-red-500 mt-1";
 
-export default function PropertyRequest() {
+export default function PropertyRequest({isAdmin, users}) {
     const { data, setData, post, processing, errors } = useForm({
         type_of_sale: '',
+        user_id: '',
         property_type: '',
         property_category: '',
         city: '',
@@ -183,7 +185,17 @@ export default function PropertyRequest() {
         e.preventDefault();
         post('/property/request');
     };
-
+    const loadUserOptions = (inputValue, callback) => {
+        const filteredUsers = users
+            .filter(user =>
+                `${user.name} ${user.surname}`.toLowerCase().includes(inputValue.toLowerCase())
+            )
+            .map(user => ({
+                value: user.id,
+                label: `${user.name} ${user.surname}`,
+            }));
+        callback(filteredUsers);
+    };
     return (
         <div className="pt-20 bg-gray-50 min-h-screen">
 
@@ -197,6 +209,28 @@ export default function PropertyRequest() {
                     className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 opacity-0 animate-fade-in"
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+
+                            {isAdmin && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Zgjidh Përdoruesin
+                                    </label>
+                                    <AsyncSelect
+                                        cacheOptions
+                                        loadOptions={loadUserOptions}
+                                        defaultOptions={users.map(user => ({
+                                            value: user.id,
+                                            label: `${user.name} ${user.surname}`,
+                                        }))}
+                                        onChange={(selected) => setData('user_id', selected ? selected.value : '')}
+                                        placeholder="Kërko përdoruesin..."
+                                        classNamePrefix="react-select"
+                                    />
+                                    <ErrorText field="user_id" errors={errors} />
+                                </div>
+                            )}
+                        </div>
                         <div>
                             <label className={labelBase}>Lloji i Transaksionit *</label>
                             <Select
