@@ -8,8 +8,11 @@ use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Models\Role;
 use App\Models\User;
 use App\Notifications\CustomVerifyEmail;
+use App\Notifications\ResetPasswordAl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Inertia\Inertia;
 
 class AuthController extends Controller
@@ -104,9 +107,45 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Nuk u gjet asnjë përdorues me këtë email.']);
         }
 
-        // You can use Laravel's built-in notification or your custom one
-        $user->sendPasswordResetNotification(app('auth.password.broker')->createToken($user));
+        $token = app('auth.password.broker')->createToken($user);
 
-        return back()->with('status', 'Lidhja për rivendosjen e fjalëkalimit u dërgua me sukses!');
+        $user->notify(new ResetPasswordAl($token));
+
+        return back()->with('success', 'Email për rivendosjen e fjalëkalimit u dërgua me sukses!');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        // 1️⃣ Validate inputs
+        $request->validate([
+            'token' => ['required', 'string'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'confirmed'],
+        ], [
+            'email.required' => 'Email-i është i detyrueshëm.',
+            'email.email' => 'Email-i nuk është valid.',
+            'password.required' => 'Fjalëkalimi është i detyrueshëm.',
+            'password.confirmed' => 'Fjalëkalimet nuk përputhen.',
+            'password.min' => 'Fjalëkalimi duhet të ketë së paku 8 karaktere.',
+            'token.required' => 'Tokeni është i detyrueshëm.',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                ])->save();
+            }
+        );
+
+        if ($status === Password::INVALID_TOKEN) {
+            return back()->with('error', 'Ky link i rivendosjes nuk është valid ose ka skaduar.');
+        }
+
+        if ($status === Password::INVALID_USER) {
+            return back()->withErrors(['email' => 'Ky email nuk ekziston në sistem.']);
+        }
+        return redirect()->route('login')->with('success', 'Fjalëkalimi u ndryshua me sukses. Mund të hyni tani.');
     }
 }

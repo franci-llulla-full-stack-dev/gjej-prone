@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Property;
 
-use App\Http\Requests\Property\CreatePropertyRequest;
+use App\Http\Requests\Property\CreatePropertyRequestRequest;
 use App\Models\PropertyRequest;
-use Faker\Provider\en_UG\PhoneNumber;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -23,12 +22,26 @@ class PropertyRequestController
         ]);
     }
 
+    public function showAll(Request $request)
+    {
+        $user = auth()->user();
+        if($user->role->name === 'user') {
+            abort(403);
+        }
+        $query = PropertyRequest::query();
+        $propertyRequests = $query->paginate($request->perPage ?? 12);
+
+        return Inertia::render('seller/PropertyRequests', [
+            'propertyRequests' => $propertyRequests,
+        ]);
+    }
+
     public function create()
     {
         return Inertia::render('user/PropertyRequest', []);
     }
 
-    public function store(CreatePropertyRequest $request)
+    public function store(CreatePropertyRequestRequest $request)
     {
         $user = auth()->user();
         $user->propertyRequests()->create($request->validated());
@@ -46,7 +59,7 @@ class PropertyRequestController
         ]);
     }
 
-    public function update(CreatePropertyRequest $request, PropertyRequest $propertyRequest)
+    public function update(CreatePropertyRequestRequest $request, PropertyRequest $propertyRequest)
     {
         if(auth()->id() !== $propertyRequest->user_id) {
             abort(403);
@@ -67,8 +80,19 @@ class PropertyRequestController
 
     public function show(PropertyRequest $propertyRequest)
     {
+        $user = auth()->user();
+        if($user->role->name === 'user') {
+            if($user->id !== $propertyRequest->user_id) {
+                abort(403);
+            }
+        }
+        $actualContact = '';
+        if($user->role->name === 'admin') {
+            $actualContact = $propertyRequest->user->phone_number;
+        }
         return Inertia::render('user/ViewPropertyRequest', [
-            'propertyRequest' => $propertyRequest
+            'propertyRequest' => $propertyRequest,
+            'actual_contact' => $actualContact,
         ]);
     }
 }

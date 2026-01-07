@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from '@inertiajs/react';
 const Footer = () => {
     return (
         <footer className="bg-white border-t border-gray-200 mt-auto">
@@ -59,7 +59,12 @@ const Footer = () => {
 
                 {/* Bottom */}
                 <div className="border-t border-gray-200 mt-8 pt-4 text-center text-gray-500 text-sm">
-                    © 2025 gjej-prone.com — Të gjitha të drejtat e rezervuara.
+                    <p>© 2025 gjej-prone.com — Të gjitha të drejtat e rezervuara.</p>
+                    <div className="grid grid-cols-2 gap-4">
+                        <Link href="/terms">Termat dhe Kushtet</Link>
+                        <Link href="/privacy">Politika e Privatësisë</Link>
+                    </div>
+
                 </div>
 
             </div>

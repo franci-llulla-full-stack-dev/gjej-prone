@@ -27,11 +27,10 @@ Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])->
     Route::delete('/property/{property}/document/plan/{propertyDocument}', 'destroyPlan');
 });
 
-Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('auth')->name('properties.show');
 
 Route::controller(PropertyController::class)->group(function () {
    Route::get('/listed-properties', 'listedProperties')->name('properties.listed');
-   Route::get('/property/new-request', 'showNewRequest')->name('properties.new.request');
 });
 
 Route::middleware(['auth', 'role:admin'])->controller(AdminPropertyController::class)->group(function () {

@@ -39,7 +39,7 @@ export default function NewProperty() {
         virtual_tour_link: '',
         images: [],
         virtual_tour: false,
-        rivlersim: false,
+        rivleresim: false,
         combo_package: false,
         hipoteke_file: [],
     });
@@ -521,14 +521,14 @@ export default function NewProperty() {
                         <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
-                                checked={data.rivlersim}
+                                checked={data.rivleresim}
                                 onChange={(e) => {
-                                    setData('rivlersim', e.target.checked);
+                                    setData('rivleresim', e.target.checked);
                                     if (e.target.checked) setData('combo_package', false);
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj Rivlersim – <strong>150€</strong> (Rankim Silver)
+                                Dëshiroj Rivleresim – <strong>150€</strong> (Rankim Silver)
                             </span>
                         </label>
 
@@ -541,7 +541,7 @@ export default function NewProperty() {
                                     setData('combo_package', e.target.checked);
                                     if (e.target.checked) {
                                         setData('virtual_tour', false);
-                                        setData('rivlersim', false);
+                                        setData('rivleresim', false);
                                     }
                                 }}
                             />

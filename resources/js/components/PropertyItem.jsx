@@ -8,16 +8,22 @@ import {
     Layers,
     Building2,
     Tag,
+    Eye
 } from "lucide-react";
 
+
 const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms, total_balconies, verified,
-  total_floors, floor_number, year_built, description, price, currency, type_of_sale, property_type, image_paths = [],
+  total_floors, views, floor_number, year_built, description, price, currency, type_of_sale, virtual_tour, rivleresim, combo_package, property_type, image_paths = [],
   canEdit = false, canDelete = false, onEdit = null, onDelete = null,
   }) => {
 
     const image = image_paths.length > 0
         ? `/storage/${image_paths[0].path}`
         : "/placeholder/property.jpg";
+    let badge = null;
+    if (combo_package || (virtual_tour && rivleresim)) badge = { text: "Platinum", bg: "bg-purple-600", textColor: "text-white" };
+    else if (virtual_tour) badge = { text: "Gold", bg: "bg-yellow-500", textColor: "text-black" };
+    else if (rivleresim) badge = { text: "Silver", bg: "bg-gray-400", textColor: "text-white" };
 
     return (
         <div className="grid grid-cols-1 bg-white shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-200">
@@ -40,6 +46,24 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                         {verified ? "Verified" : "Not Verified"}
                     </span>
                 )}
+                {/* SINGLE PRIORITY BADGE (Ribbon) */}
+                {badge && (
+                    <div className={`absolute top-0 right-0 overflow-hidden w-24 h-24`}>
+                        <span className={`${badge.bg} ${badge.textColor} text-md font-bold rotate-45 absolute -left-8 w-40 ps-15 text-center shadow-lg`}>
+                            {badge.text}
+                        </span>
+                    </div>
+                )}
+
+                <div className={`absolute bottom-0 right-0 overflow-hidden grid grid-cols-2 items-center bg-black/70 backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg`}>
+
+                    <div className="justify-items-end">
+                        {views}
+                    </div>
+                    <div className="justify-items-end">
+                        <Eye />
+                    </div>
+                </div>
             </div>
 
             {/* CONTENT */}

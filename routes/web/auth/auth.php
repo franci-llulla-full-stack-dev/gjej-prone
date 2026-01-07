@@ -15,10 +15,10 @@ Route::middleware('auth.custom')->group( function () {
         Route::post('/register', 'storeRegistration')->name('store.registration');
         Route::get('/forgot-password', 'forgotPassword')->name('forgot-password');
         Route::post('/forgot-password/mail', 'sendResetLink')->name('send.reset-link');
-        // Password reset form (token from email)
         Route::get('/reset-password/{token}', function ($token) {
             return Inertia::render('auth/ResetPassword', ['token' => $token, 'email' => request('email')]);
         })->name('password.reset');
+        Route::post('/reset-password', 'resetPassword')->name('password.update');
     });
 });
 

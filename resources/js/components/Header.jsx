@@ -1,4 +1,3 @@
-import backgroundImage from '../media/background.jpeg';
 import React, { useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import Breadcrumb from '../components/Breadcrumb.jsx';
@@ -61,6 +60,12 @@ const Header = ({breadcrumbItems}) => {
                                 Pronat
                             </Link>
                             <Link
+                                href="/property/requests/all"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                            >
+                                Kerkesat e Bleresve
+                            </Link>
+                            <Link
                                 href="/admin/users"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
@@ -82,17 +87,32 @@ const Header = ({breadcrumbItems}) => {
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
                                     Pronat e mia
                                 </Link>
+                                <Link
+                                    href="/property/requests/all"
+                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
+                                    Kerkesat e Bleresve
+                                </Link>
                             </>
                         )
                     }
-                    {role !== 'guest' && (
+                    {role === 'user' && (
                         <>
+                            <Link
+                                href="/listed-properties"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                            >
+                                Kerko Prone
+                            </Link>
                             <Link
                                 href="/property/requests"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
-                                >
+                            >
                                 Kerkesat e pronave
                             </Link>
+                        </>
+                    )}
+                    {role !== 'guest' && (
+                        <>
                             <Link
                                 href="/profile"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
@@ -180,20 +200,35 @@ const Header = ({breadcrumbItems}) => {
                         )}
                         {role === 'agency' || role === 'bank' || role === 'individual' &&
                             (
-                                <Link
-                                    href="/properties"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
-                                    Pronat e mia
-                                </Link>
+                                <>
+                                    <Link
+                                        href="/properties"
+                                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
+                                        Pronat e mia
+                                    </Link>
+                                    <Link
+                                        href="/property/requests/all"
+                                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
+                                        Kerkesat e Bleresve
+                                    </Link>
+                                </>
                             )
                         }
                         {role === 'user' && (
-                            <Link
-                                href="/property/requests"
-                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
-                            >
-                                Kerkesat e pronave
-                            </Link>
+                            <>
+                                <Link
+                                    href="/listed-properties"
+                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                                >
+                                    Kerko Prone
+                                </Link>
+                                <Link
+                                    href="/property/requests"
+                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
+                                >
+                                    Kerkesat e pronave
+                                </Link>
+                            </>
                         )}
 
                         <Link
@@ -213,7 +248,7 @@ const Header = ({breadcrumbItems}) => {
                     </div>
                 </div>
             )}
-            { role !== 'admin' && role !== 'guest' && <Breadcrumb items={items} /> }
+            {/*{ role !== 'admin' && role !== 'guest' && <Breadcrumb items={items} /> }*/}
         </header>
     );
 };

@@ -34,7 +34,7 @@ const subTypeProperties = {
         { value: 'kategori_te_tjera', label: 'Kategori të tjera' },
     ],
 };
-const ViewPropertyRequest = ({ propertyRequest }) => {
+const ViewPropertyRequest = ({ propertyRequest, actual_contact }) => {
 
     return (
         <div className="max-w-7xl mx-auto mt-5 px-4 py-10 space-y-12">
@@ -128,28 +128,9 @@ const ViewPropertyRequest = ({ propertyRequest }) => {
                         <h3 className="text-lg font-semibold">
                             Kontakto Shitesin
                         </h3>
-
-                        <div>
-                            <p className="font-medium">
-                                {propertyRequest.owner?.name}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                                {propertyRequest.owner?.email}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                                {propertyRequest.owner?.phone}
-                            </p>
-                        </div>
-
                         <div className="flex gap-3">
                             <a
-                                href={`mailto:${propertyRequest.owner?.email}`}
-                                className="flex-1 text-center bg-primary text-white py-2 rounded-lg"
-                            >
-                                Email
-                            </a>
-                            <a
-                                href={`tel:${propertyRequest.owner?.phone}`}
+                                href={actual_contact ? actual_contact : `tel:+355697727747`}
                                 className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
                             >
                                 Telefon

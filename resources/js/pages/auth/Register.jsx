@@ -2,13 +2,15 @@ import backgroundImage from '../../media/background.jpeg';
 import React, { useState, useEffect } from 'react';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import '../../../css/register.css';
 
 
 const Register = () => {
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [termsError, setTermsError] = useState('');
     const userTypeOptions = [
         { value: 'individual', label: 'Individ' },
         { value: 'agency', label: 'Agjenci' },
@@ -64,6 +66,10 @@ const Register = () => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!acceptedTerms) {
+            setTermsError('Ju duhet të pranoni Termat dhe Kushtet dhe Politikën e Privatësisë për të vazhduar.');
+            return;
+        }
         post('/register');
     };
     const handleSelectType = (option) => {
@@ -90,7 +96,7 @@ const Register = () => {
                             <div className="absolute inset-0 bg-black/40"></div> {/* dark overlay for text readability */}
                         </div>
 
-                        <div className="relative z-10 flex flex-col items-center justify-center min-h-[70vh] px-6 pt-10 text-center">
+                        <div className="relative z-10 grid grid-cols-1 items-center justify-center min-h-[70vh] px-6 pt-10 text-center">
                             <div className={`bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg overflow-hidden transform transition-all duration-700 ${
                                 animateStep1 ? 'translate-x-0 opacity-100' : 'translate-x-50 opacity-0'}`
                             }>
@@ -246,6 +252,28 @@ const Register = () => {
                                                 placeholder="Konfirmo Fjalëkalimin"
                                                 className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                             />
+                                            <div className="flex">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={acceptedTerms}
+                                                    onChange={(e) => {
+                                                        setAcceptedTerms(e.target.checked);
+                                                        if (e.target.checked) setTermsError('');
+                                                    }}
+                                                    className="mt-1 h-4 w-4 text-blue-500 border-gray-300 rounded focus:ring-blue-400"
+                                                />
+                                                <div className="p-2">
+                                                    <p className="text-xs">
+                                                        Duke krijuar llogarinë, pranoj <Link href="/terms">Termat dhe Kushtet</Link>
+
+                                                    </p>
+                                                    <p className="text-xs">
+                                                        dhe <Link href="/privacy">Politikën e Privatësisë</Link>.
+                                                    </p>
+                                                    {termsError && <p className="text-red-500">{termsError}</p>}
+                                                </div>
+
+                                            </div>
                                         </div>
 
                                         <div className="flex justify-between mt-4">

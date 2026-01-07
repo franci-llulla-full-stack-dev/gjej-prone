@@ -133,6 +133,10 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
+        $user = auth()->user();
+        if($user->role->name === 'user') {
+            $property->update(['views' => $property->views + 1]);
+        }
         return Inertia::render('PropertyDetails',
             ['property' => $property->load(['images', 'owner', 'documents']),]
         );

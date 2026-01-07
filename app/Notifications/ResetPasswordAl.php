@@ -2,24 +2,21 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\URL;
 
-class CustomVerifyEmail extends Notification
+class ResetPasswordAl extends Notification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $user)
-    {
-    }
+    public function __construct(
+        public string $token
+    ) {}
 
     /**
      * Get the notification's delivery channels.
@@ -36,22 +33,17 @@ class CustomVerifyEmail extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $hash = hash_hmac('sha256', $notifiable->id, config('app.key'));
-        $url = URL::temporarySignedRoute(
-            'custom.verify',
-            Carbon::now()->addMinutes(60),
-            [
-                'id' => $notifiable->id,
-                'hash' => $hash
-            ]
-        );
+        $url = url(route('password.reset', [
+                'token' => $this->token,
+                'email' => $notifiable->email,
+            ], false));
         return (new MailMessage)
-            ->subject("Verifiko Email-in")
-            ->greeting("Mirsevini ne platformen tone!")
-
-            ->line("Klikoni butonin me poshte per te verifikuar adresen tuaj te email-it.")
-            ->action("Verifiko Email-in", $url)
-            ->line("Nese nuk keni krijuar nje llogari, ju lutem injoroni kete email.")
+            ->subject('Rivendosja e fjalekalimit')
+            ->greeting('Pershendetje!')
+            ->line('Po e merr kete email sepse kemi marre nje kerkese per rivendosjen e fjalekalimit.')
+            ->action('Rivendos fjalekalimin', $url)
+            ->line('Ky link skadon pas 60 minutash.')
+            ->line('Nese nuk e ke kerkuar ti kete veprim, nuk nevojitet asnje veprim tjeter.')
             ->salutation('Faleminderit !');
     }
 

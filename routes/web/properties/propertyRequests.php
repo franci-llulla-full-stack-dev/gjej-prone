@@ -12,4 +12,9 @@ Route::group(['middleware' => ['role:user', 'auth'], 'controller' => PropertyReq
     Route::delete('/property/request/{propertyRequest}', 'destroy')->name('property.request.destroy');
 });
 
-Route::middleware(['role:admin,user,agency,bank,individual', 'auth'])->get('/property/request/{propertyRequest}', [PropertyRequestController::class, 'show'])->name('property.request.show');
+Route::middleware(['role:admin,user,agency,bank,individual', 'auth'])
+    ->group(function () {
+        Route::get('/property/request/{propertyRequest}', [PropertyRequestController::class, 'show'])
+            ->name('property.request.show');
+        Route::get('/property/requests/all', [PropertyRequestController::class, 'showAll'])->name('property.requests.all');
+    });

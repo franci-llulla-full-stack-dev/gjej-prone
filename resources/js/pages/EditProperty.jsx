@@ -42,7 +42,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
         virtual_tour_link: property.virtual_tour_link,
         images: propertyImages,
         virtual_tour: property.virtual_tour,
-        rivlersim: property.rivlersim,
+        rivleresim: property.rivleresim,
         combo_package: property.combo_package,
         hipoteke_file: hipotekeFile,
     });
@@ -796,14 +796,14 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                         <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
-                                checked={data.rivlersim}
+                                checked={data.rivleresim}
                                 onChange={(e) => {
-                                    setData('rivlersim', e.target.checked);
+                                    setData('rivleresim', e.target.checked);
                                     if (e.target.checked) setData('combo_package', false);
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj Rivlersim – <strong>150€</strong> (Rankim Silver)
+                                Dëshiroj Rivleresim – <strong>150€</strong> (Rankim Silver)
                             </span>
                         </label>
 
@@ -816,7 +816,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                     setData('combo_package', e.target.checked);
                                     if (e.target.checked) {
                                         setData('virtual_tour', false);
-                                        setData('rivlersim', false);
+                                        setData('rivleresim', false);
                                     }
                                 }}
                             />

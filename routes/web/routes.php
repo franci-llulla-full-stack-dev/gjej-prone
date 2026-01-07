@@ -6,10 +6,18 @@ use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function() {
-    Route::get('/dashboard', DashboardController::class)->name('admin.dashboard');
+    Route::get('/dashboard', DashboardController::class)->middleware('role:admin')->name('admin.dashboard');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password/update', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
 
+Route::get('/terms', function () {
+    return \Inertia\Inertia::render('Terms');
+});
+Route::get('/privacy', function () {
+    return \Inertia\Inertia::render('Privacy');
+});
 
 $directory = base_path('routes/web');
 $iterator = new RecursiveIteratorIterator(

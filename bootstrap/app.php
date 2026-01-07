@@ -4,9 +4,12 @@ use App\Http\Middleware\AuthenticationMiddleware;
 use App\Http\Middleware\AuthenticedMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\VerifiedUser;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Inertia\Inertia;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,5 +28,34 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (NotFoundHttpException $e, $request) {
+            if($request->expectsJson()) {
+                return null;
+            }
+            return Inertia::render('errors/NotFound')
+                ->toResponse($request)
+                ->setStatusCode(404);
+        });
+        $exceptions->render(function (AuthorizationException $e, $request) {
+            if ($request->expectsJson()) {
+                return null;
+            }
+
+            return Inertia::render('errors/Forbidden', [
+                'message' => $e->getMessage() ?: 'Akses i ndaluar',
+            ])
+                ->toResponse($request)
+                ->setStatusCode(403);
+        });
+
+        // 403 from abort(403)
+        $exceptions->render(function (HttpException $e, $request) {
+            if ($e->getStatusCode() !== 403 || $request->expectsJson()) {
+                return null;
+            }
+
+            return Inertia::render('errors/Forbidden')
+                ->toResponse($request)
+                ->setStatusCode(403);
+        });
     })->create();

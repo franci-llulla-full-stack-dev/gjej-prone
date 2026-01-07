@@ -1,40 +1,50 @@
 import backgroundImage from '../../media/background.jpeg';
-import { Link, useForm } from '@inertiajs/react';
-import React from 'react';
+import { useForm } from '@inertiajs/react';
+import React, { useEffect } from 'react';
 
-const ResetPassword = () => {
-    const { data, setData, post, errors } = useForm({
-        email: '',
+const ResetPassword = ({ token, email }) => {
+    const { data, setData, post, processing, errors } = useForm({
+        token: token || '',
+        email: email || '',
         password: '',
         password_confirmation: '',
     });
+
+    // Ensure email & token are always set
+    useEffect(() => {
+        setData('email', email);
+        setData('token', token);
+    }, [email, token]);
+
     const handleChange = (e) => {
         setData(e.target.name, e.target.value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/reset-password/submit');
+        post('/reset-password', {
+            onSuccess: () => setData('password', '', 'password_confirmation', ''),
+        });
     };
 
     const ErrorText = ({ field }) => {
         const err = errors?.[field];
         if (!err) return null;
-        // errors sometimes come as array
         const text = Array.isArray(err) ? err.join(' ') : err;
         return <p className="text-red-500 text-sm mt-1">{text}</p>;
     };
+
     return (
         <div>
-            <div className="min-h-screen grid ">
+            <div className="min-h-screen grid">
                 <div className="grid">
-                    <main className="">
+                    <main>
                         {/* Background image */}
                         <div
                             className="absolute inset-0 bg-cover bg-center"
                             style={{ backgroundImage: `url(${backgroundImage})` }}
                         >
-                            <div className="absolute inset-0 bg-black/40"></div> {/* dark overlay for text readability */}
+                            <div className="absolute inset-0 bg-black/40"></div>
                         </div>
 
                         {/* Content */}
@@ -43,27 +53,46 @@ const ResetPassword = () => {
                                 <h2 className="text-2xl font-bold mb-6 text-gray-800">Harrova fjalekalimin</h2>
 
                                 {/* Form */}
-                                <form className="space-y-4">
+                                <form className="space-y-4" onSubmit={handleSubmit}>
+                                    {/* Hidden Email */}
+                                    <input type="hidden" name="email" value={data.email} />
+                                    <input type="hidden" name="token" value={data.token} />
 
+                                    {/* Password */}
                                     <div className="text-left">
-                                        <label className="block text-gray-700 mb-1">Email</label>
+                                        <label className="block text-gray-700 mb-1">Fjalekalimi i ri</label>
                                         <input
-                                            name="email"
-                                            type="email"
-                                            placeholder="Shkruaj email/nr.tel"
-                                            value={data.name}
+                                            type="password"
+                                            name="password"
+                                            value={data.password}
                                             onChange={handleChange}
+                                            placeholder="Shkruaj fjalekalimin e ri"
                                             className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
-                                        <ErrorText field="email" />
+                                        <ErrorText field="password" />
                                     </div>
 
+                                    {/* Password confirmation */}
+                                    <div className="text-left">
+                                        <label className="block text-gray-700 mb-1">Konfirmo fjalekalimin</label>
+                                        <input
+                                            type="password"
+                                            name="password_confirmation"
+                                            value={data.password_confirmation}
+                                            onChange={handleChange}
+                                            placeholder="Konfirmo fjalekalimin"
+                                            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <ErrorText field="password_confirmation" />
+                                    </div>
+
+                                    {/* Submit */}
                                     <button
                                         type="submit"
-                                        onClick={handleSubmit}
+                                        disabled={processing}
                                         className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition"
                                     >
-                                        Hyr
+                                        Ndrysho fjalekalimin
                                     </button>
                                 </form>
                             </div>
