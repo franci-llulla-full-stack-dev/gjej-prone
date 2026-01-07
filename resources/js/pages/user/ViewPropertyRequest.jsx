@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropertyMap from '../../components/PropertyMap.jsx';
 
 /* =====================
    LABEL MAPPINGS
@@ -35,7 +36,7 @@ const subTypeProperties = {
     ],
 };
 const ViewPropertyRequest = ({ propertyRequest, actual_contact }) => {
-
+console.log(propertyRequest.zone_radious)
     return (
         <div className="max-w-7xl mx-auto mt-5 px-4 py-10 space-y-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -81,10 +82,10 @@ const ViewPropertyRequest = ({ propertyRequest, actual_contact }) => {
                             label="Ashensor"
                             value={propertyRequest.ashensor ? "Po" : "Jo"}
                         />
-                        <Detail label="Siperfaqe" value={`${propertyRequest.surface} m²`} />
-                        <Detail label="Dhoma" value={propertyRequest.total_rooms} />
-                        <Detail label="Banjo" value={propertyRequest.total_bathrooms} />
-                        <Detail label="Ballkone" value={propertyRequest.total_balconies} />
+                        <Detail label="Siperfaqe" value={`${propertyRequest.surface}-${propertyRequest.surface_2} m²`} />
+                        <Detail label="Dhoma" value={`${propertyRequest.total_rooms}-${propertyRequest.total_rooms_2}`} />
+                        <Detail label="Banjo" value={`${propertyRequest.total_bathrooms}-${propertyRequest.total_bathrooms_2}`} />
+                        <Detail label="Ballkone" value={`${propertyRequest.total_balconies}-${propertyRequest.total_balconies_2}`} />
                         <Detail label="Kati" value={propertyRequest.floor_number} />
                         <Detail label="Kate totale" value={propertyRequest.total_floors} />
                         <Detail
@@ -101,11 +102,10 @@ const ViewPropertyRequest = ({ propertyRequest, actual_contact }) => {
                             Vendndodhja
                         </h2>
                         <div className="w-full h-[320px] rounded-2xl overflow-hidden shadow">
-                            <iframe
-                                className="w-full h-full"
-                                loading="lazy"
-                                allowFullScreen
-                                src={`https://www.google.com/maps?q=${propertyRequest.latitude},${propertyRequest.longitude}&z=15&output=embed`}
+                            <PropertyMap
+                                lat={propertyRequest.latitude}
+                                lng={propertyRequest.longitude}
+                                radius={propertyRequest.zone_radious}
                             />
                         </div>
                     </div>
@@ -119,7 +119,7 @@ const ViewPropertyRequest = ({ propertyRequest, actual_contact }) => {
                     <div className="bg-white rounded-2xl p-6 shadow">
                         <p className="text-sm text-gray-500">Cmimi</p>
                         <p className="text-4xl font-bold text-primary">
-                            {Number(propertyRequest.price).toLocaleString()} {propertyRequest.currency}
+                            {Number(propertyRequest.price).toLocaleString()}-{Number(propertyRequest.price_2).toLocaleString()} {propertyRequest.currency}
                         </p>
                     </div>
 

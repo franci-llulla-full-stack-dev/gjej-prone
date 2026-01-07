@@ -16,7 +16,12 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
   total_floors, views, floor_number, year_built, description, price, currency, type_of_sale, virtual_tour, rivleresim, combo_package, property_type, image_paths = [],
   canEdit = false, canDelete = false, onEdit = null, onDelete = null,
   }) => {
-
+    const PROPERTY_TYPE_LABELS = {
+        residential: 'Rezidenciale',
+        commercial: 'Komerciale',
+        land: 'Toke',
+        others: 'Te tjera',
+    };
     const image = image_paths.length > 0
         ? `/storage/${image_paths[0].path}`
         : "/placeholder/property.jpg";
@@ -42,7 +47,7 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                     {price.toLocaleString()} {currency}
                 </span>
                 {canEdit && (
-                    <span className={`absolute top-3 right-3 ${verified ? 'bg-green-600' : 'bg-red-700'} backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg`}>
+                    <span className={`absolute top-15 left-3 ${verified ? 'bg-green-600' : 'bg-red-700'} backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg`}>
                         {verified ? "Verified" : "Not Verified"}
                     </span>
                 )}
@@ -80,7 +85,7 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                 {/* LOCATION */}
                 <div>
                     <h3 className="text-lg font-bold text-gray-800 line-clamp-1">
-                        {property_type ? property_type.charAt(0).toUpperCase() + property_type.slice(1) : ""}
+                        {PROPERTY_TYPE_LABELS[property_type]}
                     </h3>
                     <p className="text-gray-500 text-sm line-clamp-1">
                         {street}, {city}

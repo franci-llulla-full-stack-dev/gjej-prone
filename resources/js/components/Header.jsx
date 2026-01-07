@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 
 
@@ -17,6 +17,9 @@ const Header = ({breadcrumbItems}) => {
             setMenuOpen(false);
         }
     }, [role]);
+    useEffect(() => {
+        router.on("navigate", () => setMenuOpen(false));
+    }, []);
     return (
         <header className="bg-white/90 backdrop-blur shadow-sm fixed top-0 w-full z-50">
             <div className="container mx-auto px-2 py-4 flex justify-between items-center">

@@ -15,12 +15,112 @@ class PropertyController extends Controller
 {
     public function index(Request $request)
     {
+        $rates = [
+            'EUR' => 1,
+            'USD' => 1.17,
+            'ALL' => 96
+        ];
+        $validated = $request->validate([
+            'search' => ['nullable', 'string'],
+            'min_price' => ['nullable', 'numeric'],
+            'max_price' => ['nullable', 'numeric'],
+            'currency' => ['nullable', 'string'],
+            'sale_type' => ['nullable', 'string'],
+            'types' => ['nullable', 'array'],
+            'elevator' => ['nullable', 'in:true,false,1,0'],
+            'mortgage' => ['nullable', 'in:true,false,1,0'],
+            'rooms_min' => ['nullable', 'numeric'],
+            'rooms_max' => ['nullable', 'numeric'],
+            'bathrooms_min' => ['nullable', 'numeric'],
+            'bathrooms_max' => ['nullable', 'numeric'],
+            'surface_min' => ['nullable', 'numeric'],
+            'surface_max' => ['nullable', 'numeric'],
+            'balconies_min' => ['nullable', 'numeric'],
+            'balconies_max' => ['nullable', 'numeric'],
+        ]);
         $user = auth()->user();
         $query = Property::with('images')->where('user_id', $user->id);
-
-        if ($request->city) {
-
+        if(isset($validated['search'])) {
+            $query = $query->where(function ($q) use ($validated) {
+                $q->where('city', 'like', "%{$validated['search']}%")
+                    ->orWhere('street', 'like', "%{$validated['search']}%");
+            });
         }
+        if (array_key_exists('currency', $validated) && $validated['currency']) {
+            $filterCurrency = $validated['currency'];
+            $minPrice = $validated['min_price'] ?? null;
+            $maxPrice = $validated['max_price'] ?? null;
+
+            // Build a CASE statement to convert all property prices to the filter currency
+            $cases = [];
+            foreach ($rates as $dbCurrency => $rate) {
+                // formula: price_in_filter_currency = price / rate_of_dbCurrency * rate_of_filterCurrency
+                $cases[] = "WHEN currency = '{$dbCurrency}' THEN price / {$rate} * {$rates[$filterCurrency]}";
+            }
+
+            $priceConverted = "CASE " . implode(" ", $cases) . " END";
+
+            if ($minPrice !== null) {
+                $query->whereRaw("{$priceConverted} >= ?", [$minPrice]);
+            }
+
+            if ($maxPrice !== null) {
+                $query->whereRaw("{$priceConverted} <= ?", [$maxPrice]);
+            }
+        } else {
+            if (isset($validated['min_price'])) {
+                $query->where('price', '>=', $validated['min_price']);
+            }
+            if (isset($validated['max_price'])) {
+                $query->where('price', '<=', $validated['max_price']);
+            }
+        }
+
+        if(isset($validated['sale_type'])) {
+            $query->where('type_of_sale', $validated['sale_type']);
+        }
+
+        if(array_key_exists('types', $validated) && $validated['types']) {
+            $query->whereIn('property_category', $validated['types']);
+        }
+        if(isset($validated['elevator']) && filter_var($validated['elevator'], FILTER_VALIDATE_BOOLEAN)) {
+            $query->where('ashensor', true);
+        }
+        if(isset($validated['mortgage']) && filter_var($validated['mortgage'], FILTER_VALIDATE_BOOLEAN)) {
+            $query->where('hipoteke', true);
+        }
+
+        if(isset($validated['rooms_min'])) {
+            $query->where('total_rooms', '>=',  $validated['rooms_min']);
+        }
+
+        if(isset($validated['rooms_max'])) {
+            $query->where('total_rooms', '<=', $validated['rooms_max']);
+        }
+        if(isset($validated['bathrooms_min'])) {
+            $query->where('total_bathrooms', '>=',  $validated['bathrooms_min']);
+        }
+
+        if(isset($validated['bathrooms_max'])) {
+            $query->where('total_bathrooms', '<=', $validated['bathrooms_max']);
+        }
+
+        if(isset($validated['balconies_min'])) {
+            $query->where('total_balconies', '>=',  $validated['balconies_min']);
+        }
+
+        if(isset($validated['balconies_max'])) {
+            $query->where('total_balconies', '<=', $validated['balconies_max']);
+        }
+
+        if(isset($validated['surface_min'])) {
+            $query->where('surface', '>=',  $validated['surface_min']);
+        }
+
+        if(isset($validated['surface_max'])) {
+            $query->where('surface', '<=', $validated['surface_max']);
+        }
+
         $properties = $query->paginate();
 
         return Inertia::render('Properties', [

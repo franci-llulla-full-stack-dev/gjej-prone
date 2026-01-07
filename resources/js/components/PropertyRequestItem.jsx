@@ -14,6 +14,12 @@ const PropertyItem = ({ id, city, street, surface, surface_2, total_rooms, total
                           total_floors, floor_number, year_built, description, price, price_2, currency, type_of_sale, property_type,
                           canEdit = false, canDelete = false, onEdit = null, onDelete = null,
                       }) => {
+    const PROPERTY_TYPE_LABELS = {
+        residential: 'Rezidenciale',
+        commercial: 'Komerciale',
+        land: 'Toke',
+        others: 'Te tjera',
+    };
     return (
         <div className="grid grid-cols-1 bg-white shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-200">
 
@@ -37,7 +43,7 @@ const PropertyItem = ({ id, city, street, surface, surface_2, total_rooms, total
                 {/* LOCATION */}
                 <div>
                     <h3 className="text-lg font-bold text-gray-800 line-clamp-1">
-                        {property_type ? property_type.charAt(0).toUpperCase() + property_type.slice(1) : ""}
+                        {PROPERTY_TYPE_LABELS[property_type]}
                     </h3>
                     <p className="text-gray-500 text-sm line-clamp-1">
                         {street}, {city}
