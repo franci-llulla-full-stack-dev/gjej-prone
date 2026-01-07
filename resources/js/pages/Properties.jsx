@@ -1,3 +1,4 @@
+// javascript
 import PropertyItem from '../components/PropertyItem.jsx';
 import PropertyFilter from '../components/PropertyFilter.jsx';
 import { Link, router } from '@inertiajs/react';
@@ -5,7 +6,6 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 
 const Properties = ({ properties }) => {
-
     const [filters, setFilters] = useState({
         search: '',
         min_price: '',
@@ -34,26 +34,25 @@ const Properties = ({ properties }) => {
 
     return (
         <div className="grid grid-cols-1">
-
             <PropertyFilter
                 filters={filters}
                 setFilters={setFilters}
                 onApply={reload}
             />
 
-            {/* Add property */}
+            {/* Shto pronë */}
             <div className="grid justify-items-center p-4">
                 <Link
                     href="/properties/create"
                     className="px-5 py-2.5 rounded-xl font-semibold text-white bg-indigo-600"
                 >
-                    Add a property
+                    Shto një pronë
                 </Link>
             </div>
 
-            {/* Properties */}
+            {/* Pronat */}
             <div className="p-4">
-                <h2 className="font-bold text-lg">Current Listed Properties</h2>
+                <h2 className="font-bold text-lg">Pronat e listuara aktualisht</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {properties.data.map(p => (

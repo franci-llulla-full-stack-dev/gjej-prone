@@ -1,3 +1,4 @@
+// javascript
 import { router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import Select from 'react-select';
@@ -17,7 +18,6 @@ const labelBase = "block text-sm font-medium text-gray-700 mb-1";
 const errorBase = "text-sm text-red-500 mt-1";
 
 export default function EditProperty({property, propertyImages, floorPlan, hipotekeFile}) {
-    console.log(hipotekeFile);
     const { data, setData, put, processing, errors } = useForm({
         type_of_sale: property.type_of_sale,
         property_type: property.property_type,
@@ -46,6 +46,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
         combo_package: property.combo_package,
         hipoteke_file: hipotekeFile,
     });
+
     const [coords,setCoords ] = useState({lat:property.latitude,lng:property.longitude});
 
     const [images, setImages] = useState(() =>
@@ -71,20 +72,23 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
             isNew: false,
         }))
     );
+
     const MAX_FILES = 10;
     const MAX_SIZE_MB = 5;
+
     const saleOptions = [
         { value: '', label: 'Zgjidh Llojin e Transaksionit' },
         { value: 'sale', label: 'Shitje' },
         { value: 'rent', label: 'Qira' }
     ];
+
     function handleImages(files) {
         const arr = Array.from(files);
         const newImages = [];
 
         arr.forEach(file => {
             if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-                toast.error(`Foto "${file.name}" eshte me e madhe se ${MAX_SIZE_MB}MB`);
+                toast.error(`Foto "${file.name}" është më e madhe se ${MAX_SIZE_MB}MB`);
                 return;
             }
 
@@ -102,10 +106,8 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
             return;
         }
 
-        // Optimistic preview
         setImages(combined);
 
-        // Prepare FormData
         const formData = new FormData();
         newImages.forEach(img => formData.append('images[]', img.file));
 
@@ -113,18 +115,16 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
             headers: { 'Content-Type': 'multipart/form-data' },
         })
             .then(res => {
-                // replace preview images with real ones from backend
                 const uploaded = res.data.uploadedImages.map(img => ({ ...img, isNew: false }));
                 setImages(prev => {
                     const existing = prev.filter(img => !img.isNew);
                     return [...existing, ...uploaded];
                 });
-                toast.success(res.data.message || 'Foto u ngarkuan me sukses');
+                toast.success(res.data.message || 'Fotot u ngarkuan me sukses');
             })
             .catch(err => {
-                toast.error('Ngarkimi i fotos deshtoi');
+                toast.error('Ngarkimi i fotos dështoi');
                 console.error(err);
-                // remove failed previews
                 setImages(prev => prev.filter(img => !img.isNew));
             });
     }
@@ -134,7 +134,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
 
         Swal.fire({
             title: 'A jeni i sigurt?',
-            text: 'Kjo foto do te fshihet pergjithmone.',
+            text: 'Kjo foto do të fshihet përgjithmonë.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
@@ -145,7 +145,6 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
         }).then((result) => {
             if (!result.isConfirmed) return;
 
-            // 🆕 NEW IMAGE → frontend only
             if (img.isNew) {
                 const updated = images.filter((_, i) => i !== index);
                 setImages(updated);
@@ -165,7 +164,6 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                 return;
             }
 
-            // 🗂 EXISTING IMAGE → backend delete
             router.delete(`/property/${property.id}/images/${img.id}`, {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -182,7 +180,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                     Swal.fire({
                         icon: 'error',
                         title: 'Gabim',
-                        text: 'Ndodhi nje problem gjate fshirjes.',
+                        text: 'Ndodhi një problem gjatë fshirjes.',
                     });
                 },
             });
@@ -193,7 +191,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
         if (!file) return;
 
         if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-            toast.error(`Dokumenti "${file.name}" eshte me i madhe se ${MAX_SIZE_MB}MB`);
+            toast.error(`Dokumenti "${file.name}" është më i madh se ${MAX_SIZE_MB}MB`);
             return;
         }
 
@@ -204,7 +202,6 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
             isNew: true,
         };
 
-        // Replace existing
         setHipotekaFile([newFile]);
 
         const formData = new FormData();
@@ -219,7 +216,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                 toast.success(res.data.message || 'Dokumenti u ngarkua me sukses');
             })
             .catch(err => {
-                toast.error('Ngarkimi i dokumentit deshtoi');
+                toast.error('Ngarkimi i dokumentit dështoi');
                 console.error(err);
                 setHipotekaFile([]);
             });
@@ -232,7 +229,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
 
         Swal.fire({
             title: 'A jeni i sigurt?',
-            text: 'Ky dokument do te fshihet pergjithmone.',
+            text: 'Ky dokument do të fshihet përgjithmonë.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
@@ -254,7 +251,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                     setHipotekaFile([]);
                     Swal.fire({ icon: 'success', title: 'Dokumenti u hoq', timer: 1200, showConfirmButton: false });
                 },
-                onError: () => Swal.fire({ icon: 'error', title: 'Gabim', text: 'Ndodhi nje problem gjate fshirjes.' })
+                onError: () => Swal.fire({ icon: 'error', title: 'Gabim', text: 'Ndodhi një problem gjatë fshirjes.' })
             });
         });
     }
@@ -263,7 +260,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
         if (!file) return;
 
         if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-            toast.error(`Dokumenti "${file.name}" eshte me i madhe se ${MAX_SIZE_MB}MB`);
+            toast.error(`Dokumenti "${file.name}" është më i madh se ${MAX_SIZE_MB}MB`);
             return;
         }
 
@@ -288,7 +285,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                 toast.success(res.data.message || 'Plani u ngarkua me sukses');
             })
             .catch(err => {
-                toast.error('Ngarkimi i planit deshtoi');
+                toast.error('Ngarkimi i planit dështoi');
                 console.error(err);
                 setplanFile([]);
             });
@@ -301,7 +298,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
 
         Swal.fire({
             title: 'A jeni i sigurt?',
-            text: 'Ky dokument do te fshihet pergjithmone.',
+            text: 'Ky dokument do të fshihet përgjithmonë.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
@@ -323,7 +320,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                     setplanFile([]);
                     Swal.fire({ icon: 'success', title: 'Dokumenti u hoq', timer: 1200, showConfirmButton: false });
                 },
-                onError: () => Swal.fire({ icon: 'error', title: 'Gabim', text: 'Ndodhi nje problem gjate fshirjes.' })
+                onError: () => Swal.fire({ icon: 'error', title: 'Gabim', text: 'Ndodhi një problem gjatë fshirjes.' })
             });
         });
     }
@@ -357,7 +354,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
 
     const dynamicFieldsMap = {
         apartment: [
-            { value: 'total_rooms', type: 'number', label: 'Numri i dhomave', placeholder: 'p.sh. 3' },
+            { value: 'total_rooms', type: 'number', label: 'Numri i Dhomave', placeholder: 'p.sh. 3' },
             { value: 'total_bathrooms', type: 'number', label: 'Numri i Banjove', placeholder: 'p.sh. 1' },
             { value: 'total_balconies', type: 'number', label: 'Numri i Ballkoneve', placeholder: 'p.sh. 2' },
             { value: 'floor_number', type: 'number', label: 'Kati', placeholder: 'p.sh. 5' },
@@ -365,7 +362,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
         ],
 
         house: [
-            { value: 'total_rooms', type: 'number', label: 'Numri i dhomave', placeholder: 'p.sh. 5' },
+            { value: 'total_rooms', type: 'number', label: 'Numri i Dhomave', placeholder: 'p.sh. 5' },
             { value: 'total_bathrooms', type: 'number', label: 'Numri i Banjove', placeholder: 'p.sh. 2' },
             { value: 'total_floors', type: 'number', label: 'Numri i Kateve të Ndërtimit', placeholder: 'p.sh. 3' },
             { value: 'year_built', type: 'number', label: 'Viti i Ndërtimit', placeholder: 'p.sh. 1995' },
@@ -375,7 +372,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
         office: [
             { value: 'floor_number', type: 'number', label: 'Kati', placeholder: 'p.sh. 2' },
         ],
-    }
+    };
 
     const renderDynamicFields = (selectedSubtype, data, setData) => {
         if (!selectedSubtype || !dynamicFieldsMap[selectedSubtype]) {
@@ -403,6 +400,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
             );
         });
     };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         put(`/properties/${property.id}`);
@@ -410,10 +408,9 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
 
     return (
         <div className="pt-20 bg-gray-50 min-h-screen">
-
             <main className="max-w-4xl mx-auto px-4 pb-20">
                 <h1 className="text-3xl font-bold mb-5 pt-4 text-gray-800 opacity-0 animate-fade-in-up">
-                    Shto Pronë të Re
+                    Përditëso Pronën
                 </h1>
 
                 <form
@@ -422,7 +419,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-3 border-b">
                         <div>
-                            <label className={labelBase}>Lloji i Transaksionit *</label>
+                            <label className={labelBase}>Lloji i Transaksionit \*</label>
                             <Select
                                 name="type_of_sale"
                                 value={saleOptions.find((o) => o.value === data.type_of_sale) || null}
@@ -453,10 +450,10 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 }}
                             />
                             <ErrorText field="type_of_sale" errors={errors} />
-
                         </div>
+
                         <div>
-                            <label className={labelBase}>Lloji i Pronës *</label>
+                            <label className={labelBase}>Lloji i Pronës \*</label>
                             <Select
                                 name="property_type"
                                 value={typeOfProperties.find((o) => o.value === data.property_type) || null}
@@ -488,10 +485,10 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 }}
                             />
                             <ErrorText field="property_type" errors={errors} />
-
                         </div>
+
                         <div>
-                            <label className={labelBase}>Kategoria e Pronës *</label>
+                            <label className={labelBase}>Kategoria e Pronës \*</label>
                             <Select
                                 name="property_category"
                                 value={
@@ -525,10 +522,10 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 }}
                             />
                             <ErrorText field="property_category" errors={errors} />
-
                         </div>
-                        <div >
-                            <label className={labelBase}>Qyteti *</label>
+
+                        <div>
+                            <label className={labelBase}>Qyteti \*</label>
                             <Select
                                 value={
                                     locations.cities.find(
@@ -545,12 +542,10 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 isDisabled={!locations.cities.length}
                             />
                             <ErrorText field="city" errors={errors} />
-
                         </div>
 
                         <div className="mt-4">
-                            <label className={labelBase}>Vendndodhja në hartë *</label>
-
+                            <label className={labelBase}>Vendndodhja në hartë \*</label>
                             <MapPicker
                                 lat={coords.lat}
                                 lng={coords.lng}
@@ -568,29 +563,32 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 }}
                             />
                             {errors.latitude && <p className={errorBase}>{errors.latitude}</p>}
-
                         </div>
+
                         <div>
-                            <label className={labelBase}>Sipërfaqja *</label>
-                            <input className={inputBase}
-                                   name="surface"
-                                   type="number"
-                                   value={data.surface}
-                                   onChange={(e) => setData('surface', e.target.value)}
-                                   placeholder="Sipërfaqja në m²"
-                                   autoComplete="off"
+                            <label className={labelBase}>Sipërfaqja \*</label>
+                            <input
+                                className={inputBase}
+                                name="surface"
+                                type="number"
+                                value={data.surface}
+                                onChange={(e) => setData('surface', e.target.value)}
+                                placeholder="Sipërfaqja në m²"
+                                autoComplete="off"
                             />
                             <ErrorText field="surface" errors={errors} />
                         </div>
+
                         <div>
-                            <label className={labelBase}>Çmimi *</label>
+                            <label className={labelBase}>Çmimi \*</label>
                             <div className="flex items-center">
-                                <input className={inputBase}
-                                       type="number"
-                                       value={data.price}
-                                       onChange={(e) => setData('price', e.target.value)}
-                                       placeholder="Çmimi"
-                                       autoComplete="off"
+                                <input
+                                    className={inputBase}
+                                    type="number"
+                                    value={data.price}
+                                    onChange={(e) => setData('price', e.target.value)}
+                                    placeholder="Çmimi"
+                                    autoComplete="off"
                                 />
                                 <Select
                                     name="currency"
@@ -625,29 +623,26 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                         }),
                                     }}
                                 />
-
                             </div>
                             <ErrorText field="price" errors={errors} />
                         </div>
+
                         {renderDynamicFields(data.property_category, data, setData)}
 
                         <div>
-                            <label className={labelBase}>Imazhe *</label>
-
+                            <label className={labelBase}>Imazhe \*</label>
                             <input
                                 type="file"
                                 multiple
                                 accept="image/*"
                                 onChange={(e) => handleImages(e.target.files)}
                             />
-
                             {images.length < 2 && (
                                 <p className="text-red-500 text-sm mt-1">
-                                    Duhet te ngarkoni te pakten 2 foto.
+                                    Duhet të ngarkoni të paktën 2 foto.
                                 </p>
                             )}
                             <ErrorText field="images" errors={errors} />
-                            {/* Image Preview Grid */}
                             <div className="grid grid-cols-3 gap-3 mt-4">
                                 {images.map((img, index) => (
                                     <div key={index} className="relative group">
@@ -655,13 +650,10 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                             src={img.url}
                                             className="w-full h-24 object-cover rounded-lg border"
                                         />
-
-                                        {/* Remove button */}
                                         <button
                                             type="button"
                                             onClick={() => removeImage(index)}
-                                            className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full
-                               text-xs flex items-center justify-center opacity-80 hover:opacity-100"
+                                            className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center opacity-80 hover:opacity-100"
                                         >
                                             ✕
                                         </button>
@@ -670,22 +662,20 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                             </div>
                         </div>
                     </div>
+
                     <div className="my-5 pb-2 border-b">
                         <label className={labelBase}>
-                            Plani i Katit (opsional)
+                            Plani i Katit \(opsional\)
                         </label>
-
                         <input
                             type="file"
                             accept=".pdf,image/*"
                             onChange={(e) => handlePlan(e.target.files[0])}
                             className="mt-1"
                         />
-
                         <p className="text-xs text-gray-500 mt-1">
-                            Lejohet PDF ose foto (max 5MB)
+                            Lejohet PDF ose foto \(maks 5MB\)
                         </p>
-
                         <ErrorText field="floor_plan" errors={errors} />
                         <div className="grid grid-cols-3 gap-3 mt-4">
                             {planFile[0] && (
@@ -702,22 +692,20 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                             )}
                         </div>
                     </div>
+
                     <div className="my-5 pb-2 border-b">
                         <label className={labelBase}>
-                            Hipoteke (opsional)
+                            Hipotekë \(opsional\)
                         </label>
-
                         <input
                             type="file"
                             accept=".pdf,image/*"
                             onChange={(e) => handleHipotek(e.target.files[0])}
                             className="mt-1"
                         />
-
                         <p className="text-xs text-gray-500 mt-1">
-                            Lejohet max 5MB
+                            Lejohet maks 5MB
                         </p>
-
                         <ErrorText field="hipoteke_file" errors={errors} />
                         <div className="grid grid-cols-3 gap-3 mt-4">
                             {hipotekaFile[0] && (
@@ -745,6 +733,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                         />
                         {errors.description && <p className={errorBase}>{errors.description}</p>}
                     </div>
+
                     <div className="mt-6 bg-gray-50 p-4 rounded-xl border">
                         <h3 className="text-lg font-semibold mb-3 text-gray-800">
                             Detaje Teknike
@@ -768,16 +757,16 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 onChange={(e) => setData('hipoteke', e.target.checked)}
                             />
                             <span className="text-gray-700">
-                                Ka hipoteke
+                                Ka hipotekë
                             </span>
                         </label>
                     </div>
+
                     <div className="mt-8 bg-gray-50 p-4 rounded-xl border">
                         <h3 className="text-lg font-semibold mb-3 text-gray-800">
                             Shërbime Ekstra
                         </h3>
 
-                        {/* 1. Virtual Tour */}
                         <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
@@ -788,11 +777,10 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj Virtual Tour – <strong>150€</strong> (Rankim Gold)
+                                Dëshiroj Virtual Tour – <strong>150€</strong> \(Rankim Gold\)
                             </span>
                         </label>
 
-                        {/* 2. Rivlersim */}
                         <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
@@ -803,11 +791,10 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj Rivleresim – <strong>150€</strong> (Rankim Silver)
+                                Dëshiroj Rivlerësim – <strong>150€</strong> \(Rankim Silver\)
                             </span>
                         </label>
 
-                        {/* 3. Combo – të dyja bashkë */}
                         <label className="flex items-center gap-3">
                             <input
                                 type="checkbox"
@@ -821,17 +808,18 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj të dyja bashkë – <strong>250€</strong> (Rankim Platinum)
+                                Dëshiroj të dyja bashkë – <strong>250€</strong> \(Rankim Platinum\)
                             </span>
                         </label>
                     </div>
+
                     <button
                         type="submit"
                         disabled={processing}
                         className="mt-8 w-full py-3 rounded-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition-all shadow-md hover:shadow-xl opacity-0 animate-fade-in-up"
                         style={{ animationDelay: "1s" }}
                     >
-                        Shto Pronën
+                        Përditëso Pronën
                     </button>
                 </form>
             </main>

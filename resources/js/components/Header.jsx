@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 
-
 const Header = ({breadcrumbItems}) => {
     const defaultBreadcrumb = [
-        { label: 'Home', href: '/' }
+        { label: 'Kreu', href: '/' }
     ];
 
     const items = breadcrumbItems || defaultBreadcrumb;
@@ -38,7 +37,7 @@ const Header = ({breadcrumbItems}) => {
                                 href="/login"
                                 className="px-2 py-1.5 text-gray-700 hover:text-blue-400 transition"
                             >
-                                Identifikohu
+                                Hyr
                             </Link>
                             <Link
                                 href="/register"
@@ -54,7 +53,7 @@ const Header = ({breadcrumbItems}) => {
                                 href="/dashboard"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
-                                Dashboard
+                                Paneli
                             </Link>
                             <Link
                                 href="/admin/properties"
@@ -66,19 +65,19 @@ const Header = ({breadcrumbItems}) => {
                                 href="/property/requests/all"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
-                                Kerkesat e Bleresve
+                                Kërkesat e blerësve
                             </Link>
                             <Link
                                 href="/admin/users"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
-                                Users
+                                Përdoruesit
                             </Link>
                             <Link
                                 href="/dashboard"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
-                                Logs
+                                Regjistrat
                             </Link>
                         </>
                     )}
@@ -93,7 +92,7 @@ const Header = ({breadcrumbItems}) => {
                                 <Link
                                     href="/property/requests/all"
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
-                                    Kerkesat e Bleresve
+                                    Kërkesat e blerësve
                                 </Link>
                             </>
                         )
@@ -104,13 +103,13 @@ const Header = ({breadcrumbItems}) => {
                                 href="/listed-properties"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
-                                Kerko Prone
+                                Kërko pronë
                             </Link>
                             <Link
                                 href="/property/requests"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
-                                Kerkesat e pronave
+                                Kërkesat e pronave
                             </Link>
                         </>
                     )}
@@ -120,7 +119,7 @@ const Header = ({breadcrumbItems}) => {
                                 href="/profile"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
-                                Profil
+                                Profili
                             </Link>
                             <Link href="/logout" method="post" as="button">
                                 Dil
@@ -134,7 +133,7 @@ const Header = ({breadcrumbItems}) => {
                             href="/login"
                             className="px-1 py-1.5 text-gray-700 text-sm hover:text-blue-400 transition"
                         >
-                            Identifikohu
+                            Hyr
                         </Link>
                         <Link
                             href="/register"
@@ -179,7 +178,7 @@ const Header = ({breadcrumbItems}) => {
                                     href="/dashboard"
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                                 >
-                                    Dashboard
+                                    Paneli
                                 </Link>
                                 <Link
                                     href="/admin/properties"
@@ -191,13 +190,13 @@ const Header = ({breadcrumbItems}) => {
                                     href="/admin/users"
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                                 >
-                                    Users
+                                    Përdoruesit
                                 </Link>
                                 <Link
                                     href="/dashboard"
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                                 >
-                                    Logs
+                                    Regjistrat
                                 </Link>
                             </>
                         )}
@@ -212,7 +211,7 @@ const Header = ({breadcrumbItems}) => {
                                     <Link
                                         href="/property/requests/all"
                                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50">
-                                        Kerkesat e Bleresve
+                                        Kërkesat e blerësve
                                     </Link>
                                 </>
                             )
@@ -223,13 +222,13 @@ const Header = ({breadcrumbItems}) => {
                                     href="/listed-properties"
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                                 >
-                                    Kerko Prone
+                                    Kërko pronë
                                 </Link>
                                 <Link
                                     href="/property/requests"
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                                 >
-                                    Kerkesat e pronave
+                                    Kërkesat e pronave
                                 </Link>
                             </>
                         )}
@@ -238,7 +237,7 @@ const Header = ({breadcrumbItems}) => {
                             href="/profile"
                             className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                         >
-                            Profil
+                            Profili
                         </Link>
                         <Link
                             href="/logout"

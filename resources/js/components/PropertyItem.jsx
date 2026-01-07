@@ -11,16 +11,16 @@ import {
     Eye
 } from "lucide-react";
 
-
-const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms, total_balconies, verified,
-  total_floors, views, floor_number, year_built, description, price, currency, type_of_sale, virtual_tour, rivleresim, combo_package, property_type, image_paths = [],
-  canEdit = false, canDelete = false, onEdit = null, onDelete = null,
-  }) => {
+const PropertyItem = ({
+                          id, city, street, surface, total_rooms, total_bathrooms, total_balconies, verified,
+                          total_floors, views, floor_number, year_built, description, price, currency, type_of_sale, virtual_tour, rivleresim, combo_package, property_type, image_paths = [],
+                          canEdit = false, canDelete = false, onEdit = null, onDelete = null,
+                      }) => {
     const PROPERTY_TYPE_LABELS = {
         residential: 'Rezidenciale',
         commercial: 'Komerciale',
-        land: 'Toke',
-        others: 'Te tjera',
+        land: 'Tokë',
+        others: 'Të tjera',
     };
     const image = image_paths.length > 0
         ? `/storage/${image_paths[0].path}`
@@ -37,7 +37,7 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
             <div className="relative">
                 <img
                     src={image}
-                    alt="Property"
+                    alt="Pronë"
                     className="w-full h-56 object-cover"
                 />
 
@@ -48,7 +48,7 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                 </span>
                 {canEdit && (
                     <span className={`absolute top-15 left-3 ${verified ? 'bg-green-600' : 'bg-red-700'} backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg`}>
-                        {verified ? "Verified" : "Not Verified"}
+                        {verified ? "E verifikuar" : "Jo e verifikuar"}
                     </span>
                 )}
                 {/* SINGLE PRIORITY BADGE (Ribbon) */}
@@ -72,7 +72,7 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
             </div>
 
             {/* CONTENT */}
-            <div className=" grid grid-cols-1 p-5 space-y-3">
+            <div className="grid grid-cols-1 p-5 space-y-3">
 
                 {/* TITLE */}
                 <div className="flex items-center gap-2">
@@ -133,7 +133,7 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                                 onClick={() => onEdit?.(id)}
                                 className="flex-1 text-sm border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
                             >
-                                Edit
+                                Ndrysho
                             </button>
                         )}
 
@@ -142,7 +142,7 @@ const PropertyItem = ({ id, city, street, surface, total_rooms, total_bathrooms,
                                 onClick={() => onDelete?.(id)}
                                 className="flex-1 text-sm border border-red-300 text-red-600 rounded-lg py-2 hover:bg-red-50 transition"
                             >
-                                Delete
+                                Fshi
                             </button>
                         )}
                     </div>

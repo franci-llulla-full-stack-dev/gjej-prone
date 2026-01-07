@@ -10,34 +10,35 @@ import {
     Tag,
 } from "lucide-react";
 
-const PropertyItem = ({ id, city, street, surface, surface_2, total_rooms, total_rooms_2, total_bathrooms, total_bathrooms_2, total_balconies, total_balconies_2,
+const PropertyItem = ({
+                          id, city, street, surface, surface_2, total_rooms, total_rooms_2, total_bathrooms, total_bathrooms_2, total_balconies, total_balconies_2,
                           total_floors, floor_number, year_built, description, price, price_2, currency, type_of_sale, property_type,
                           canEdit = false, canDelete = false, onEdit = null, onDelete = null,
                       }) => {
     const PROPERTY_TYPE_LABELS = {
         residential: 'Rezidenciale',
         commercial: 'Komerciale',
-        land: 'Toke',
-        others: 'Te tjera',
+        land: 'Tokë',
+        others: 'Të tjera',
     };
     return (
         <div className="grid grid-cols-1 bg-white shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-200">
 
             {/* CONTENT */}
-            <div className=" grid grid-cols-1 p-5 space-y-3">
+            <div className="grid grid-cols-1 p-5 space-y-3">
 
                 {/* TITLE */}
                 <div className="flex justify-between items-center gap-2">
                     <div>
                         <Tag size={16} className="text-gray-500"/>
                         <span className="text-sm uppercase text-gray-600">
-                        {type_of_sale === "sale" ? "Në Shitje" : "Me Qira"}
-                    </span>
+                            {type_of_sale === "sale" ? "Në Shitje" : "Me Qira"}
+                        </span>
                     </div>
                     <span
                         className="bg-black/70 backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg">
-                    {price.toLocaleString()}-{price_2.toLocaleString()} {currency}
-                </span>
+                        {price.toLocaleString()}-{price_2.toLocaleString()} {currency}
+                    </span>
                 </div>
 
                 {/* LOCATION */}
@@ -74,8 +75,6 @@ const PropertyItem = ({ id, city, street, surface, surface_2, total_rooms, total
                     <span className="flex items-center gap-1">
                         <Layers size={16}/> Kati {floor_number}
                     </span>
-
-
                 </div>
 
                 {/* DESCRIPTION */}
@@ -89,7 +88,7 @@ const PropertyItem = ({ id, city, street, surface, surface_2, total_rooms, total
                                 onClick={() => onEdit?.(id)}
                                 className="flex-1 text-sm border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
                             >
-                                Edit
+                                Ndrysho
                             </button>
                         )}
 
@@ -98,7 +97,7 @@ const PropertyItem = ({ id, city, street, surface, surface_2, total_rooms, total
                                 onClick={() => onDelete?.(id)}
                                 className="flex-1 text-sm border border-red-300 text-red-600 rounded-lg py-2 hover:bg-red-50 transition"
                             >
-                                Delete
+                                Fshi
                             </button>
                         )}
                     </div>

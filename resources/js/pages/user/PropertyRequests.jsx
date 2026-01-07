@@ -11,7 +11,7 @@ const PropertyRequests = ({ propertyRequests }) => {
         max_price: '',
         rooms: '',
     });
-    const [filterModalOpen, setFilterModalOpen] = useState(false)
+    const [filterModalOpen, setFilterModalOpen] = useState(false);
 
     const clearFilter = (key) => {
         setFilters((prev) => ({
@@ -47,12 +47,12 @@ const PropertyRequests = ({ propertyRequests }) => {
     return (
         <div className="grid grid-cols-1">
             <div className="bg-white shadow px-4 pb-4 rounded-xl mb-4">
-                <h4 className="pb-4 text-2xl font-bold">Kerkesat e Pronave</h4>
+                <h4 className="pb-4 text-2xl font-bold">Kërkesat e Pronave</h4>
                 {/* Search Bar */}
                 <div className="flex gap-2">
                     <input
                         type="text"
-                        placeholder="Search by city, zone, street..."
+                        placeholder="Kërko sipas qytetit, zonës, rrugës..."
                         value={filters.search}
                         onChange={(e) => handleChange("search", e.target.value)}
                         className="flex-grow border rounded-lg p-3"
@@ -61,9 +61,8 @@ const PropertyRequests = ({ propertyRequests }) => {
                         onClick={submitSearch}
                         className="px-5 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                     >
-                        Kerko
+                        Kërko
                     </button>
-
                 </div>
 
                 <div className="flex flex-wrap gap-2 mt-3">
@@ -71,37 +70,35 @@ const PropertyRequests = ({ propertyRequests }) => {
                         onClick={() => setFilterModalOpen(true)}
                         className="hover:bg-gray-100 underline"
                     >
-                        Shfaq me shum filtra
+                        Shfaq më shumë filtra
                     </button>
                     {Object.entries(filters).map(([key, value]) =>
-                            value && key !== "search" ? (
-                                <div
-                                    key={key}
-                                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full flex items-center gap-2"
+                        value && key !== "search" ? (
+                            <div
+                                key={key}
+                                className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full flex items-center gap-2"
+                            >
+                                <span>
+                                    {key.replace("_", " ")}: {value}
+                                </span>
+                                <button
+                                    onClick={() => clearFilter(key)}
+                                    className="text-blue-700 font-bold hover:text-red-600"
                                 >
-                    <span>
-                        {key.replace("_", " ")}: {value}
-                    </span>
-                                    <button
-                                        onClick={() => clearFilter(key)}
-                                        className="text-blue-700 font-bold hover:text-red-600"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                            ) : null
+                                    ✕
+                                </button>
+                            </div>
+                        ) : null
                     )}
                 </div>
             </div>
             {filterModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
                     <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-lg">
-
-                        <h2 className="text-lg font-bold mb-4">More Filters</h2>
-
+                        <h2 className="text-lg font-bold mb-4">Filtra të tjerë</h2>
                         {/* Min Price */}
                         <div className="mb-3">
-                            <label className="text-sm text-gray-700">Min Price</label>
+                            <label className="text-sm text-gray-700">Çmimi Minimal</label>
                             <input
                                 type="number"
                                 value={filters.min_price}
@@ -109,10 +106,9 @@ const PropertyRequests = ({ propertyRequests }) => {
                                 className="w-full border rounded-lg p-2 mt-1"
                             />
                         </div>
-
                         {/* Max Price */}
                         <div className="mb-3">
-                            <label className="text-sm text-gray-700">Max Price</label>
+                            <label className="text-sm text-gray-700">Çmimi Maksimal</label>
                             <input
                                 type="number"
                                 value={filters.max_price}
@@ -120,10 +116,9 @@ const PropertyRequests = ({ propertyRequests }) => {
                                 className="w-full border rounded-lg p-2 mt-1"
                             />
                         </div>
-
                         {/* Rooms */}
                         <div className="mb-3">
-                            <label className="text-sm text-gray-700">Rooms</label>
+                            <label className="text-sm text-gray-700">Numri i Dhomave</label>
                             <input
                                 type="number"
                                 value={filters.rooms}
@@ -131,95 +126,84 @@ const PropertyRequests = ({ propertyRequests }) => {
                                 className="w-full border rounded-lg p-2 mt-1"
                             />
                         </div>
-
                         {/* Buttons */}
                         <div className="flex justify-end gap-3 mt-5">
                             <button
                                 onClick={() => setFilterModalOpen(false)}
                                 className="px-4 py-2 border rounded-lg"
                             >
-                                Close
+                                Mbyll
                             </button>
-
                             <button
                                 onClick={applyFilters}
                                 className="px-4 py-2 bg-blue-500 text-white rounded-lg"
                             >
-                                Apply Filters
+                                Apliko Filtrat
                             </button>
                         </div>
                     </div>
                 </div>
             )}
             <div className="grid justify-items-center p-4">
-                <Link href="/property/request/create"
-                      className=" inline-flex items-center justify-center
-                            px-5 py-2.5
-                            rounded-xl
-                            font-semibold
-                            text-white
-                            bg-indigo-600
-                            hover:bg-indigo-700
-                            active:bg-indigo-800
-                            transition-all duration-200
-                            shadow-sm hover:shadow
-                            focus:outline-none focus:ring-2 focus:ring-indigo-400
-                            "
+                <Link
+                    href="/property/request/create"
+                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-all duration-200 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 >
-                    Shto nje kerkese te re
-
+                    Shto një kërkesë të re
                 </Link>
             </div>
-
             <div className="p-4">
-                <h2 className="font-bold text-lg">Kerkesat e listuara</h2>
+                <h2 className="font-bold text-lg">Kërkesat e listuara</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {propertyRequests.data.map(p => (
-                        <PropertyRequestItem key={p.id} {...p} canEdit={true} canDelete={true}
-                              onEdit={() => {
-                                  router.get(`/property/request/${p.id}/edit`);
-                              }}
-                              onDelete={() => {
-                                  Swal.fire({
-                                      title: 'A jeni i sigurt?',
-                                      text: 'Kjo Kerkese do te fshihet pergjithmone.',
-                                      icon: 'warning',
-                                      showCancelButton: true,
-                                      confirmButtonColor: '#dc2626',
-                                      cancelButtonColor: '#6b7280',
-                                      confirmButtonText: 'Po, fshije',
-                                      cancelButtonText: 'Anullo',
-                                      reverseButtons: true,
-                                  }).then((result) => {
-                                      if (!result.isConfirmed) return;
-                                      router.delete(`/property/request/${p.id}`, {
-                                          id: p.id,
-                                      },{
-                                          onSuccess: () => {
-                                              Swal.fire({
-                                                  icon: 'success',
-                                                  title: 'Kerkesa u fshi',
-                                                  timer: 1200,
-                                                  showConfirmButton: false,
-                                              });
-                                          },
-                                          onError: () => {
-                                              Swal.fire({
-                                                  icon: 'error',
-                                                  title: 'Gabim',
-                                                  text: 'Ndodhi nje problem gjate fshirjes.',
-                                              });
-                                          },
-                                      });
-                                  });
-                              }}
+                        <PropertyRequestItem
+                            key={p.id}
+                            {...p}
+                            canEdit={true}
+                            canDelete={true}
+                            onEdit={() => {
+                                router.get(`/property/request/${p.id}/edit`);
+                            }}
+                            onDelete={() => {
+                                Swal.fire({
+                                    title: 'A jeni i sigurt?',
+                                    text: 'Kjo kërkesë do të fshihet përgjithmonë.',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#dc2626',
+                                    cancelButtonColor: '#6b7280',
+                                    confirmButtonText: 'Po, fshije',
+                                    cancelButtonText: 'Anullo',
+                                    reverseButtons: true,
+                                }).then((result) => {
+                                    if (!result.isConfirmed) return;
+                                    router.delete(`/property/request/${p.id}`, {
+                                        id: p.id,
+                                    }, {
+                                        onSuccess: () => {
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Kërkesa u fshi',
+                                                timer: 1200,
+                                                showConfirmButton: false,
+                                            });
+                                        },
+                                        onError: () => {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Gabim',
+                                                text: 'Ndodhi një problem gjatë fshirjes.',
+                                            });
+                                        },
+                                    });
+                                });
+                            }}
                         />
                     ))}
                 </div>
             </div>
         </div>
-
-    )
-}
+    );
+};
 
 export default PropertyRequests;

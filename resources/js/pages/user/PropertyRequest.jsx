@@ -473,7 +473,7 @@ export default function PropertyRequest() {
                                 type="checkbox"
                                 checked={data.architect}
                                 onChange={(e) => {
-                                    setData('', e.target.checked);
+                                    setData('architect', e.target.checked);
                                 }}
                             />
                             <span className="text-gray-700">
