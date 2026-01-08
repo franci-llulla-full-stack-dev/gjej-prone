@@ -109,6 +109,7 @@ class PropertyController extends Controller
     public function show(Property $property)
     {
         $user = auth()->user();
+        $this->propertyServices->logView($property->id);
         if($user->role->name === 'user') {
             $property->update(['views' => $property->views + 1]);
         }

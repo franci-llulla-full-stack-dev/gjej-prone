@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Property extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'properties';
 
@@ -42,6 +43,8 @@ class Property extends Model
         'ashensor',
         'hipoteke',
         'virtual_tour_link',
+        'virtual_tour_done',
+        'rivleresim_done'
     ];
 
     public function owner(): BelongsTo

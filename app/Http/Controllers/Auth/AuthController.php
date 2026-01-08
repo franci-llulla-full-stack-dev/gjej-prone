@@ -31,7 +31,7 @@ class AuthController extends Controller
             return redirect()->route(redirectByRole());
         }
         return back()->withErrors([
-            'email' => 'These credentials do not match our records.',
+            'email' => 'Këto kredenciale nuk përputhen me të dhënat tona.',
         ]);
     }
 
@@ -47,7 +47,7 @@ class AuthController extends Controller
             ->where('name', $validatedData['user_type'])
             ->where('name', '!=', 'admin')
             ->first();
-        if(!$role) return back()->withErrors("Invalid information.");
+        if(!$role) return back()->withErrors("Informacion i pavlefshëm.");
         $user = $role->users()->create([
             'name' => $validatedData['name'],
             'surname' => $validatedData['surname'],
@@ -59,7 +59,7 @@ class AuthController extends Controller
         ]);
 
         if(!$user){
-           return back()->withErrors("Something went wrong.");
+            return back()->withErrors("Diçka shkoi keq.");
         }
         $user->notify(new CustomVerifyEmail($user));
         auth()->login($user);
@@ -79,16 +79,16 @@ class AuthController extends Controller
     public function verifyEmail(Request $request, $id, $hash)
     {
         if (! $request->hasValidSignature()) {
-            abort(403, 'Invalid or expired verification link.');
+            abort(403, 'Linku i verifikimit është i pavlefshëm ose ka skaduar.');
         }
         if (! hash_equals(hash_hmac('sha256', $id, config('app.key')), $hash)) {
-            abort(403, 'Invalid verification link.');
+            abort(403, 'Linku i verifikimit është i pavlefshëm.');
         }
 
         $user = User::findOrFail($id);
         $user->update(['email_verified_at' => now()]);
 
-        return redirect()->route(redirectByRole())->with('status', 'Email verified successfully. Please log in.');
+        return redirect()->route(redirectByRole())->with('status', 'Email-i u verifikua me sukses. Ju lutemi, hyni në llogari.');
     }
 
     public function forgotPassword()

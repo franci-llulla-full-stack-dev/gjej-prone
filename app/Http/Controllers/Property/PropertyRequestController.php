@@ -125,6 +125,7 @@ class PropertyRequestController
                 abort(403);
             }
         }
+        $this->requestServices->logView($propertyRequest->id);
         $actualContact = '';
         if($user->role->name === 'admin') {
             $actualContact = $propertyRequest->user->phone_number;

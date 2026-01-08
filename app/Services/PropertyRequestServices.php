@@ -115,4 +115,15 @@ class PropertyRequestServices
 
         return [$query, $users];
     }
+
+    public function logView($propertyRequestId)
+    {
+        $user = auth()->user();
+        if($user->role->name !== 'user' && $user->role->name !== 'admin') {
+            $user->logs()->create([
+                'action_type' => 'viewed_property_listing',
+                'property_request_id' => $propertyId,
+            ]);
+        }
+    }
 }

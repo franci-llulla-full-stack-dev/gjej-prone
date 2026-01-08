@@ -59,4 +59,14 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Fjalekalimi u ndryshua me sukses.');
     }
+
+    public function deleteAccount()
+    {
+        $user = auth()->user();
+        $user->delete();
+
+        auth()->logout();
+
+        return redirect()->route('landing')->with('success', 'Llogaria juaj u fshi me sukses.');
+    }
 }

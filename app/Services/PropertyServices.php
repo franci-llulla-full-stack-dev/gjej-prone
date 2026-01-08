@@ -14,8 +14,8 @@ class PropertyServices
             'ALL' => 96
         ];
         $user = auth()->user();
-
-        $query = Property::with('images');
+        $query = Property::with('images')
+            ->where('verified', true);
         if($user && $user->role->name !== 'user') {
             $query->where('user_id', $user->id);
         }
@@ -134,6 +134,17 @@ class PropertyServices
                 'path' => $path,
                 'file_name' => $image->getClientOriginalName(),
                 'file_type' => $image->getClientMimeType(),
+            ]);
+        }
+    }
+
+    public function logView($propertyId)
+    {
+        $user = auth()->user();
+        if($user->role->name === 'user') {
+            $user->logs()->create([
+                'action_type' => 'viewed_property_listing',
+                'property_id' => $propertyId,
             ]);
         }
     }

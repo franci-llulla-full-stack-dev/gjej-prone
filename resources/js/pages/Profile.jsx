@@ -2,7 +2,7 @@ import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
 import { useForm } from '@inertiajs/react';
 import React from 'react';
-
+import Swal from 'sweetalert2';
 const Profile = ({ user }) => {
 
     const profileForm = useForm({
@@ -45,6 +45,32 @@ const Profile = ({ user }) => {
                     'new_password',
                     'new_password_confirmation');
             },
+        });
+    };
+
+    const handleDeleteAccount = () => {
+        Swal.fire({
+            title: 'Jeni i sigurt?',
+            text: 'Fshirja e llogarisë tuaj mund të zgjasë deri në 7 ditë. Ky veprim nuk mund të zhbëhet!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Po, fshije llogarinë!',
+            cancelButtonText: 'Anulo',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send delete request
+                profileForm.delete('/delete-account', {
+                    onSuccess: () => {
+                        Swal.fire(
+                            'Fshirë!',
+                            'Llogaria juaj është shënuar për fshirje.',
+                            'success'
+                        );
+                    },
+                });
+            }
         });
     };
     return (
@@ -199,6 +225,14 @@ const Profile = ({ user }) => {
                     Ruaj Ndryshimet
                 </button>
             </form>
+
+            <button
+                type="button"
+                onClick={handleDeleteAccount}
+                className="mt-4 px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+                Fshij Llogarinë
+            </button>
             </div>
     );
 };
