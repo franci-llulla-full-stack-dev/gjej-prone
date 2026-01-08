@@ -75,6 +75,9 @@ const Properties = ({ properties }) => {
                                     router.post(`/properties/${p.id}/delete`);
                                 });
                             }}
+                            onToggleSold={() => {
+                                router.put(`/properties/${p.id}/toggle-sold`);
+                            }}
                         />
                     ))}
                 </div>

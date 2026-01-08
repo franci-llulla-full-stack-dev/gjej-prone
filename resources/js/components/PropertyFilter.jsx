@@ -15,7 +15,25 @@ const PropertyFilter = ({
             [key]: value,
         }));
     };
-
+    const subTypeProperties = {
+        Rezidenciale: [
+            { value: 'apartment', label: 'Apartament' },
+            { value: 'house', label: 'Shtëpi Private' },
+            { value: 'kategori te tjera', label: 'Kategori të tjera' },
+        ],
+        Komerciale: [
+            { value: 'office', label: 'Zyrë' },
+            { value: 'warehouse', label: 'Magazinë' },
+        ],
+        Tokë: [
+            { value: 'agricultural', label: 'Tokë Bujqësore' },
+            { value: 'truall', label: 'Truall' },
+        ],
+        Tjera: [
+            { value: 'parkim', label: 'Parkim' },
+            { value: 'kategori_te_tjera', label: 'Kategori të tjera' },
+        ],
+    };
     const toggleArray = (key, value) => {
         setFilters(prev => {
             const arr = prev[key] || [];
@@ -148,17 +166,20 @@ const PropertyFilter = ({
                         <div className="mb-4">
                             <label className="font-semibold">Lloji i Pronës</label>
                             <div className="grid grid-cols-2 gap-2 mt-2">
-                                {["Apartament", "Shtëpi", "Vilë", "Komerciale"].map((t, i) => (
-                                    <label key={t} className="flex items-center gap-2">
-                                        <input
-                                            type="checkbox"
-                                            checked={filters.types?.includes(
-                                                ["Apartment", "House", "Villa", "Commercial"][i]
-                                            )}
-                                            onChange={() => toggleArray("types", ["Apartment", "House", "Villa", "Commercial"][i])}
-                                        />
-                                        {t}
-                                    </label>
+                                {Object.entries(subTypeProperties).map(([category, subTypes]) => (
+                                    <div key={category}>
+                                        <h5 className="font-bold capitalize">{category}</h5>
+                                        {subTypes.map(subType => (
+                                            <label key={subType.value} className="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={filters.types?.includes(subType.value)}
+                                                    onChange={() => toggleArray("types", subType.value)}
+                                                />
+                                                {subType.label}
+                                            </label>
+                                        ))}
+                                    </div>
                                 ))}
                             </div>
                         </div>

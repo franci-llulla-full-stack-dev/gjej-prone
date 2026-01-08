@@ -39,6 +39,10 @@ class PropertyController extends Controller
 
     public function listedProperties(FilterRequest $request)
     {
+        $user = auth()->user();
+        if($user && ($user->role->name === 'individual' || $user->role->name === 'agency' || $user->role->name === 'bank')) {
+            return redirect()->route('properties.index');
+        }
         $validated = $request->validated();
         $query = $this->propertyServices->filterProperties($validated);
         $properties = $query->paginate(20);
@@ -46,6 +50,12 @@ class PropertyController extends Controller
             'properties' => $properties,
             'filters' => request()->all(),
         ]);
+    }
+
+    public function toggleSold(Property $property)
+    {
+        $property->update(['sold' => !$property->sold]);
+        return back();
     }
 
     public function store(CreatePropertyRequest $request)
@@ -92,6 +102,21 @@ class PropertyController extends Controller
         if($property->user_id !== auth()->id()) {
             return redirect()->route(redirectByRole())
                 ->with(['error' => 'You are not authorized to delete this property.']);
+        }
+        $media = $property->images()->get();
+        $documents = $property->documents()->get();
+        if($media) {
+            foreach ($media as $mediaItem) {
+                Storage::disk('public')->delete($mediaItem->path);
+                $mediaItem->delete();
+            }
+        }
+
+        if($documents) {
+            foreach ($documents as $document) {
+                Storage::disk('public')->delete($document->path);
+                $document->delete();
+            }
         }
         $property->delete();
         return redirect()->route('properties.index')

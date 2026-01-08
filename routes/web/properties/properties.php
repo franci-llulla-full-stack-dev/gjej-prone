@@ -13,6 +13,7 @@ Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])->c
     Route::get('/properties/{property}/edit', 'edit')->name('properties.edit');
     Route::put('/properties/{property}', 'update')->name('properties.update');
     Route::post('/properties/{property}/delete', 'destroy')->name('properties.destroy');
+    Route::put('/properties/{property}/toggle-sold', 'toggleSold')->name('properties.sold');
 });
 
 Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])->controller(PropertyMediaController::class)->group(function () {

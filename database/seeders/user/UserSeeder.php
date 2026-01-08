@@ -35,11 +35,12 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('1999f.l.1221.'),
             ]
         );
-        $adminRole->users()->updateOrCreate(
+        User::updateOrCreate(
             [
                 'email' => 'egiobeshi@gmail.com'
             ],
             [
+                'role_id' => $adminRole->id,
                 'name' => 'Egio',
                 'surname' => 'Beshi',
                 'phone_number' => '+355697727747',
@@ -49,11 +50,12 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $userRole->users()->updateOrCreate(
+        User::updateOrCreate(
             [
                 'email' => 'user@gmail.com'
             ],
             [
+                'role_id' => $userRole->id,
                 'name' => 'User',
                 'surname' => 'Role',
                 'phone_number' => '+355697727747',
@@ -63,11 +65,12 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $individualRole->users()->updateOrCreate(
+        User::updateOrCreate(
             [
                 'email' => 'individual@gmail.com'
             ],
             [
+                'role_id' => $individualRole->id,
                 'name' => 'Individual',
                 'surname' => 'Role',
                 'phone_number' => '+355697727747',
@@ -77,11 +80,12 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $bankRole->users()->updateOrCreate(
+        User::updateOrCreate(
             [
                 'email' => 'bank@gmail.com'
             ],
             [
+                'role_id' => $bankRole->id,
                 'name' => 'Bank',
                 'surname' => 'Role',
                 'phone_number' => '+355697727747',
@@ -91,11 +95,12 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $agencyRole->users()->updateOrCreate(
+        User::updateOrCreate(
             [
                 'email' => 'agency@gmail.com'
             ],
             [
+                'role_id' => $agencyRole->id,
                 'name' => 'Agency',
                 'surname' => 'Role',
                 'phone_number' => '+355697727747',

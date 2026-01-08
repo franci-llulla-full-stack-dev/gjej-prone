@@ -14,10 +14,12 @@ class PropertyServices
             'ALL' => 96
         ];
         $user = auth()->user();
-        $query = Property::with('images')
-            ->where('verified', true);
+        $query = Property::with('images');
+
         if($user && $user->role->name !== 'user') {
             $query->where('user_id', $user->id);
+        }else {
+            $query->where('verified', true);
         }
         if(isset($validated['search'])) {
             $query = $query->where(function ($q) use ($validated) {

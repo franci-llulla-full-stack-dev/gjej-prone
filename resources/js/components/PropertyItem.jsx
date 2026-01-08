@@ -14,7 +14,7 @@ import {
 const PropertyItem = ({
                           id, city, street, surface, total_rooms, total_bathrooms, total_balconies, verified,
                           total_floors, views, floor_number, year_built, description, price, currency, type_of_sale, virtual_tour, rivleresim, combo_package, property_type, image_paths = [],
-                          canEdit = false, canDelete = false, onEdit = null, onDelete = null,
+                          canEdit = false, canDelete = false, onEdit = null, onDelete = null, sold, onToggleSold = null,
                       }) => {
     const PROPERTY_TYPE_LABELS = {
         residential: 'Rezidenciale',
@@ -144,6 +144,18 @@ const PropertyItem = ({
                             >
                                 Fshi
                             </button>
+                        )}
+                        {canEdit && (
+
+                                <button
+                                    onClick={() => onToggleSold?.(id, !sold)}
+                                    className={`flex-1 text-sm border ${
+                                        sold ? "border-green-300 text-green-600 rounded-lg py-2 hover:bg-green-50 transition" : "border-blue-300 text-blue-600 rounded-lg py-2 hover:bg-blue-50 transition"
+                                    }`}
+                                >
+                                    {sold ? "Shëno si e Disponueshme" : "Shëno si e Shitur"}
+                                </button>
+
                         )}
                     </div>
                 )}

@@ -61,7 +61,9 @@ class AuthController extends Controller
         if(!$user){
             return back()->withErrors("Diçka shkoi keq.");
         }
-        $user->notify(new CustomVerifyEmail($user));
+        dispatch(function () use ($user) {
+            $user->notify(new CustomVerifyEmail($user));
+        });
         auth()->login($user);
 
         session()->flash('success', 'Regjistrimi u krye me sukses!');
@@ -108,8 +110,9 @@ class AuthController extends Controller
         }
 
         $token = app('auth.password.broker')->createToken($user);
-
-        $user->notify(new ResetPasswordAl($token));
+        dispatch(function () use ($user, $token) {
+            $user->notify(new ResetPasswordAl($token));
+        });
 
         return back()->with('success', 'Email për rivendosjen e fjalëkalimit u dërgua me sukses!');
     }
