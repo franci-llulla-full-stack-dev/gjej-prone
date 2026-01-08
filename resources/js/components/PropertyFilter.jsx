@@ -1,9 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import AsyncSelect from 'react-select/async';
 
 const PropertyFilter = ({
                             filters,
                             setFilters,
                             onApply,
+                            users = []
                         }) => {
     const [open, setOpen] = useState(false);
 
@@ -25,10 +27,20 @@ const PropertyFilter = ({
             };
         });
     };
-
+    const loadUserOptions = (inputValue, callback) => {
+        const filteredUsers = users
+            .filter(user =>
+                `${user.name} ${user.surname}`.toLowerCase().includes(inputValue.toLowerCase())
+            )
+            .map(user => ({
+                value: user.id,
+                label: `${user.name} ${user.surname}`,
+            }));
+        callback(filteredUsers);
+    };
     return (
         <div className="bg-white shadow px-4 pb-4 rounded-xl mb-4">
-            <h4 className="pb-4 text-2xl font-bold">Kërko Pronat</h4>
+            <h4 className="pb-4 text-2xl font-bold">Kërko</h4>
 
             {/* Search */}
             <div className="flex gap-2">
@@ -61,7 +73,28 @@ const PropertyFilter = ({
                     <div className="bg-white rounded-xl p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
 
                         <h3 className="font-bold text-lg mb-4">Filtra të Avancuar</h3>
-
+                        {users.length > 0 && (
+                            <div className="mb-4">
+                                <label className="font-semibold">Zgjidh Përdoruesin</label>
+                                <AsyncSelect
+                                    cacheOptions
+                                    loadOptions={loadUserOptions}
+                                    defaultOptions={users.map(user => ({
+                                        value: user.id,
+                                        label: `${user.name} ${user.surname}`,
+                                    }))}
+                                    value={    filters.user_id
+                                        ? users.find(user => user.id === filters.user_id)
+                                            ? { value: filters.user_id, label: `${users.find(user => user.id === filters.user_id).name} ${users.find(user => user.id === filters.user_id).surname}` }
+                                            : null
+                                        : null
+                                    }
+                                    onChange={e => update("user_id", e.target.value)}
+                                    placeholder="Kërko përdoruesin..."
+                                    classNamePrefix="react-select"
+                                />
+                            </div>
+                        )}
                         {/* PRICE RANGE */}
                         <div className="mb-4">
                             <label className="font-semibold">Intervali i Çmimit</label>

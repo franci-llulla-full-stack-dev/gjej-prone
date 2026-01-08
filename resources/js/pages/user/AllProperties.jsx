@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropertyItem from '../../components/PropertyItem.jsx';
 import { Link, router } from '@inertiajs/react';
 import PropertyFilter from '../../components/PropertyFilter.jsx';
-
+import Pagination  from '../../components/Pagination.jsx';
 const AllProperties = ({ properties }) => {
     const [filters, setFilters] = useState({
         search: '',
@@ -51,6 +51,9 @@ const AllProperties = ({ properties }) => {
                                 Nuk ka prona të listuara.
                             </div>
                         )}
+                    </div>
+                    <div className="mt-6">
+                        <Pagination links={properties.links} />
                     </div>
                 </div>
             </div>

@@ -2,39 +2,40 @@
 
 namespace App\Http\Controllers\Property;
 
+use App\Http\Requests\FilterRequest;
 use App\Http\Requests\Property\CreatePropertyRequestRequest;
 use App\Models\PropertyRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\PropertyRequestServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PropertyRequestController
 {
-    public function index(Request $request)
+    public function __construct(private PropertyRequestServices $requestServices)
     {
-        $user = auth()->user();
-        $role = $user->role->name;
-        if($role === 'admin') {
-            $query = PropertyRequest::query();
-        }else {
-            $query = PropertyRequest::where('user_id', $user->id);
-        }
+    }
+
+    public function index(FilterRequest $request)
+    {
+        [$query, $users] = $this->requestServices->filterRequests($request->validated());
         $propertyRequests = $query->latest()
-            ->paginate(12);
+            ->paginate(20);
 
         return Inertia::render('user/PropertyRequests', [
             'propertyRequests' => $propertyRequests,
+            'users' => $users,
         ]);
     }
 
-    public function showAll(Request $request)
+    public function showAll(FilterRequest $request)
     {
         $user = auth()->user();
         if($user->role->name === 'user') {
             abort(403);
         }
-        $query = PropertyRequest::query();
+        [$query] = $this->requestServices->filterRequests($request->validated());
         $propertyRequests = $query->paginate($request->perPage ?? 12);
 
         return Inertia::render('seller/PropertyRequests', [
