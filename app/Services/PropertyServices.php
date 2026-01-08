@@ -19,7 +19,15 @@ class PropertyServices
         if($user && $user->role->name !== 'user') {
             $query->where('user_id', $user->id);
         }else {
-            $query->where('verified', true);
+            $query->where('verified', true)
+                ->orderByRaw("
+            CASE
+                WHEN combo_package = true OR (virtual_tour = true AND rivleresim = true) THEN 1
+                WHEN virtual_tour = true THEN 2
+                WHEN rivleresim = true THEN 3
+                ELSE 4
+            END
+        ");
         }
         if(isset($validated['search'])) {
             $query = $query->where(function ($q) use ($validated) {

@@ -408,7 +408,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
 
     return (
         <div className="pt-20 bg-gray-50 min-h-screen">
-            <main className="max-w-4xl mx-auto px-4 pb-20">
+            <main className="max-w-4xl mx-auto px-1 pb-20">
                 <h1 className="text-3xl font-bold mb-5 pt-4 text-gray-800 opacity-0 animate-fade-in-up">
                     Përditëso Pronën
                 </h1>
@@ -581,15 +581,18 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
 
                         <div>
                             <label className={labelBase}>Çmimi \*</label>
-                            <div className="flex items-center">
-                                <input
-                                    className={inputBase}
-                                    type="number"
-                                    value={data.price}
-                                    onChange={(e) => setData('price', e.target.value)}
-                                    placeholder="Çmimi"
-                                    autoComplete="off"
-                                />
+                            <div className="grid grid-cols-3 items-center">
+                                <div className="col-span-2">
+                                    <input
+                                        className={inputBase }
+                                        type="number"
+                                        value={data.price}
+                                        onChange={(e) => setData('price', e.target.value)}
+                                        placeholder="Çmimi"
+                                        autoComplete="off"
+                                    />
+                                </div>
+
                                 <Select
                                     name="currency"
                                     className="mt-1 min-w-24"
@@ -653,7 +656,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                                         <button
                                             type="button"
                                             onClick={() => removeImage(index)}
-                                            className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center opacity-80 hover:opacity-100"
+                                            className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs text-center opacity-80 hover:opacity-100"
                                         >
                                             ✕
                                         </button>

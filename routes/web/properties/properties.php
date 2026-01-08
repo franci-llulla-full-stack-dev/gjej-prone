@@ -28,7 +28,8 @@ Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])->
     Route::delete('/property/{property}/document/plan/{propertyDocument}', 'destroyPlan');
 });
 
-Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('auth')->name('properties.show');
+Route::get('/properties/{property}', [PropertyController::class, 'show'])
+    ->middleware('auth')->name('properties.show');
 
 Route::controller(PropertyController::class)->group(function () {
    Route::get('/listed-properties', 'listedProperties')->name('properties.listed');
@@ -39,8 +40,10 @@ Route::middleware(['auth', 'role:admin'])->controller(AdminPropertyController::c
     Route::get('/admin/properties/create', 'create')->name('admin.properties.create');
     Route::post('/admin/properties', 'store')->name('admin.properties.store');
     Route::get('/admin/properties/{property}/edit', 'edit')->name('admin.properties.edit');
-    Route::put('/admin/properties/{property}', 'update')->name('admin.properties.update');
+    Route::put('/admin/properties/{property}/update', 'update')->name('admin.properties.update');
     Route::delete('/admin/properties/{property}', 'destroy')->name('admin.properties.destroy');
+    Route::post('/admin/properties/{id}/restore', 'restore')->name('admin.properties.restore');
+    Route::delete('/admin/properties/{id}/force-delete', 'forceDelete')->name('admin.properties.forceDelete');
 });
 Route::middleware(['auth', 'role:admin'])
     ->post('/admin/properties/{property}/verify', [PropertyController::class, 'verify'])

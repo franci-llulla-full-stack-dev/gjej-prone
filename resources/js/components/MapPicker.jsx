@@ -6,7 +6,7 @@ export default function MapPicker({ lat, lng, onSelect }) {
     const mapInstance = useRef(null);
     const markerRef = useRef(null);
 
-    // 1️⃣ Init map ONCE
+    // Init map ONCE
     useEffect(() => {
         mapInstance.current = L.map(mapRef.current).setView(
             [lat || 41.3275, lng || 19.8187],
@@ -22,24 +22,29 @@ export default function MapPicker({ lat, lng, onSelect }) {
 
             setMarker(lat, lng);
 
-            const res = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
-            );
-            const data = await res.json();
+            try {
+                const res = await fetch(
+                    `/api/reverse-geocode?lat=${lat}&lng=${lng}`
+                );
+                const data = await res.json();
 
-            const road =
-                data?.address?.road ||
-                data?.address?.neighbourhood ||
-                data?.address?.suburb ||
-                "";
+                const road =
+                    data?.address?.road ||
+                    data?.address?.neighbourhood ||
+                    data?.address?.suburb ||
+                    "";
 
-            onSelect({ lat, lng, road });
+                onSelect({ lat, lng, road });
+            } catch (error) {
+                console.error("Geocoding error:", error);
+                onSelect({ lat, lng, road: "" });
+            }
         });
 
         return () => mapInstance.current.remove();
     }, []);
 
-    // 2️⃣ Sync props → map
+    // Sync props → map
     useEffect(() => {
         if (!lat || !lng || !mapInstance.current) return;
 
@@ -47,7 +52,7 @@ export default function MapPicker({ lat, lng, onSelect }) {
         mapInstance.current.setView([lat, lng], 16);
     }, [lat, lng]);
 
-    // 3️⃣ Marker helper
+    // Marker helper
     const setMarker = (lat, lng) => {
         if (markerRef.current) {
             markerRef.current.setLatLng([lat, lng]);

@@ -16,84 +16,52 @@ const inputBase =
 
 const labelBase = 'block text-sm font-medium text-gray-700 mb-1';
 
-export default function AddProperty({ users = [] }) {
-    const { data, setData, post, processing, errors } = useForm({
-        user_id: '',
-        type_of_sale: '',
-        property_type: '',
-        property_category: '',
-        city: '',
-        street: '',
-        surface: '',
-        price: '',
-        ashensor: false,
-        hipoteke: false,
-        floor_plan: [],
-        currency: 'EUR',
-        description: '',
-        total_rooms: '',
-        total_bathrooms: '',
-        total_balconies: '',
-        floor_number: '',
-        total_floors: '',
-        year_built: '',
-        latitude: '',
-        longitude: '',
-        virtual_tour_link: '',
-        images: [],
-        virtual_tour: false,
-        rivleresim: false,
-        combo_package: false,
-        virtual_tour_done: false,
-        rivleresim_done: false,
-        hipoteke_file: [],
-        verified: false,
+export default function EditProperty({ property, users = [] }) {
+    const { data, setData, put, processing, errors } = useForm({
+        user_id: property.user_id || '',
+        type_of_sale: property.type_of_sale || '',
+        property_type: property.property_type || '',
+        property_category: property.property_category || '',
+        city: property.city || '',
+        street: property.street || '',
+        surface: property.surface || '',
+        price: property.price || '',
+        ashensor: property.ashensor || false,
+        hipoteke: property.hipoteke || false,
+        currency: property.currency || 'EUR',
+        description: property.description || '',
+        total_rooms: property.total_rooms || '',
+        total_bathrooms: property.total_bathrooms || '',
+        total_balconies: property.total_balconies || '',
+        floor_number: property.floor_number || '',
+        total_floors: property.total_floors || '',
+        year_built: property.year_built || '',
+        latitude: property.latitude || '',
+        longitude: property.longitude || '',
+        virtual_tour_link: property.virtual_tour_link || '',
+        virtual_tour: property.virtual_tour || false,
+        rivleresim: property.rivleresim || false,
+        combo_package: property.combo_package || false,
+        virtual_tour_done: property.virtual_tour_done || false,
+        rivleresim_done: property.rivleresim_done || false,
+        verified: property.verified || false,
+        _method: 'PUT',
     });
 
-    const [coords, setCoords] = useState({ lat: null, lng: null });
-    const [selectedBashki, setSelectedBashki] = useState(null);
-    const [images, setImages] = useState([]);
+    const [coords, setCoords] = useState({
+        lat: property.latitude || null,
+        lng: property.longitude || null,
+    });
+    const [selectedBashki, setSelectedBashki] = useState(
+        property.city ? { value: property.city, label: property.city } : null
+    );
 
-    const MAX_FILES = 10;
-    const MAX_SIZE_MB = 5;
 
     const saleOptions = [
         { value: '', label: 'Zgjidh Llojin e Transaksionit' },
         { value: 'sale', label: 'Shitje' },
         { value: 'rent', label: 'Qira' },
     ];
-
-    function handleImages(files) {
-        const arr = Array.from(files);
-        const newImages = [];
-
-        arr.forEach(file => {
-            if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-                return toast.error(`Foto "${file.name}" është më e madhe se ${MAX_SIZE_MB}MB`);
-            }
-
-            newImages.push({
-                file,
-                preview: URL.createObjectURL(file),
-            });
-        });
-
-        const combined = [...images, ...newImages];
-
-        if (combined.length > MAX_FILES) {
-            return toast.error(`Maksimumi lejohet ${MAX_FILES} foto`);
-        }
-
-        setImages(combined);
-        setData('images', combined.map(item => item.file));
-        toast.success('Fotot u ngarkuan!');
-    }
-
-    function removeImage(index) {
-        const updated = images.filter((_, i) => i !== index);
-        setImages(updated);
-        setData('images', updated.map(item => item.file));
-    }
 
     const typeOfProperties = [
         { value: 'residential', label: 'Rezidenciale' },
@@ -106,7 +74,7 @@ export default function AddProperty({ users = [] }) {
         residential: [
             { value: 'apartment', label: 'Apartament' },
             { value: 'house', label: 'Shtëpi Private' },
-            { value: 'kategori te tjera', label: 'Kategori të tjera' },
+            { value: 'kategori te tjere', label: 'Kategori të tjera' },
         ],
         commercial: [
             { value: 'office', label: 'Zyrë' },
@@ -178,23 +146,20 @@ export default function AddProperty({ users = [] }) {
 
     const handleSubmit = e => {
         e.preventDefault();
-        post('/admin/properties');
+        put(`/admin/properties/${property.id}/update`);
     };
 
     return (
         <div className="pt-5 bg-gray-50 min-h-screen">
             <Box sx={{ mx: { xs: 2, sm: 10, md: 20 }, mt: 2, mb: 3 }}>
-                <Button
-                    variant="outlined"
-                    onClick={() => router.get('/admin/properties')}
-                >
+                <Button variant="outlined" onClick={() => router.get('/admin/properties')}>
                     ← Kthehu tek Pronat
                 </Button>
             </Box>
 
             <main className="max-w-4xl mx-auto px-1 pb-20">
                 <h1 className="text-3xl font-bold mb-5 pt-4 text-gray-800">
-                    Shto Pronë të Re (Admin)
+                    Ndrysho Pronën
                 </h1>
 
                 <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
@@ -218,7 +183,7 @@ export default function AddProperty({ users = [] }) {
                                         : null
                                     : null
                             }
-                            onChange={(option) => setData('user_id', option ? option.value : '')}
+                            onChange={option => setData('user_id', option ? option.value : '')}
                             placeholder="Kërko përdoruesin..."
                             classNamePrefix="react-select"
                             isClearable
@@ -291,22 +256,6 @@ export default function AddProperty({ users = [] }) {
                             <ErrorText field="city" errors={errors} />
                         </div>
 
-                        <div className="mt-4">
-                            <label className={labelBase}>Vendndodhja në hartë *</label>
-                            <MapPicker
-                                lat={coords.lat}
-                                lng={coords.lng}
-                                onSelect={location => {
-                                    console.log('Selected location:', location);
-                                    setCoords({ lat: location.lat, lng: location.lng });
-                                    setData('latitude', location.lat);
-                                    setData('longitude', location.lng);
-                                    setData('street', location.road);
-                                }}
-                            />
-                            <ErrorText field="latitude" errors={errors} />
-                        </div>
-
                         <div>
                             <label className={labelBase}>Sipërfaqja *</label>
                             <input
@@ -323,7 +272,7 @@ export default function AddProperty({ users = [] }) {
 
                         <div>
                             <label className={labelBase}>Çmimi *</label>
-                            <div className="flex items-center gap-2">
+                            <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                                 <input
                                     className={inputBase}
                                     type="number"
@@ -335,7 +284,7 @@ export default function AddProperty({ users = [] }) {
                                 <Select
                                     name="currency"
                                     className="mt-1 min-w-24"
-                                    value={data.currency ? { value: data.currency, label: data.currency } : { value: 'EUR', label: 'EUR' }}
+                                    value={{ value: data.currency, label: data.currency }}
                                     onChange={selected => setData('currency', selected ? selected.value : '')}
                                     options={[
                                         { value: 'EUR', label: 'EUR' },
@@ -350,28 +299,19 @@ export default function AddProperty({ users = [] }) {
 
                         {renderDynamicFields(data.property_category, data, setData)}
 
-                        <div>
-                            <label className={labelBase}>Imazhe *</label>
-                            <input type="file" multiple accept="image/*" onChange={e => handleImages(e.target.files)} />
-                            {images.length < 2 && (
-                                <p className="text-red-500 text-sm mt-1">Duhet të ngarkoni të paktën 2 foto.</p>
-                            )}
-                            <ErrorText field="images" errors={errors} />
-
-                            <div className="grid grid-cols-3 gap-3 mt-4">
-                                {images.map((img, index) => (
-                                    <div key={index} className="relative group">
-                                        <img src={img.preview} className="w-full h-24 object-cover rounded-lg border" />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeImage(index)}
-                                            className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center opacity-80 hover:opacity-100"
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                        <div className="md:col-span-2">
+                            <label className={labelBase}>Vendndodhja në hartë *</label>
+                            <MapPicker
+                                lat={coords.lat}
+                                lng={coords.lng}
+                                onSelect={location => {
+                                    setCoords({ lat: location.lat, lng: location.lng });
+                                    setData('latitude', location.lat);
+                                    setData('longitude', location.lng);
+                                    setData('street', location.road);
+                                }}
+                            />
+                            <ErrorText field="latitude" errors={errors} />
                         </div>
                     </div>
 
@@ -387,29 +327,6 @@ export default function AddProperty({ users = [] }) {
                         <ErrorText field="virtual_tour_link" errors={errors} />
                     </div>
 
-                    <div className="mt-4">
-                        <label className={labelBase}>Plani i Katit (opsional)</label>
-                        <input
-                            type="file"
-                            accept=".pdf,image/*"
-                            onChange={e => setData('floor_plan', e.target.files[0])}
-                            className="mt-1"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">Lejohet PDF ose foto (maks 5MB)</p>
-                        <ErrorText field="floor_plan" errors={errors} />
-                    </div>
-
-                    <div className="mt-4">
-                        <label className={labelBase}>Hipotekë (opsional)</label>
-                        <input
-                            type="file"
-                            accept=".pdf,image/*"
-                            onChange={e => setData('hipoteke_file', e.target.files[0])}
-                            className="mt-1"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">Lejohet maks 5MB</p>
-                        <ErrorText field="hipoteke_file" errors={errors} />
-                    </div>
 
                     <div className="mt-6">
                         <label className={labelBase}>Përshkrimi</label>
@@ -426,20 +343,12 @@ export default function AddProperty({ users = [] }) {
                         <h3 className="text-lg font-semibold mb-3 text-gray-800">Detaje Teknike</h3>
 
                         <label className="flex items-center gap-3 mb-2">
-                            <input
-                                type="checkbox"
-                                checked={data.ashensor}
-                                onChange={e => setData('ashensor', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={data.ashensor} onChange={e => setData('ashensor', e.target.checked)} />
                             <span className="text-gray-700">Ka ashensor</span>
                         </label>
 
                         <label className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                checked={data.hipoteke}
-                                onChange={e => setData('hipoteke', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={data.hipoteke} onChange={e => setData('hipoteke', e.target.checked)} />
                             <span className="text-gray-700">Ka hipotekë</span>
                         </label>
                     </div>
@@ -448,58 +357,34 @@ export default function AddProperty({ users = [] }) {
                         <h3 className="text-lg font-semibold mb-3 text-gray-800">Shërbime Ekstra</h3>
 
                         <label className="flex items-center gap-3 mb-2">
-                            <input
-                                type="checkbox"
-                                checked={data.virtual_tour}
-                                onChange={e => setData('virtual_tour', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={data.virtual_tour} onChange={e => setData('virtual_tour', e.target.checked)} />
                             <span className="text-gray-700">Kërkesë për Virtual Tour</span>
                         </label>
 
                         <label className="flex items-center gap-3 mb-2">
-                            <input
-                                type="checkbox"
-                                checked={data.virtual_tour_done}
-                                onChange={e => setData('virtual_tour_done', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={data.virtual_tour_done} onChange={e => setData('virtual_tour_done', e.target.checked)} />
                             <span className="text-gray-700">Virtual Tour i Kryer</span>
                         </label>
 
                         <label className="flex items-center gap-3 mb-2">
-                            <input
-                                type="checkbox"
-                                checked={data.rivleresim}
-                                onChange={e => setData('rivleresim', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={data.rivleresim} onChange={e => setData('rivleresim', e.target.checked)} />
                             <span className="text-gray-700">Kërkesë për Rivlerësim</span>
                         </label>
 
                         <label className="flex items-center gap-3 mb-2">
-                            <input
-                                type="checkbox"
-                                checked={data.rivleresim_done}
-                                onChange={e => setData('rivleresim_done', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={data.rivleresim_done} onChange={e => setData('rivleresim_done', e.target.checked)} />
                             <span className="text-gray-700">Rivlerësimi i Kryer</span>
                         </label>
 
                         <label className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                checked={data.combo_package}
-                                onChange={e => setData('combo_package', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={data.combo_package} onChange={e => setData('combo_package', e.target.checked)} />
                             <span className="text-gray-700">Kërkesë për Paketë Kombinuar</span>
                         </label>
                     </div>
 
                     <div className="mt-6 bg-green-50 p-4 rounded-xl border border-green-200">
                         <label className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                checked={data.verified}
-                                onChange={e => setData('verified', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={data.verified} onChange={e => setData('verified', e.target.checked)} />
                             <span className="text-gray-700 font-semibold">Verifiko Pronën</span>
                         </label>
                     </div>
@@ -509,7 +394,7 @@ export default function AddProperty({ users = [] }) {
                         disabled={processing}
                         className="mt-8 w-full py-3 rounded-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition-all shadow-md hover:shadow-xl disabled:opacity-50"
                     >
-                        {processing ? 'Duke shtuar...' : 'Shto Pronën'}
+                        {processing ? 'Duke përditësuar...' : 'Përditëso Pronën'}
                     </button>
                 </form>
             </main>

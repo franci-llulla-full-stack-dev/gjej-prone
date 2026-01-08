@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\GeocodingController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
+Route::get('/api/reverse-geocode', [GeocodingController::class, 'reverseGeocode']);
 
 Route::middleware('auth')->group(function() {
     Route::get('/dashboard', DashboardController::class)->middleware('role:admin')->name('admin.dashboard');

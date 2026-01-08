@@ -103,21 +103,21 @@ class PropertyController extends Controller
             return redirect()->route(redirectByRole())
                 ->with(['error' => 'You are not authorized to delete this property.']);
         }
-        $media = $property->images()->get();
-        $documents = $property->documents()->get();
-        if($media) {
-            foreach ($media as $mediaItem) {
-                Storage::disk('public')->delete($mediaItem->path);
-                $mediaItem->delete();
-            }
-        }
-
-        if($documents) {
-            foreach ($documents as $document) {
-                Storage::disk('public')->delete($document->path);
-                $document->delete();
-            }
-        }
+//        $media = $property->images()->get();
+//        $documents = $property->documents()->get();
+//        if($media) {
+//            foreach ($media as $mediaItem) {
+//                Storage::disk('public')->delete($mediaItem->path);
+//                $mediaItem->delete();
+//            }
+//        }
+//
+//        if($documents) {
+//            foreach ($documents as $document) {
+//                Storage::disk('public')->delete($document->path);
+//                $document->delete();
+//            }
+//        }
         $property->delete();
         return redirect()->route('properties.index')
             ->with(['success' => 'Property deleted successfully.']);
