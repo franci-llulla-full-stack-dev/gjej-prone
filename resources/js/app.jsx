@@ -5,6 +5,22 @@ import { Toaster } from "react-hot-toast";
 import '../css/app.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import Layout from './layouts/Layout.jsx';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Import marker images so Vite bundles them
+import markerIcon2x from './leaflet-images/marker-icon-2x.png';
+import markerIcon from './leaflet-images/marker-icon.png';
+import markerShadow from './leaflet-images/marker-shadow.png';
+
+// Override Leaflet default icon globally
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+});
 
 createInertiaApp({
     resolve: name => {
