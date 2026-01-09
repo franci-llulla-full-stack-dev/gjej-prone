@@ -52,61 +52,16 @@ class UserSeeder extends Seeder
 
         User::updateOrCreate(
             [
-                'email' => 'user@gmail.com'
-            ],
-            [
-                'role_id' => $userRole->id,
-                'name' => 'User',
-                'surname' => 'Role',
-                'phone_number' => '+355697727747',
-                'birth_date' => '1998-3-18',
-                'address' => 'Tirane',
-                'password' => Hash::make('123456789'),
-            ]
-        );
-
-        User::updateOrCreate(
-            [
-                'email' => 'individual@gmail.com'
-            ],
-            [
-                'role_id' => $individualRole->id,
-                'name' => 'Individual',
-                'surname' => 'Role',
-                'phone_number' => '+355697727747',
-                'birth_date' => '1998-3-18',
-                'address' => 'Tirane',
-                'password' => Hash::make('123456789'),
-            ]
-        );
-
-        User::updateOrCreate(
-            [
-                'email' => 'bank@gmail.com'
-            ],
-            [
-                'role_id' => $bankRole->id,
-                'name' => 'Bank',
-                'surname' => 'Role',
-                'phone_number' => '+355697727747',
-                'birth_date' => '1998-3-18',
-                'address' => 'Tirane',
-                'password' => Hash::make('123456789'),
-            ]
-        );
-
-        User::updateOrCreate(
-            [
-                'email' => 'agency@gmail.com'
+                'email' => 'gjejprone@gmail.com'
             ],
             [
                 'role_id' => $agencyRole->id,
-                'name' => 'Agency',
-                'surname' => 'Role',
+                'name' => 'GjejProne',
+                'surname' => 'Agency',
                 'phone_number' => '+355697727747',
                 'birth_date' => '1998-3-18',
                 'address' => 'Tirane',
-                'password' => Hash::make('123456789'),
+                'password' => Hash::make('@@GJEJPRONE2026@@'),
             ]
         );
     }

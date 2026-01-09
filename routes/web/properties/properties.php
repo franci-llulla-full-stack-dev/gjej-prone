@@ -6,7 +6,9 @@ use App\Http\Controllers\Property\{PropertyController,
     PropertyMediaController};
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])->controller(PropertyController::class)->group(function () {
+Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
+    ->controller(PropertyController::class)
+    ->group(function () {
     Route::get('/properties', 'index')->name('properties.index');
     Route::get('/properties/create', 'create')->name('properties.create');
     Route::post('/properties', 'store')->name('properties.store');
@@ -16,12 +18,16 @@ Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])->c
     Route::put('/properties/{property}/toggle-sold', 'toggleSold')->name('properties.sold');
 });
 
-Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])->controller(PropertyMediaController::class)->group(function () {
+Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])
+    ->controller(PropertyMediaController::class)
+    ->group(function () {
     Route::post('/property/{property}/images','store');
     Route::delete('/property/{property}/images/{propertyMedia}', 'destroy');
 });
 
-Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])->controller(PropertyDocumentController::class)->group(function () {
+Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
+    ->controller(PropertyDocumentController::class)
+    ->group(function () {
     Route::post('/property/{property}/document/hipoteke','storeHipoteke');
     Route::delete('/property/{property}/document/hipoteke/{propertyDocument}','destroyHipoteke');
     Route::post('/property/{property}/document/plan', 'storePlan');
