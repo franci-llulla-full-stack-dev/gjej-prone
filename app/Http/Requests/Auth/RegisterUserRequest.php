@@ -30,6 +30,7 @@ class RegisterUserRequest extends FormRequest
             'company_name' => ['nullable', 'string'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'user_type' => ['required'],
+            'address' => ['nullable', 'string'],
         ];
     }
 

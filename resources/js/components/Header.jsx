@@ -74,7 +74,7 @@ const Header = ({breadcrumbItems}) => {
                                 Përdoruesit
                             </Link>
                             <Link
-                                href="/dashboard"
+                                href="/admin/logs"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                             >
                                 Regjistrat
@@ -199,7 +199,7 @@ const Header = ({breadcrumbItems}) => {
                                     Përdoruesit
                                 </Link>
                                 <Link
-                                    href="/dashboard"
+                                    href="/admin/logs"
                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-400 hover:bg-gray-50"
                                 >
                                     Regjistrat

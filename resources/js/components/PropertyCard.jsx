@@ -150,6 +150,11 @@ const PropertyCard = ({ property, onEdit, onView, onDelete, onVerify, onRestore,
                         </Typography>
                     )}
                 </Box>
+                <Box>
+                    <Typography>
+                        Shikime: {property.views || 0}
+                    </Typography>
+                </Box>
             </CardContent>
 
             {/* Butoni Shiko - fiksuar në pozitë */}
