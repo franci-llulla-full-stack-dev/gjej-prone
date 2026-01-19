@@ -293,22 +293,24 @@ const PropertyDetails = ({ property }) => {
             </div>
             <div className="space-y-3">
                 <h2 className="text-2xl font-semibold">Vendndodhja</h2>
-                <div className="mb-2 flex border-b border-gray-200">
-                    {PLACE_TYPES.map(type => (
-                        <button
-                            key={type.key}
-                            type="button"
-                            onClick={() => setSelectedType(type.key)}
-                            className={`px-4 py-2 -mb-px font-medium transition border-b-2
-                ${selectedType === type.key
-                                ? "border-primary text-primary"
-                                : "border-transparent text-gray-600 hover:text-primary"
-                            }`}
-                            style={{ minWidth: 110 }}
-                        >
-                            {type.label}
-                        </button>
-                    ))}
+                <div className="mb-2 border-b border-gray-200">
+                    <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-0">
+                        {PLACE_TYPES.map(type => (
+                            <button
+                                key={type.key}
+                                type="button"
+                                onClick={() => setSelectedType(type.key)}
+                                className={`px-4 py-2 -mb-px font-medium transition border-b-2
+                    ${selectedType === type.key
+                                    ? "border-primary text-primary"
+                                    : "border-transparent text-gray-600 hover:text-primary"
+                                }`}
+                                style={{ minWidth: 110 }}
+                            >
+                                {type.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
                 <div className="w-full h-[320px] rounded-2xl overflow-hidden shadow">
                     <MapContainer
