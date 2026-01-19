@@ -135,4 +135,13 @@ class PropertyRequestController
             'actual_contact' => $actualContact,
         ]);
     }
+
+    public function reUpload(PropertyRequest $propertyRequest)
+    {
+        $propertyRequest->update([
+            'created_at' => now(),
+        ]);
+
+        return back()->with('success', 'Kerkesa e prones u ri-ngarkua!');
+    }
 }

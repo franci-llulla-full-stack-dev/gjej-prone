@@ -45,6 +45,9 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
         rivleresim: property.rivleresim,
         combo_package: property.combo_package,
         hipoteke_file: hipotekeFile,
+        mobilim: property.mobilim,
+        parkim: property.parkim,
+        price_negotiable: property.price_negotiable,
     });
 
     const [coords,setCoords ] = useState({lat:property.latitude,lng:property.longitude});
@@ -753,7 +756,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                             </span>
                         </label>
 
-                        <label className="flex items-center gap-3">
+                        <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
                                 checked={data.hipoteke}
@@ -762,6 +765,32 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
                             <span className="text-gray-700">
                                 Ka hipotekë
                             </span>
+                        </label>
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.mobilim}
+                                onChange={e => setData('mobilim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Përfshirë mobilimi</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.parkim}
+                                onChange={e => setData('parkim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Përfshirë vendi i parkimit</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.price_negotiable}
+                                onChange={e => setData('price_negotiable', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Çmimi i negociueshëm</span>
                         </label>
                     </div>
 

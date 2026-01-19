@@ -49,7 +49,9 @@ class CreatePropertyRequestRequest extends FormRequest
             'hipoteke' => ['nullable', 'boolean'],
             'interior_design' => ['nullable', 'boolean'],
             'architect' => ['nullable', 'boolean'],
-            'user_id' => ['nullable', 'numeric']
+            'user_id' => ['nullable', 'numeric'],
+            'parkim' => ['nullable', 'boolean'],
+            'expires_at' => ['nullable', 'string'],
         ];
     }
 

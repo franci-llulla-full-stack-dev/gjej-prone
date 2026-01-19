@@ -48,6 +48,9 @@ export default function AddProperty({ users = [] }) {
         rivleresim_done: false,
         hipoteke_file: [],
         verified: false,
+        mobilim: false,
+        parkim: false,
+        price_negotiable: false,
     });
 
     const [coords, setCoords] = useState({ lat: null, lng: null });
@@ -178,7 +181,9 @@ export default function AddProperty({ users = [] }) {
 
     const handleSubmit = e => {
         e.preventDefault();
-        post('/admin/properties');
+        post('/admin/properties', {
+            forceFormData: true
+        });
     };
 
     return (
@@ -434,13 +439,39 @@ export default function AddProperty({ users = [] }) {
                             <span className="text-gray-700">Ka ashensor</span>
                         </label>
 
-                        <label className="flex items-center gap-3">
+                        <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
                                 checked={data.hipoteke}
                                 onChange={e => setData('hipoteke', e.target.checked)}
                             />
                             <span className="text-gray-700">Ka hipotekë</span>
+                        </label>
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.mobilim}
+                                onChange={e => setData('mobilim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Përfshirë mobilimi</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.parkim}
+                                onChange={e => setData('parkim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Përfshirë vendi i parkimit</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.price_negotiable}
+                                onChange={e => setData('price_negotiable', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Çmimi i negociueshëm</span>
                         </label>
                     </div>
 

@@ -278,6 +278,22 @@ const PropertyFilterModal = ({ filters, setFilters, onApply, users = [] }) => {
                                     />
                                     Hipotekë
                                 </label>
+                                <label className="flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={filters.parkim || false}
+                                        onChange={e => update("parkim", e.target.checked)}
+                                    />
+                                    Parkim
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={filters.mobilim || false}
+                                        onChange={e => update("mobilim", e.target.checked)}
+                                    />
+                                    Mobilim
+                                </label>
                             </div>
                         </div>
 

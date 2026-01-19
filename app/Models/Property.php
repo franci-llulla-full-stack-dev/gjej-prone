@@ -45,7 +45,10 @@ class Property extends Model
         'hipoteke',
         'virtual_tour_link',
         'virtual_tour_done',
-        'rivleresim_done'
+        'rivleresim_done',
+        'parkim',
+        'mobilim',
+        'price_negotiable',
     ];
 
     public function owner(): BelongsTo

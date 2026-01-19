@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Property;
 
 use App\Http\Controllers\Controller;
 use App\Models\Property;
+use App\Models\PropertyDocument;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -194,6 +195,9 @@ class AdminPropertyController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
             'floor_plan' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'hipoteke_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+            'parkim' => 'nullable|boolean',
+            'mobilim' => 'nullable|boolean',
+            'price_negotiable' => 'nullable|boolean',
         ]);
 
         // Create property
@@ -225,6 +229,9 @@ class AdminPropertyController extends Controller
             'rivleresim_done' => $validated['rivleresim_done'] ?? false,
             'verified' => $validated['verified'] ?? false,
             'virtual_tour_link' => $validated['virtual_tour_link'] ?? null,
+            'parkim' => $validated['parkim'] ?? false,
+            'mobilim' => $validated['mobilim'] ?? false,
+            'price_negotiable' => $validated['price_negotiable'] ?? false,
         ]);
 
         // Upload images
@@ -232,21 +239,29 @@ class AdminPropertyController extends Controller
             foreach ($request->file('images') as $image) {
                 $path = $image->store('properties/' . $property->id, 'public');
                 $property->images()->create([
-                    'image_path' => $path,
+                    'path' => $path,
+                    'file_name' => $image->getClientOriginalName(),
+                    'file_type' => $image->getClientMimeType(),
                 ]);
             }
         }
 
-        // Upload floor plan
-        if ($request->hasFile('floor_plan')) {
-            $floorPlanPath = $request->file('floor_plan')->store('properties/' . $property->id . '/floor_plans', 'public');
-            $property->update(['floor_plan' => $floorPlanPath]);
+        if($request->hasFile('floor_plan')) {
+            $documentPath = $request->file('floor_plan')->store("properties/{$property->id}/floor_plan", 'public');
+            $property->documents()->create([
+                'path' => $documentPath,
+                'file_name' => $request->file('floor_plan')->getClientOriginalName(),
+                'file_type' => 'floor_plan',
+            ]);
         }
 
-        // Upload hipoteke file
-        if ($request->hasFile('hipoteke_file')) {
-            $hipotekePath = $request->file('hipoteke_file')->store('properties/' . $property->id . '/hipoteke', 'public');
-            $property->update(['hipoteke_file' => $hipotekePath]);
+        if($request->hasFile('hipoteke_file')) {
+            $documentPathHipoteke = $request->file('hipoteke_file')->store("properties/{$property->id}/hipoteke", 'public');
+            $property->documents()->create([
+                'path' => $documentPathHipoteke,
+                'file_name' => $request->file('hipoteke_file')->getClientOriginalName(),
+                'file_type' => 'hipoteka',
+            ]);
         }
 
         return redirect()->route('admin.properties.index')
@@ -296,9 +311,11 @@ class AdminPropertyController extends Controller
             'rivleresim_done' => 'boolean',
             'verified' => 'boolean',
             'virtual_tour_link' => 'nullable|url',
+            'parkim' => 'nullable|boolean',
+            'mobilim' => 'nullable|boolean',
+            'price_negotiable' => 'nullable|boolean',
         ]);
 
-        // Update basic property data
         $property->update([
             'user_id' => $validated['user_id'],
             'type_of_sale' => $validated['type_of_sale'],
@@ -327,6 +344,9 @@ class AdminPropertyController extends Controller
             'rivleresim_done' => $validated['rivleresim_done'] ?? false,
             'verified' => $validated['verified'] ?? false,
             'virtual_tour_link' => $validated['virtual_tour_link'] ?? null,
+            'parkim' => $validated['parkim'] ?? false,
+            'mobilim' => $validated['mobilim'] ?? false,
+            'price_negotiable' => $validated['price_negotiable'] ?? false,
         ]);
 
         // Handle new images upload
@@ -339,19 +359,16 @@ class AdminPropertyController extends Controller
             }
         }
 
-        // Handle floor plan replacement
         if ($request->hasFile('floor_plan')) {
             // Delete old floor plan from storage
             if ($property->floor_plan && \Storage::disk('public')->exists($property->floor_plan)) {
                 Storage::disk('public')->delete($property->floor_plan);
             }
 
-            // Upload new floor plan
-            $floorPlanPath = $request->file('floor_plan')->store('properties/' . $property->id . '/floor_plans', 'public');
+            $floorPlanPath = $request->file('floor_plan')->store('properties/' . $property->id . '/floor_plan', 'public');
             $property->update(['floor_plan' => $floorPlanPath]);
         }
 
-        // Handle hipoteke file replacement
         if ($request->hasFile('hipoteke_file')) {
             // Delete old hipoteke file from storage
             if ($property->hipoteke_file && \Storage::disk('public')->exists($property->hipoteke_file)) {
@@ -384,7 +401,35 @@ class AdminPropertyController extends Controller
     public function forceDelete($id)
     {
         $property = Property::onlyTrashed()->findOrFail($id);
+        $media = $property->images()->get();
+        $documents = $property->documents()->get();
+        if($media) {
+            foreach ($media as $mediaItem) {
+                Storage::disk('public')->delete($mediaItem->path);
+                $mediaItem->delete();
+            }
+        }
+
+        if($documents) {
+            foreach ($documents as $document) {
+                Storage::disk('public')->delete($document->path);
+                $document->delete();
+            }
+        }
         $property->forceDelete();
         return back()->with(['success' => 'Property permanently deleted successfully']);
+    }
+
+    public function downloadHipoteka(PropertyDocument $propertyDocument)
+    {
+        if ($propertyDocument->file_type !== 'hipoteka') {
+            abort(403, 'Not allowed');
+        }
+
+        if (!Storage::disk('public')->exists($propertyDocument->path)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->download($propertyDocument->path, basename($propertyDocument->path));
     }
 }

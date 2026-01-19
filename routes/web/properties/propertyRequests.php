@@ -10,6 +10,7 @@ Route::group(['middleware' => ['role:user,admin', 'auth'], 'controller' => Prope
     Route::get('/property/request/{propertyRequest}/edit', 'edit')->name('property.request.edit');
     Route::put('/property/request/{propertyRequest}', 'update')->name('property.request.update');
     Route::delete('/property/request/{propertyRequest}', 'destroy')->name('property.request.destroy');
+    Route::put('/property/request/{propertyRequest}/re-upload', 'reUpload')->name('property.request.re-upload');
 });
 
 Route::middleware(['role:admin,user,agency,bank,individual', 'auth'])

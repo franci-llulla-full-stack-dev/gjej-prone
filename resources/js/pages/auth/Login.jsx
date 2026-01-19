@@ -1,7 +1,7 @@
 // resources/js/pages/auth/Login.jsx
 import backgroundImage from '../../media/background.jpeg';
 import React from 'react';
-import { Link, useForm } from '@inertiajs/react';
+import { Link, useForm, Head } from '@inertiajs/react';
 
 const Login = () => {
     const { data, setData, post, errors } = useForm({
@@ -27,6 +27,10 @@ const Login = () => {
 
     return (
         <div>
+            <Head>
+                <title>Hyr | Gjej-Prone</title>
+                <meta name="description" content="Identifikohu për të menaxhuar pronat dhe për të përfituar nga shërbimet tona." />
+            </Head>
             <div className="min-h-screen grid">
                 <div className="grid">
                     <main>
@@ -77,7 +81,12 @@ const Login = () => {
                                     >
                                         Hyr
                                     </button>
-
+                                    <div className="mt-6 text-center">
+                                        <span className="text-gray-700">Nuk ke llogari? </span>
+                                        <Link href="/register" className="text-blue-600 underline font-semibold">
+                                            Krijo
+                                        </Link>
+                                    </div>
                                     <Link href="/forgot-password">
                                         <p className="text-gray-700 underline">Harrova fjalekalimin</p>
                                     </Link>

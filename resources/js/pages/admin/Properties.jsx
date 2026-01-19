@@ -31,6 +31,8 @@ const Properties = ({ properties, pagination, filters, showDeleted, users = [] }
         types: filters.types ?? [],
         elevator: false,
         mortgage: false,
+        parkim: false,
+        mobiluar: false,
         rooms_min: filters.rooms_min ?? '',
         rooms_max: filters.rooms_max ?? '',
         bathrooms_min: filters.bathrooms_min ?? '',

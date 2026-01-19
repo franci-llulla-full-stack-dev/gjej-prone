@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\PropertyRequest;
 use App\Models\Role;
+use Carbon\Carbon;
 
 class PropertyRequestServices
 {
@@ -30,6 +31,20 @@ class PropertyRequestServices
             if(isset($validated['user_id'])) {
                 $query->where('user_id', $validated['user_id']);
             }
+        }
+
+        if ($role !== 'admin' && $role !== 'user') {
+            $now = Carbon::now()->toDateString();
+
+            $query->whereRaw("
+                CASE
+                    WHEN expires_at = '1m' THEN DATE_ADD(created_at, INTERVAL 1 MONTH)
+                    WHEN expires_at = '3m' THEN DATE_ADD(created_at, INTERVAL 3 MONTH)
+                    WHEN expires_at = '6m' THEN DATE_ADD(created_at, INTERVAL 6 MONTH)
+                    WHEN expires_at = '1y' THEN DATE_ADD(created_at, INTERVAL 12 MONTH)
+                    ELSE created_at
+                END >= ?
+            ", [$now]);
         }
         if(isset($validated['search'])) {
             $query = $query->where(function ($q) use ($validated) {
@@ -122,7 +137,7 @@ class PropertyRequestServices
         if($user->role->name !== 'user' && $user->role->name !== 'admin') {
             $user->logs()->create([
                 'action_type' => 'viewed_property_listing',
-                'property_request_id' => $propertyId,
+                'property_request_id' => $propertyRequestId,
             ]);
         }
     }

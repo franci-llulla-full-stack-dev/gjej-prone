@@ -49,6 +49,7 @@ Route::middleware(['auth', 'role:admin'])->controller(AdminPropertyController::c
     Route::put('/admin/properties/{property}/update', 'update')->name('admin.properties.update');
     Route::delete('/admin/properties/{property}', 'destroy')->name('admin.properties.destroy');
     Route::post('/admin/properties/{id}/restore', 'restore')->name('admin.properties.restore');
+    Route::get('/admin/property/download-hipoteka/{propertyDocument}', 'downloadHipoteka');
     Route::delete('/admin/properties/{id}/force-delete', 'forceDelete')->name('admin.properties.forceDelete');
 });
 Route::middleware(['auth', 'role:admin'])

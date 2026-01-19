@@ -205,6 +205,24 @@ const PropertyFilter = ({
                                     />
                                     Hipotekë
                                 </label>
+
+                                <label className="flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={filters.mobilim}
+                                        onChange={e => update("mobilim", e.target.checked)}
+                                    />
+                                    Mobilim
+                                </label>
+
+                                <label className="flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={filters.parkim}
+                                        onChange={e => update("parkim", e.target.checked)}
+                                    />
+                                    Parkim
+                                </label>
                             </div>
                         </div>
 

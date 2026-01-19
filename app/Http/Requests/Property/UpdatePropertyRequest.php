@@ -45,6 +45,9 @@ class UpdatePropertyRequest extends FormRequest
             'virtual_tour_link' => ['nullable', 'url'],
             'ashensor' => ['nullable', 'boolean'],
             'hipoteke' => ['nullable', 'boolean'],
+            'parkim' => ['nullable', 'boolean'],
+            'mobilim' => ['nullable', 'boolean'],
+            'price_negotiable' => ['nullable', 'boolean'],
         ];
     }
 

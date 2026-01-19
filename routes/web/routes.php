@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\GeocodingController;
 use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\PlaceController;
 use Illuminate\Support\Facades\Route;
 Route::get('/api/reverse-geocode', [GeocodingController::class, 'reverseGeocode']);
 
@@ -13,7 +14,7 @@ Route::middleware('auth')->group(function() {
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password/update', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
-
+Route::get('/nearby-places', [PlaceController::class, 'nearby']);
 Route::get('/terms', function () {
     return \Inertia\Inertia::render('Terms');
 });

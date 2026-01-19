@@ -78,6 +78,13 @@ class PropertyServices
         if(isset($validated['mortgage']) && filter_var($validated['mortgage'], FILTER_VALIDATE_BOOLEAN)) {
             $query->where('hipoteke', true);
         }
+        if(isset($validated['mobilim']) && filter_var($validated['mobilim'], FILTER_VALIDATE_BOOLEAN)) {
+            $query->where('mobilim', true);
+        }
+
+        if(isset($validated['parkim']) && filter_var($validated['parkim'], FILTER_VALIDATE_BOOLEAN)) {
+            $query->where('parkim', true);
+        }
 
         if(isset($validated['rooms_min'])) {
             $query->where('total_rooms', '>=',  $validated['rooms_min']);
@@ -123,7 +130,7 @@ class PropertyServices
 
         $newProperty = $user->properties()->create($validated);
         if($document) {
-            $documentPath = $document->store("properties/document/{$newProperty->id}", 'public');
+            $documentPath = $document->store("properties/{$newProperty->id}/floor_plan", 'public');
             $newProperty->documents()->create([
                 'path' => $documentPath,
                 'file_name' => $document->getClientOriginalName(),
@@ -131,7 +138,7 @@ class PropertyServices
             ]);
         }
         if($hipoteka) {
-            $documentPathHipoteke = $hipoteka->store("properties/document/hipoteka/{$newProperty->id}", 'public');
+            $documentPathHipoteke = $hipoteka->store("properties/{$newProperty->id}/hipoteke", 'public');
             $newProperty->documents()->create([
                 'path' => $documentPathHipoteke,
                 'file_name' => $hipoteka->getClientOriginalName(),

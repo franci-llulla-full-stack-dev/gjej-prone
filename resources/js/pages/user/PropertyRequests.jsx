@@ -61,6 +61,9 @@ const PropertyRequests = ({ propertyRequests, users }) => {
                             {...p}
                             canEdit={true}
                             canDelete={true}
+                            onUpload = {() => {
+                                router.put(`/property/request/${p.id}/re-upload`);
+                            }}
                             onEdit={() => {
                                 router.get(`/property/request/${p.id}/edit`);
                             }}

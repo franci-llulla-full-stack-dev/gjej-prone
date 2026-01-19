@@ -1,5 +1,5 @@
 // resources/js/pages/NewProperty.jsx
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import Select from 'react-select';
 import React, { useState } from 'react';
 import locations from '../../data/locations.json';
@@ -43,8 +43,12 @@ export default function NewProperty() {
         rivleresim: false,
         combo_package: false,
         hipoteke_file: [],
+        mobilim: false,
+        parkim: false,
+        price_negotiable: false,
     });
-
+    const { auth } = usePage().props;
+    const role = auth?.user?.role || 'guest';
     const [coords, setCoords] = useState({ lat: null, lng: null });
     const [selectedBashki, setSelectedBashki] = useState(null);
     const [images, setImages] = useState([]);
@@ -161,7 +165,13 @@ export default function NewProperty() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        post('/properties');
+        if (role === 'individual' && !(data.hipoteke_file instanceof File)) {
+            toast.error('Hipoteka është e detyrueshme.');
+            return;
+        }
+        post('/properties', {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -359,7 +369,7 @@ export default function NewProperty() {
                     </div>
 
                     <div className="mt-4">
-                        <label className={labelBase}>Hipotekë \(opsional\)</label>
+                        <label className={labelBase}>Hipotekë \{role === 'individual' ? '*' : '(opsional)'}</label>
                         <input
                             type="file"
                             accept=".pdf,image/*"
@@ -393,13 +403,39 @@ export default function NewProperty() {
                             <span className="text-gray-700">Ka ashensor</span>
                         </label>
 
-                        <label className="flex items-center gap-3">
+                        <label className="flex items-center gap-3 mb-2">
                             <input
                                 type="checkbox"
                                 checked={data.hipoteke}
                                 onChange={e => setData('hipoteke', e.target.checked)}
                             />
                             <span className="text-gray-700">Ka hipotekë</span>
+                        </label>
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.mobilim}
+                                onChange={e => setData('mobilim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Përfshirë mobilimi</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.parkim}
+                                onChange={e => setData('parkim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Përfshirë vendi i parkimit</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.price_negotiable}
+                                onChange={e => setData('price_negotiable', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Çmimi i negociueshëm</span>
                         </label>
                     </div>
 

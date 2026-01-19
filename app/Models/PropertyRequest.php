@@ -39,7 +39,10 @@ class PropertyRequest extends Model
         'ashensor',
         'hipoteke',
         'interior_design',
-        'architect'
+        'architect',
+        'parkim',
+        'expires_at',
+        'created_at'
     ];
 
     public function user(): BelongsTo

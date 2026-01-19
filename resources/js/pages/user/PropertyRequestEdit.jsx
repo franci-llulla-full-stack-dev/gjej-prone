@@ -1,13 +1,9 @@
 import { useForm } from '@inertiajs/react';
-import { Range } from 'react-range';
 import Select from 'react-select';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import locations from '../../../data/locations.json';
 import MapPickerRange from '../../components/MapPickerRange.jsx';
-import toast from "react-hot-toast";
 import ErrorText from '../../components/ErrorText.jsx';
-import SurfaceRange from '../../components/SurfaceRange.jsx';
-import PriceRange from '../../components/PriceRange.jsx';
 import AsyncSelect from 'react-select/async';
 
 const inputBase =
@@ -28,7 +24,7 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
         street: propertyRequest.street,
         latitude: propertyRequest.latitude,
         longitude: propertyRequest.longitude,
-        zone_radious: propertyRequest.zone_radious,
+        zone_radious: propertyRequest.zone_radious || 500,
         surface: propertyRequest.surface,
         surface_2: propertyRequest.surface_2,
         price: propertyRequest.price,
@@ -48,11 +44,9 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
         hipoteke: propertyRequest.hipoteke,
         interior_design: propertyRequest.interior_design,
         architect: propertyRequest.architect,
+        expires_at: propertyRequest.expires_at,
     });
     const [zoneRadius, setZoneRadius] = useState(data.zone_radious);
-    const STEP = 1;
-    const MIN = 0;
-    const MAX = 5;
     const [coords,setCoords ] = useState({lat:data.latitude,lng:data.longitude});
     const saleOptions = [
         { value: '', label: 'Zgjidh Llojin e Transaksionit' },
@@ -88,24 +82,29 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
 
     const dynamicFieldsMap = {
         apartment: [
-            { value: ['total_rooms', 'total_rooms_2'], data: [data.total_rooms || MIN, data.total_rooms_2 || MAX], type: 'range', label: 'Numri i dhomave', placeholder: 'p.sh. 3' },
-            { value: ['total_bathrooms', 'total_bathrooms_2'], data: [data.total_bathrooms || MIN, data.total_bathrooms_2 || MAX], type: 'range', label: 'Numri i Banjove', placeholder: 'p.sh. 1' },
-            { value: ['total_balconies', 'total_balconies_2'], data: [data.total_balconies || MIN, data.total_balconies_2 || MAX], type: 'range', label: 'Numri i Ballkoneve', placeholder: 'p.sh. 2' },
+            { value: ['total_rooms', 'total_rooms_2'], type: 'minmax', label: 'Numri i dhomave', placeholder: ['Min', 'Max'] },
+            { value: ['total_bathrooms', 'total_bathrooms_2'], type: 'minmax', label: 'Numri i Banjove', placeholder: ['Min', 'Max'] },
+            { value: ['total_balconies', 'total_balconies_2'], type: 'minmax', label: 'Numri i Ballkoneve', placeholder: ['Min', 'Max'] },
             { value: 'floor_number', type: 'number', label: 'Kati', placeholder: 'p.sh. 5' },
         ],
-
         house: [
-            { value: ['total_rooms', 'total_rooms_2'], data: [data.total_rooms || MIN, data.total_rooms_2 || MAX], type: 'range', label: 'Numri i dhomave', placeholder: 'p.sh. 5' },
-            { value: ['total_bathrooms', 'total_bathrooms_2'], data: [data.total_bathrooms || MIN, data.total_bathrooms_2 || MAX], type: 'range', label: 'Numri i Banjove', placeholder: 'p.sh. 2' },
+            { value: ['total_rooms', 'total_rooms_2'], type: 'minmax', label: 'Numri i dhomave', placeholder: ['Min', 'Max'] },
+            { value: ['total_bathrooms', 'total_bathrooms_2'], type: 'minmax', label: 'Numri i Banjove', placeholder: ['Min', 'Max'] },
             { value: 'total_floors', type: 'number', label: 'Numri i Kateve të Ndërtimit', placeholder: 'p.sh. 3' },
-            { value: ['total_balconies', 'total_balconies_2'], data: [data.total_balconies || MIN, data.total_balconies_2 || MAX], type: 'range', label: 'Numri i Ballkoneve', placeholder: 'p.sh. 1' },
+            { value: ['total_balconies', 'total_balconies_2'], type: 'minmax', label: 'Numri i Ballkoneve', placeholder: ['Min', 'Max'] },
         ],
-
         office: [
             { value: 'floor_number', type: 'number', label: 'Kati', placeholder: 'p.sh. 2' },
         ],
-    }
+    };
 
+    const expiresAtOptions = [
+        { value: '', label: 'Zgjidh afatin' },
+        { value: '1m', label: 'Deri në 1 muaj' },
+        { value: '3m', label: 'Deri në 3 muaj' },
+        { value: '6m', label: 'Deri në 6 muaj' },
+        { value: '1y', label: 'Deri në 1 vit' },
+    ];
     const renderDynamicFields = (selectedSubtype, data, setData) => {
         if (!selectedSubtype || !dynamicFieldsMap[selectedSubtype]) {
             return null;
@@ -114,68 +113,45 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
         return dynamicFieldsMap[selectedSubtype].map((field) => {
             const isYearBuilt = field.value === "year_built";
 
-            return (
-                <div key={field.value}>
-                    <label className={labelBase}>
-                        {field.label}
-                    </label>
-                    {field.type === 'range' &&
-                        <div className="mb-2">
-                            <Range
-                                step={STEP}
-                                min={MIN}
-                                max={MAX}
-                                values={field.data}
-                                onChange={(newValues) => {
-                                    setData(field.value[0], newValues[0]);
-                                    setData(field.value[1], newValues[1]);
-                                }}
-                                renderTrack={({ props, children }) => (
-                                    <div
-                                        {...props}
-                                        className="h-2 w-full bg-gray-300 rounded relative"
-                                        style={{ ...props.style }}
-                                    >
-                                        <div
-                                            className="absolute h-2 bg-blue-500 rounded"
-                                            style={{
-                                                left: `${((field.data[0] - MIN) / (MAX - MIN)) * 100}%`,
-                                                width: `${((field.data[1] - field.data[0]) / (MAX - MIN)) * 100}%`,
-                                            }}
-                                        />
-                                        {children}
-                                    </div>
-                                )}
-                                renderThumb={({ props }) => (
-                                    <div
-                                        {...props}
-                                        className="h-5 w-5 bg-blue-600 rounded-full border-2 border-white shadow-md"
-                                    />
-                                )}
-                            />
-
-                            <div className="flex justify-between text-sm mt-1">
-                                <span>{field.data[0].toLocaleString()} </span>
-                                <span>{field.data[1].toLocaleString()} </span>
-                            </div>
-
-                            {errors.total_rooms && <p className="text-sm text-red-500 mt-1">{errors.total_rooms}</p>}
-                            {errors.total_rooms_2 && <p className="text-sm text-red-500 mt-1">{errors.total_rooms_2}</p>}
-                        </div>
-                    }
-                    {field.type !== 'range' &&
-                        <>
+            if (field.type === 'minmax') {
+                return (
+                    <div key={field.label}>
+                        <label className={labelBase}>{field.label}</label>
+                        <div className="flex gap-2">
                             <input
-                                type={field.type}
-                                value={data[field.value] || ""}
-                                placeholder={field.placeholder || ""}
-                                onChange={(e) => setData(field.value, e.target.value)}
-                                {...(isYearBuilt ? { min: 1900, max: 2050 } : {})}
+                                type="number"
+                                value={data[field.value[0]] || ""}
+                                placeholder={field.placeholder[0]}
+                                onChange={e => setData(field.value[0], e.target.value)}
                                 className={inputBase}
                             />
-                            <ErrorText field={field.value} errors={errors}/>
-                        </>
-                    }
+                            <input
+                                type="number"
+                                value={data[field.value[1]] || ""}
+                                placeholder={field.placeholder[1]}
+                                onChange={e => setData(field.value[1], e.target.value)}
+                                className={inputBase}
+                            />
+                        </div>
+                        <ErrorText field={field.value[0]} errors={errors} />
+                        <ErrorText field={field.value[1]} errors={errors} />
+                    </div>
+                );
+            }
+
+            // For single number fields
+            return (
+                <div key={field.value}>
+                    <label className={labelBase}>{field.label}</label>
+                    <input
+                        type={field.type}
+                        value={data[field.value] || ""}
+                        placeholder={field.placeholder || ""}
+                        onChange={e => setData(field.value, e.target.value)}
+                        {...(isYearBuilt ? { min: 1900, max: 2050 } : {})}
+                        className={inputBase}
+                    />
+                    <ErrorText field={field.value} errors={errors} />
                 </div>
             );
         });
@@ -359,15 +335,74 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
                         </div>
 
                         <div>
+                            <label className={labelBase}>Afati *</label>
+                            <Select
+                                name="expires_at"
+                                value={expiresAtOptions.find(o => o.value === data.expires_at) || expiresAtOptions[0]}
+                                onChange={selected => setData('expires_at', selected ? selected.value : '')}
+                                options={expiresAtOptions}
+                                placeholder="Zgjidh afatin"
+                                classNamePrefix="react-select"
+                                styles={{
+                                    control: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: 'transparent',
+                                        borderColor: '#d1d5db',
+                                    }),
+                                    menu: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: 'white',
+                                    }),
+                                    singleValue: (provided) => ({
+                                        ...provided,
+                                        color: '#111827',
+                                    }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: '#6b7280',
+                                    }),
+                                }}
+                            />
+                            <ErrorText field="expires_at" errors={errors} />
+                        </div>
+                        <div>
                             <label className={labelBase}>Sipërfaqja *</label>
-                            <SurfaceRange data={data} setData={setData} errors={errors} />
-
+                            <div className="flex gap-2">
+                                <input
+                                    type="number"
+                                    value={data.surface || ""}
+                                    placeholder="Min"
+                                    onChange={e => setData('surface', e.target.value)}
+                                    className={inputBase}
+                                />
+                                <input
+                                    type="number"
+                                    value={data.surface_2 || ""}
+                                    placeholder="Max"
+                                    onChange={e => setData('surface_2', e.target.value)}
+                                    className={inputBase}
+                                />
+                            </div>
                             <ErrorText field="surface" errors={errors} />
+                            <ErrorText field="surface_2" errors={errors} />
                         </div>
                         <div>
                             <label className={labelBase}>Çmimi *</label>
-                            <div className="grid grid-cols-1 gap-4items-center">
-                                <PriceRange data={data} setData={setData} errors={errors} />
+                            <div className="flex gap-2 items-center">
+                                <input
+                                    type="number"
+                                    value={data.price || ""}
+                                    placeholder="Min"
+                                    onChange={e => setData('price', e.target.value)}
+                                    className={inputBase}
+                                />
+                                <input
+                                    type="number"
+                                    value={data.price_2 || ""}
+                                    placeholder="Max"
+                                    onChange={e => setData('price_2', e.target.value)}
+                                    className={inputBase}
+                                />
                                 <Select
                                     name="currency"
                                     className="mt-1 min-w-24"
@@ -401,9 +436,9 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
                                         }),
                                     }}
                                 />
-
                             </div>
                             <ErrorText field="price" errors={errors} />
+                            <ErrorText field="price_2" errors={errors} />
                         </div>
 
                         {renderDynamicFields(data.property_category, data, setData)}

@@ -24,6 +24,8 @@ const PropertyRequests = ({ propertyRequests }) => {
         balconies_min: '',
         balconies_max: '',
         user_id: '',
+        parkim: false,
+        mobilim: false
     });
 
     const reloadProperties = () => {

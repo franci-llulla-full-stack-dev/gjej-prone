@@ -45,6 +45,9 @@ export default function EditProperty({ property, users = [] }) {
         virtual_tour_done: property.virtual_tour_done || false,
         rivleresim_done: property.rivleresim_done || false,
         verified: property.verified || false,
+        mobilim: property.mobilim,
+        parkim: property.parkim,
+        price_negotiable: property.price_negotiable,
         _method: 'PUT',
     });
 
@@ -347,9 +350,35 @@ export default function EditProperty({ property, users = [] }) {
                             <span className="text-gray-700">Ka ashensor</span>
                         </label>
 
-                        <label className="flex items-center gap-3">
+                        <label className="flex items-center gap-3 mb-2">
                             <input type="checkbox" checked={data.hipoteke} onChange={e => setData('hipoteke', e.target.checked)} />
                             <span className="text-gray-700">Ka hipotekë</span>
+                        </label>
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.mobilim}
+                                onChange={e => setData('mobilim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Përfshirë mobilimi</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.parkim}
+                                onChange={e => setData('parkim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Përfshirë vendi i parkimit</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                checked={data.price_negotiable}
+                                onChange={e => setData('price_negotiable', e.target.checked)}
+                            />
+                            <span className="text-gray-700">Çmimi i negociueshëm</span>
                         </label>
                     </div>
 

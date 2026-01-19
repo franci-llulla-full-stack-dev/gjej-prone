@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PropertyItem from '../../components/PropertyItem.jsx';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, Head } from '@inertiajs/react';
 import PropertyFilter from '../../components/PropertyFilter.jsx';
 import Pagination  from '../../components/Pagination.jsx';
 const AllProperties = ({ properties }) => {
@@ -13,6 +13,8 @@ const AllProperties = ({ properties }) => {
         types: [],
         elevator: false,
         mortgage: false,
+        mobilim: false,
+        parking: false,
         rooms_min: '',
         rooms_max: '',
         bathrooms_min: '',
@@ -32,6 +34,10 @@ const AllProperties = ({ properties }) => {
 
     return (
         <div>
+            <Head>
+                <title>Pronat e Listuara | Gjej-Prone</title>
+                <meta name="description" content="Shiko të gjitha pronat e listuara për shitje ose qira në platformën tonë." />
+            </Head>
             <div className="grid grid-cols-1">
                 <PropertyFilter
                     filters={filters}

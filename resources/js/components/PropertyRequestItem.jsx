@@ -11,9 +11,9 @@ import {
 } from "lucide-react";
 
 const PropertyItem = ({
-                          id, city, street, surface, surface_2, total_rooms, total_rooms_2, total_bathrooms, total_bathrooms_2, total_balconies, total_balconies_2,
+                          id, city, expires_at, created_at, street, surface, surface_2, total_rooms, total_rooms_2, total_bathrooms, total_bathrooms_2, total_balconies, total_balconies_2,
                           total_floors, floor_number, year_built, description, price, price_2, currency, type_of_sale, property_type,
-                          canEdit = false, canDelete = false, onEdit = null, onDelete = null,
+                          canEdit = false, canDelete = false, onEdit = null, onDelete = null, onUpload = null,
                       }) => {
     const PROPERTY_TYPE_LABELS = {
         residential: 'Rezidenciale',
@@ -21,6 +21,20 @@ const PropertyItem = ({
         land: 'Tokë',
         others: 'Të tjera',
     };
+
+    function isExpired(created_at, expires_at) {
+        const intervals = {
+            '1m': 1,
+            '3m': 3,
+            '6m': 6,
+            '1y': 12,
+        };
+        if (!created_at || !expires_at || !intervals[expires_at]) return false;
+        const created = new Date(created_at);
+        const expiry = new Date(created.setMonth(created.getMonth() + intervals[expires_at]));
+        return expiry < new Date();
+    }
+    const expired = isExpired(created_at, expires_at);
     return (
         <div className="grid grid-cols-1 bg-white shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-200">
 
@@ -98,6 +112,15 @@ const PropertyItem = ({
                                 className="flex-1 text-sm border border-red-300 text-red-600 rounded-lg py-2 hover:bg-red-50 transition"
                             >
                                 Fshi
+                            </button>
+                        )}
+
+                        {(expired && canEdit) && (
+                            <button
+                                onClick={() => onUpload?.(id)}
+                                className="flex-1 text-sm border border-yellow-300 text-yellow-700 rounded-lg py-2 hover:bg-yellow-50 transition"
+                            >
+                                Aktivizo Përsëri
                             </button>
                         )}
                     </div>
