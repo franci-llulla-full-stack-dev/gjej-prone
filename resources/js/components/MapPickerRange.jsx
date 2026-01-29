@@ -48,7 +48,7 @@ export default function MapPickerRange({ lat, lng, onSelect, zoneRadius }) {
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             {lat && lng && (
                 <>
-                    <Marker position={[lat, lng]} />
+                    {/*<Marker position={[lat, lng]} />*/}
                     <Circle center={[lat, lng]} radius={zoneRadius} pathOptions={{ color: 'blue', fillOpacity: 0.2 }} />
                 </>
             )}

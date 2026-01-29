@@ -268,19 +268,7 @@ const PropertyDetails = ({ property }) => {
                         </p>
                     </div>
                     <div className="bg-primary/5 rounded-2xl p-6 space-y-4">
-                        <h3 className="text-lg font-semibold">Kontakto Shitësin</h3>
-                        <div>
-                            <p className="font-medium">{property.owner?.name}</p>
-                            <p className="text-sm text-gray-600">{property.owner?.email}</p>
-                            <p className="text-sm text-gray-600">{property.owner?.phone}</p>
-                        </div>
                         <div className="flex gap-3">
-                            <a
-                                href={`mailto:${property.owner?.email}`}
-                                className="flex-1 text-center bg-primary text-white py-2 rounded-lg"
-                            >
-                                Email
-                            </a>
                             <a
                                 href={`tel:${property.owner?.phone}`}
                                 className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"

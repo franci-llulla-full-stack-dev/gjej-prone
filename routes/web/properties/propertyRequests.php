@@ -3,7 +3,7 @@
 use App\Http\Controllers\Property\PropertyRequestController;
 
 
-Route::group(['middleware' => ['role:user,admin', 'auth'], 'controller' => PropertyRequestController::class], function () {
+Route::group(['middleware' => ['role:user,investor,admin', 'auth'], 'controller' => PropertyRequestController::class], function () {
     Route::get('/property/requests',  'index')->name('property.requests.index');
     Route::get('/property/request/create', 'create')->name('property.requests.create');
     Route::post('/property/request', 'store')->name('property.requests.store');
@@ -13,9 +13,10 @@ Route::group(['middleware' => ['role:user,admin', 'auth'], 'controller' => Prope
     Route::put('/property/request/{propertyRequest}/re-upload', 'reUpload')->name('property.request.re-upload');
 });
 
-Route::middleware(['role:admin,user,agency,bank,individual', 'auth'])
+Route::middleware(['auth'])
     ->group(function () {
         Route::get('/property/request/{propertyRequest}', [PropertyRequestController::class, 'show'])
             ->name('property.request.show');
-        Route::get('/property/requests/all', [PropertyRequestController::class, 'showAll'])->name('property.requests.all');
+
     });
+Route::get('/property/requests/all', [PropertyRequestController::class, 'showAll'])->name('property.requests.all');

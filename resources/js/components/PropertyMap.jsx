@@ -14,7 +14,7 @@ export default function PropertyMap({ lat, lng, radius }) {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <Marker position={center} />
+            {/*<Marker position={center} />*/}
 
             {radius && (
                 <Circle

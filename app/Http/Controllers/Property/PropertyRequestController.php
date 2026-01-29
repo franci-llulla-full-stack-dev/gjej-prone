@@ -31,10 +31,6 @@ class PropertyRequestController
 
     public function showAll(FilterRequest $request)
     {
-        $user = auth()->user();
-        if($user->role->name === 'user') {
-            abort(403);
-        }
         [$query] = $this->requestServices->filterRequests($request->validated());
         $propertyRequests = $query->paginate($request->perPage ?? 12);
 
@@ -47,7 +43,8 @@ class PropertyRequestController
     {
         $isAdmin = auth()->user()->role->name === 'admin';
         if($isAdmin) {
-            $users = Role::where('name', 'user')->first()->users()->select('id', 'name', 'surname')->get();
+            $roleIds = Role::where('name', 'user')->orWhere('name', 'users')->pluck('id')->toArray();
+            $users = User::whereIn('role_id', $roleIds)->select('id', 'name', 'surname')->get();
         }else {
             $users = [];
         }
@@ -80,7 +77,8 @@ class PropertyRequestController
             abort(403);
         }
         if(auth()->user()->role->name === 'admin') {
-            $users = Role::where('name', 'user')->first()->users()->select('id', 'name', 'surname')->get();
+            $roleIds = Role::where('name', 'user')->orWhere('name', 'users')->pluck('id')->toArray();
+            $users = User::whereIn('role_id', $roleIds)->select('id', 'name', 'surname')->get();
         }else {
             $users = [];
         }
@@ -120,11 +118,7 @@ class PropertyRequestController
     public function show(PropertyRequest $propertyRequest)
     {
         $user = auth()->user();
-        if($user->role->name === 'user') {
-            if($user->id !== $propertyRequest->user_id) {
-                abort(403);
-            }
-        }
+
         $this->requestServices->logView($propertyRequest->id);
         $actualContact = '';
         if($user->role->name === 'admin') {

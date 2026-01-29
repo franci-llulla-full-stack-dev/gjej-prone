@@ -51,10 +51,10 @@ const Landing = () => {
                             Shiko Pronat
                         </Link>
                         <Link
-                            href="/register"
+                            href="/property/requests/all"
                             className="px-6 py-3 border border-white text-white rounded hover:bg-white hover:text-blue-600 transition"
                         >
-                            Publiko Pronën Tënde
+                            Shiko Kerkesat
                         </Link>
                     </div>
                 </div>

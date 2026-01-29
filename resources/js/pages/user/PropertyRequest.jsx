@@ -24,7 +24,7 @@ export default function PropertyRequest({isAdmin, users}) {
         street: '',
         latitude: '',
         longitude: '',
-        zone_radious: '',
+        zone_radious: 500,
         surface: '',
         surface_2: '',
         price: '',
@@ -489,7 +489,7 @@ export default function PropertyRequest({isAdmin, users}) {
                     </div>
                     <div className="mt-6 bg-gray-50 p-4 rounded-xl border">
                         <h3 className="text-lg font-semibold mb-3 text-gray-800">
-                            Detaje Teknike
+                            Detaje Ekstra
                         </h3>
 
                         <label className="flex items-center gap-3 mb-2">

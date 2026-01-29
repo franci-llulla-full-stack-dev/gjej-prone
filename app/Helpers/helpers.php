@@ -19,6 +19,7 @@ if(! function_exists('redirectByRole')) {
             'agency' => 'properties.index',
             'bank' => 'properties.index',
             'user' => 'properties.listed',
+            'investor' => 'properties.listed',
             default => 'properties.index',
         };
         return $redirectRoute;
@@ -33,6 +34,7 @@ if(! function_exists('redirectByRole')) {
             'agency' => 'verification.sent',
             'bank' => 'verification.sent',
             'user' => 'properties.listed',
+            'investor' => 'properties.listed',
             default => 'profile',
         };
         return $redirectRoute;

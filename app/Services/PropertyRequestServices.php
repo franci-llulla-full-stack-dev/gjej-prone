@@ -11,7 +11,7 @@ class PropertyRequestServices
     public function filterRequests($validated)
     {
         $user = auth()->user();
-        $role = $user->role->name;
+        $role = $user?->role?->name;
         if($role === 'admin') {
             $users = Role::where('name', 'user')->first()->users()->select('id', 'name', 'surname')->get();
             $query = PropertyRequest::query();
@@ -134,7 +134,7 @@ class PropertyRequestServices
     public function logView($propertyRequestId)
     {
         $user = auth()->user();
-        if($user->role->name !== 'user' && $user->role->name !== 'admin') {
+        if($user->role->name !== 'user' && $user->role->name !== 'admin' && $user->role->name !== 'investor') {
             $user->logs()->create([
                 'action_type' => 'viewed_property_listing',
                 'property_request_id' => $propertyRequestId,

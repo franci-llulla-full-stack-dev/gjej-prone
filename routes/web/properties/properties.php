@@ -18,7 +18,7 @@ Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
     Route::put('/properties/{property}/toggle-sold', 'toggleSold')->name('properties.sold');
 });
 
-Route::middleware(['auth', 'role:individual, bank,agency', 'verified.custom'])
+Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
     ->controller(PropertyMediaController::class)
     ->group(function () {
     Route::post('/property/{property}/images','store');

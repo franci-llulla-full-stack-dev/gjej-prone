@@ -7,13 +7,17 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import '../../../css/register.css';
 
-const Regjistrohu = () => {
+const Register = () => {
     const [pranimiKushtet, setPranimiKushtet] = useState(false);
     const [gabimKushtet, setGabimKushtet] = useState('');
     const opsionetLlojiPerdoruesi = [
         { value: 'individual', label: 'Individ' },
         { value: 'agency', label: 'Agjenci' },
         { value: 'bank', label: 'Bankë' },
+    ];
+    const opsionetLlojiPerdoruesiBuyer = [
+        { value: 'user', label: 'Individ' },
+        { value: 'investor', label: 'Investitor' },
     ];
     const [opsionetFiltruara, setOpsionetFiltruara] = useState([]);
     const [opsioniZgjedhur, setOpsioniZgjedhur] = useState(null);
@@ -27,10 +31,9 @@ const Regjistrohu = () => {
         if (!llojiPerdoruesi) return;
 
         if (llojiPerdoruesi.value === 'buyer') {
-            const opsion = { value: 'user', label: 'Klient' };
-            setOpsionetFiltruara([opsion]);
+            setOpsionetFiltruara(opsionetLlojiPerdoruesiBuyer);
+            const opsion = opsionetLlojiPerdoruesiBuyer.find(opt => opt.value === data.user_type) || null;
             setOpsioniZgjedhur(opsion);
-            if (data.user_type !== 'user') setData('user_type', 'user');
         } else if (llojiPerdoruesi.value === 'seller') {
             setOpsionetFiltruara(opsionetLlojiPerdoruesi);
             const opsion = opsionetLlojiPerdoruesi.find(opt => opt.value === data.user_type) || null;
@@ -143,38 +146,36 @@ const Regjistrohu = () => {
                                         </p>
 
                                         <div className="flex flex-col space-y-3">
-                                            {llojiPerdoruesi?.value !== 'buyer' && (
-                                                <Select
-                                                    name="user_type"
-                                                    value={opsioniZgjedhur}
-                                                    onChange={(zgjedhur) => {
-                                                        setOpsioniZgjedhur(zgjedhur);
-                                                        setData('user_type', zgjedhur.value);
-                                                    }}
-                                                    options={opsionetFiltruara}
-                                                    placeholder="Zgjidh Perdoruesin"
-                                                    classNamePrefix="react-select"
-                                                    styles={{
-                                                        control: (provided) => ({
-                                                            ...provided,
-                                                            backgroundColor: 'transparent',
-                                                            borderColor: '#d1d5db',
-                                                        }),
-                                                        menu: (provided) => ({
-                                                            ...provided,
-                                                            backgroundColor: 'white',
-                                                        }),
-                                                        singleValue: (provided) => ({
-                                                            ...provided,
-                                                            color: '#111827',
-                                                        }),
-                                                        placeholder: (provided) => ({
-                                                            ...provided,
-                                                            color: '#6b7280',
-                                                        }),
-                                                    }}
-                                                />
-                                            )}
+                                            <Select
+                                                name="user_type"
+                                                value={opsioniZgjedhur}
+                                                onChange={(zgjedhur) => {
+                                                    setOpsioniZgjedhur(zgjedhur);
+                                                    setData('user_type', zgjedhur.value);
+                                                }}
+                                                options={opsionetFiltruara}
+                                                placeholder="Zgjidh Perdoruesin"
+                                                classNamePrefix="react-select"
+                                                styles={{
+                                                    control: (provided) => ({
+                                                        ...provided,
+                                                        backgroundColor: 'transparent',
+                                                        borderColor: '#d1d5db',
+                                                    }),
+                                                    menu: (provided) => ({
+                                                        ...provided,
+                                                        backgroundColor: 'white',
+                                                    }),
+                                                    singleValue: (provided) => ({
+                                                        ...provided,
+                                                        color: '#111827',
+                                                    }),
+                                                    placeholder: (provided) => ({
+                                                        ...provided,
+                                                        color: '#6b7280',
+                                                    }),
+                                                }}
+                                            />
                                             <TekstGabimi fusha="user_type" />
                                             <input
                                                 type="text"
@@ -308,4 +309,4 @@ const Regjistrohu = () => {
     );
 };
 
-export default Regjistrohu;
+export default Register;

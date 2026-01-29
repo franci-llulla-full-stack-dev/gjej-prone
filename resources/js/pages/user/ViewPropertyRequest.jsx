@@ -126,7 +126,7 @@ console.log(propertyRequest.zone_radious)
                     {/* CONTACT SELLER */}
                     <div className="bg-primary/5 rounded-2xl p-6 space-y-4">
                         <h3 className="text-lg font-semibold">
-                            Kontakto Shitesin
+                            Kontakto Bleresin
                         </h3>
                         <div className="flex gap-3">
                             <a

@@ -327,6 +327,14 @@ export default function NewProperty() {
                                 />
                             </div>
                             <ErrorText field="price" errors={errors} />
+                            <label className="flex items-center gap-3 mb-2">
+                                <input
+                                    type="checkbox"
+                                    checked={data.price_negotiable}
+                                    onChange={e => setData('price_negotiable', e.target.checked)}
+                                />
+                                <span className="text-gray-700">Çmimi i negociueshëm</span>
+                            </label>
                         </div>
 
                         {renderDynamicFields(data.property_category, data, setData)}
@@ -392,7 +400,7 @@ export default function NewProperty() {
                     </div>
 
                     <div className="mt-6 bg-gray-50 p-4 rounded-xl border">
-                        <h3 className="text-lg font-semibold mb-3 text-gray-800">Detaje Teknike</h3>
+                        <h3 className="text-lg font-semibold mb-3 text-gray-800">Detaje Ekstra</h3>
 
                         <label className="flex items-center gap-3 mb-2">
                             <input
@@ -427,15 +435,6 @@ export default function NewProperty() {
                                 onChange={e => setData('parkim', e.target.checked)}
                             />
                             <span className="text-gray-700">Përfshirë vendi i parkimit</span>
-                        </label>
-
-                        <label className="flex items-center gap-3 mb-2">
-                            <input
-                                type="checkbox"
-                                checked={data.price_negotiable}
-                                onChange={e => setData('price_negotiable', e.target.checked)}
-                            />
-                            <span className="text-gray-700">Çmimi i negociueshëm</span>
                         </label>
                     </div>
 

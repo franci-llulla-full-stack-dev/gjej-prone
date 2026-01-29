@@ -97,7 +97,7 @@ const Header = ({breadcrumbItems}) => {
                             </>
                         )
                     }
-                    {role === 'user' && (
+                    {(role === 'user' || role === 'investor') && (
                         <>
                             <Link
                                 href="/listed-properties"
@@ -222,7 +222,7 @@ const Header = ({breadcrumbItems}) => {
                                 </>
                             )
                         }
-                        {role === 'user' && (
+                        {(role === 'user' || role === 'investor') && (
                             <>
                                 <Link
                                     href="/listed-properties"
