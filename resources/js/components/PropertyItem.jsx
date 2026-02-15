@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
+import toast from "react-hot-toast";
 import {
     Home,
     Bath,
@@ -8,14 +9,17 @@ import {
     Layers,
     Building2,
     Tag,
-    Eye
+    Eye,
+    Bookmark
 } from "lucide-react";
 
 const PropertyItem = ({
                           id, city, street, surface, total_rooms, total_bathrooms, total_balconies, verified,
-                          total_floors, views, floor_number, year_built, description, price, currency, type_of_sale, virtual_tour, rivleresim, combo_package, property_type, image_paths = [],
+                          total_floors, saved, views, floor_number, year_built, description, price, currency, type_of_sale, virtual_tour, rivleresim, combo_package, property_type, image_paths = [],
                           canEdit = false, canDelete = false, onEdit = null, onDelete = null, sold, onToggleSold = null,
                       }) => {
+    const [isSaved, setIsSaved] = React.useState(saved);
+
     const PROPERTY_TYPE_LABELS = {
         residential: 'Rezidenciale',
         commercial: 'Komerciale',
@@ -26,6 +30,30 @@ const PropertyItem = ({
         ? `/storage/${image_paths[0].path}`
         : "/placeholder/property.jpg";
     let badge = null;
+
+    const handleSave = async (id) => {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const res = await fetch(`/properties/${id}/toggleSave`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (res.ok) {
+                setIsSaved(!isSaved); // toggle locally for instant feedback
+                const data = await res.json();
+                toast.success(data.message);
+            } else {
+                toast.error('Diçka shkoi keq!');
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error('Diçka shkoi keq!');
+        }
+    };
     if (combo_package || (virtual_tour && rivleresim)) badge = { text: "Platinum", bg: "bg-purple-600", textColor: "text-white" };
     else if (virtual_tour) badge = { text: "Gold", bg: "bg-yellow-500", textColor: "text-black" };
     else if (rivleresim) badge = { text: "Silver", bg: "bg-gray-400", textColor: "text-white" };
@@ -49,6 +77,11 @@ const PropertyItem = ({
                 {canEdit && (
                     <span className={`absolute top-15 left-3 ${verified ? 'bg-green-600' : 'bg-red-700'} backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg`}>
                         {verified ? "E verifikuar" : "Jo e verifikuar"}
+                    </span>
+                )}
+                {sold && (
+                    <span className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg">
+                        E Shitur
                     </span>
                 )}
                 {/* SINGLE PRIORITY BADGE (Ribbon) */}
@@ -75,11 +108,22 @@ const PropertyItem = ({
             <div className="grid grid-cols-1 p-5 space-y-3">
 
                 {/* TITLE */}
-                <div className="flex items-center gap-2">
-                    <Tag size={16} className="text-gray-500"/>
-                    <span className="text-sm uppercase text-gray-600">
-                        {type_of_sale === "sale" ? "Në Shitje" : "Me Qira"}
+                <div className="flex justify-between items-center gap-2">
+                    <div className="flex">
+                        <Tag size={16} className="text-gray-500"/>
+                        <span className="text-sm uppercase text-gray-600">
+                        {type_of_sale === "sale" ? "Per Shitje" : "Per Qira"}
                     </span>
+                    </div>
+
+                    {!canEdit && (
+                        <button
+                            onClick={() => handleSave(id)}
+                            className="hidden md:block text-gray-400 hover:text-yellow-400 transition-colors p-1"
+                        >
+                            <Bookmark size={36} fill={isSaved ? "#facc15" : "none"} />
+                        </button>
+                    )}
                 </div>
 
                 {/* LOCATION */}

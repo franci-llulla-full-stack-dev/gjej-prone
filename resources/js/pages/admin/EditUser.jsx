@@ -23,6 +23,16 @@ export default function EditUser({ user, roles }) {
         address: user.address || '',
         birth_date: user.birth_date || '',
         role_id: user.role_id || '2',
+        notifications: user.notifications ?? true,
+        // Extra fields
+        nipt: user.nipt || '',
+        company_phone_number: user.company_phone_number || '',
+        years_experience: user.years_experience || '',
+        company_description: user.company_description || '',
+        finished_projects: user.finished_projects || '',
+        website: user.website || '',
+        year_budget: user.year_budget || '',
+        preferred_locations: user.preferred_locations || '',
     });
 
     const [errors, setErrors] = useState({});
@@ -341,6 +351,158 @@ export default function EditUser({ user, roles }) {
                             )}
                         </div>
                     </div>
+
+                    {/* Notifications Checkbox */}
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            name="notifications"
+                            checked={formData.notifications}
+                            onChange={(e) => setFormData(prev => ({ ...prev, notifications: e.target.checked }))}
+                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label className="text-sm text-gray-700">
+                            Dëshiron të marrë njoftime me email
+                        </label>
+                    </div>
+
+                    {/* Extra fields based on role */}
+                    {['agency', 'bank', 'developer'].includes(user.role?.name) && (
+                        <div className="border-t border-gray-200 pt-4 space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800">
+                                {user.role?.name === 'bank' ? 'Informacione të Bankës' : user.role?.name === 'agency' ? 'Informacione të Agjencisë' : 'Informacione të Kompanisë'}
+                            </h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">NIPT</label>
+                                    <input
+                                        type="text"
+                                        name="nipt"
+                                        value={formData.nipt}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                        placeholder="Shkruani NIPT"
+                                    />
+                                </div>
+
+                                {user.role?.name === 'agency' && (
+                                    <>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Numri i Telefonit të Agjencisë</label>
+                                            <input
+                                                type="text"
+                                                name="company_phone_number"
+                                                value={formData.company_phone_number}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                                placeholder="Shkruani numrin e telefonit"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Faqja Zyrtare</label>
+                                            <input
+                                                type="url"
+                                                name="website"
+                                                value={formData.website}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                                placeholder="https://example.com"
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
+                                {user.role?.name === 'developer' && (
+                                    <>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Vitet e Përvojës</label>
+                                            <input
+                                                type="number"
+                                                name="years_experience"
+                                                value={formData.years_experience}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                                placeholder="Shkruani vitet e përvojës"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Projekte të Përfunduara</label>
+                                            <input
+                                                type="number"
+                                                name="finished_projects"
+                                                value={formData.finished_projects}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                                placeholder="Numri i projekteve"
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Përshkrimi</label>
+                                <textarea
+                                    name="company_description"
+                                    value={formData.company_description}
+                                    onChange={handleChange}
+                                    rows="4"
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                    placeholder="Shkruani përshkrimin e kompanisë"
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {user.role?.name === 'investor' && (
+                        <div className="border-t border-gray-200 pt-4 space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Informacione të Investitorit</h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Buxheti Vjetor (€)</label>
+                                    <input
+                                        type="number"
+                                        name="year_budget"
+                                        value={formData.year_budget}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                        placeholder="Shkruani buxhetin vjetor"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Zonat e Preferuara</label>
+                                    <input
+                                        type="text"
+                                        name="preferred_locations"
+                                        value={formData.preferred_locations}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                        placeholder="Tiranë, Durrës, Vlorë"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {user.role?.name === 'business' && (
+                        <div className="border-t border-gray-200 pt-4 space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Informacione të Biznesit</h3>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Zonat e Preferuara për Hapësira Komerciale</label>
+                                <input
+                                    type="text"
+                                    name="preferred_locations"
+                                    value={formData.preferred_locations}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                                    placeholder="Tiranë, Durrës, Vlorë"
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     {/* Submit Buttons */}
                     <div className="flex gap-4 pt-4 border-t border-gray-200">

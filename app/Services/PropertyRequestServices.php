@@ -14,13 +14,25 @@ class PropertyRequestServices
         $role = $user?->role?->name;
         if($role === 'admin') {
             $users = Role::where('name', 'user')->first()->users()->select('id', 'name', 'surname')->get();
-            $query = PropertyRequest::query();
-        }elseif ($role === 'user') {
+            $query = PropertyRequest::with(['savedByUsers' => function($q) use ($user) {
+                if ($user) {
+                    $q->where('users.id', $user->id);
+                }
+            }]);
+        }elseif ($role === 'user' || $role === 'investor') {
             $users = [];
-            $query = PropertyRequest::where('user_id', $user->id);
+            $query = PropertyRequest::where('user_id', $user->id)->with(['savedByUsers' => function($q) use ($user) {
+                if ($user) {
+                    $q->where('users.id', $user->id);
+                }
+            }]);
         } else {
             $users = [];
-            $query = PropertyRequest::query();
+            $query = PropertyRequest::with(['savedByUsers' => function($q) use ($user) {
+                if ($user) {
+                    $q->where('users.id', $user->id);
+                }
+            }]);
         }
         $rates = [
             'EUR' => 1,
@@ -126,6 +138,15 @@ class PropertyRequestServices
 
         if(isset($validated['surface_max'])) {
             $query->where('surface_2', '<=', $validated['surface_max']);
+        }
+
+        // Filter by saved property requests
+        if(isset($validated['saved']) && filter_var($validated['saved'], FILTER_VALIDATE_BOOLEAN)) {
+            if($user) {
+                $query->whereHas('savedByUsers', function($q) use ($user) {
+                    $q->where('users.id', $user->id);
+                });
+            }
         }
 
         return [$query, $users];

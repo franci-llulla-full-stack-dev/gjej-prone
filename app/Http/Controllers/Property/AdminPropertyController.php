@@ -193,8 +193,8 @@ class AdminPropertyController extends Controller
             'virtual_tour_link' => 'nullable|url',
             'images' => 'required|array|min:2',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
-            'floor_plan' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'hipoteke_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+            'floor_plan' => 'nullable|file|max:5120',
+            'hipoteke_file' => 'nullable|file|max:5120',
             'parkim' => 'nullable|boolean',
             'mobilim' => 'nullable|boolean',
             'price_negotiable' => 'nullable|boolean',
@@ -431,5 +431,14 @@ class AdminPropertyController extends Controller
         }
 
         return Storage::disk('public')->download($propertyDocument->path, basename($propertyDocument->path));
+    }
+
+    public function toggleSold(Property $property)
+    {
+        $property->update([
+            'sold' => !$property->sold
+        ]);
+
+        return back()->with('success', $property->sold ? 'Prona u shenua si e shitur!' : 'Prona u shenua si e disponueshme!');
     }
 }

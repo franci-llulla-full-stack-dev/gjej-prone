@@ -39,6 +39,7 @@ class FilterRequest extends FormRequest
             'balconies_min' => ['nullable', 'numeric'],
             'balconies_max' => ['nullable', 'numeric'],
             'user_id' => ['nullable', 'exists:users,id'],
+            'saved' => ['nullable', 'in:true,false,1,0'],
         ];
     }
 }

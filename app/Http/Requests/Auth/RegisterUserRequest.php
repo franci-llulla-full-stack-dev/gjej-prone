@@ -30,7 +30,17 @@ class RegisterUserRequest extends FormRequest
             'company_name' => ['nullable', 'string'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'user_type' => ['required'],
-            'address' => ['nullable', 'string'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'notifications' => ['nullable', 'boolean'],
+            // Extra fields
+            'nipt' => ['nullable', 'string', 'max:20'],
+            'company_phone_number' => ['nullable', 'string', 'max:30'],
+            'years_experience' => ['nullable', 'numeric', 'min:0'],
+            'company_description' => ['nullable', 'string', 'max:1000'],
+            'finished_projects' => ['nullable', 'numeric', 'min:0'],
+            'website' => ['nullable', 'string', 'url', 'max:255'],
+            'year_budget' => ['nullable', 'numeric', 'min:0'],
+            'preferred_locations' => ['nullable', 'string', 'max:500'],
         ];
     }
 

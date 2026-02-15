@@ -46,13 +46,14 @@ export default function PropertyRequest({isAdmin, users}) {
         architect: false,
         expires_at: '',
         parkim: false,
+        funds: '',
     });
     const [zoneRadius, setZoneRadius] = useState(500);
     const [coords,setCoords ] = useState({lat:null,lng:null});
     const [selectedBashki, setSelectedBashki] = useState(null);
     const saleOptions = [
         { value: '', label: 'Zgjidh Llojin e Transaksionit' },
-        { value: 'sale', label: 'Shitje' },
+        { value: 'sale', label: 'Blerje' },
         { value: 'rent', label: 'Qira' }
     ];
     const typeOfProperties = [
@@ -67,6 +68,11 @@ export default function PropertyRequest({isAdmin, users}) {
         { value: '3m', label: 'Deri në 3 muaj' },
         { value: '6m', label: 'Deri në 6 muaj' },
         { value: '1y', label: 'Deri në 1 vit' },
+    ];
+    const fundingSourceOptions = [
+        { value: '', label: 'Zgjidh burimin e financimit' },
+        { value: 'kredi', label: 'Kredi' },
+        { value: 'kursime', label: 'Kursime' },
     ];
     const subTypeProperties = {
         residential: [
@@ -360,6 +366,37 @@ export default function PropertyRequest({isAdmin, users}) {
                             <ErrorText field="expires_at" errors={errors} />
                         </div>
                         <div>
+                            <label className={labelBase}>Burimi i Financimit *</label>
+                            <Select
+                                name="funds"
+                                value={fundingSourceOptions.find(o => o.value === data.funds) || fundingSourceOptions[0]}
+                                onChange={selected => setData('funds', selected ? selected.value : '')}
+                                options={fundingSourceOptions}
+                                placeholder="Zgjidh burimin e financimit"
+                                classNamePrefix="react-select"
+                                styles={{
+                                    control: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: 'transparent',
+                                        borderColor: '#d1d5db',
+                                    }),
+                                    menu: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: 'white',
+                                    }),
+                                    singleValue: (provided) => ({
+                                        ...provided,
+                                        color: '#111827',
+                                    }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: '#6b7280',
+                                    }),
+                                }}
+                            />
+                            <ErrorText field="funds" errors={errors} />
+                        </div>
+                        <div>
                             <label className={labelBase}>Sipërfaqja *</label>
                             <div className="flex gap-2">
                                 <input
@@ -499,7 +536,7 @@ export default function PropertyRequest({isAdmin, users}) {
                                 onChange={(e) => setData('ashensor', e.target.checked)}
                             />
                             <span className="text-gray-700">
-                                Ka ashensor
+                                Me Ashensor
                             </span>
                         </label>
 
@@ -510,7 +547,7 @@ export default function PropertyRequest({isAdmin, users}) {
                                 onChange={(e) => setData('hipoteke', e.target.checked)}
                             />
                             <span className="text-gray-700">
-                                Ka hipoteke
+                                Me Hipoteke
                             </span>
                         </label>
                         <label className="flex items-center gap-3">
@@ -520,7 +557,7 @@ export default function PropertyRequest({isAdmin, users}) {
                                 onChange={(e) => setData('parkim', e.target.checked)}
                             />
                             <span className="text-gray-700">
-                                Përfshirë vendi i parkimit
+                                Me Post Parkimi
                             </span>
                         </label>
                     </div>
@@ -539,7 +576,14 @@ export default function PropertyRequest({isAdmin, users}) {
                                 }}
                             />
                             <span className="text-gray-700">
-                                Me nevojitet Interior Design
+                                Me nevojitet Interior Dezajner (per te me bere mobilimin) - <a
+                                href="https://linktr.ee/VirtuNEX?utm_source=linktree_profile_share&ltsid=7e78dae2-3f91-43bc-a0eb-9ebd00ee835d"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline hover:text-blue-800"
+                            >
+                                Cmimi
+                            </a>
                             </span>
                         </label>
 
@@ -553,7 +597,14 @@ export default function PropertyRequest({isAdmin, users}) {
                                 }}
                             />
                             <span className="text-gray-700">
-                                Me nevojitet Arkitekt
+                                Me nevojitet Arkitekt (per te me verifikuar siperfaqen) - <a
+                                href="https://linktr.ee/VirtuNEX?utm_source=linktree_profile_share&ltsid=7e78dae2-3f91-43bc-a0eb-9ebd00ee835d"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline hover:text-blue-800"
+                            >
+                                Cmimi
+                            </a>
                             </span>
                         </label>
                     </div>

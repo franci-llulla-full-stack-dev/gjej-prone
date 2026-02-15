@@ -3,6 +3,8 @@ import PropertyItem from '../../components/PropertyItem.jsx';
 import { Link, router, Head } from '@inertiajs/react';
 import PropertyFilter from '../../components/PropertyFilter.jsx';
 import Pagination  from '../../components/Pagination.jsx';
+import { Bookmark } from 'lucide-react';
+
 const AllProperties = ({ properties }) => {
     const [filters, setFilters] = useState({
         search: '',
@@ -23,6 +25,7 @@ const AllProperties = ({ properties }) => {
         surface_max: '',
         balconies_min: '',
         balconies_max: '',
+        saved: false,
     });
 
     const reload = () => {
@@ -46,7 +49,27 @@ const AllProperties = ({ properties }) => {
                 />
 
                 <div className="p-4">
-                    <h2 className="font-bold text-lg">Pronat e listuara</h2>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="font-bold text-lg">Pronat e listuara</h2>
+                        <button
+                            onClick={() => {
+                                const newSavedValue = !filters.saved;
+                                setFilters({ ...filters, saved: newSavedValue });
+                                router.get('/listed-properties', { ...filters, saved: newSavedValue }, {
+                                    preserveState: true,
+                                    replace: true,
+                                });
+                            }}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
+                                filters.saved
+                                    ? 'bg-yellow-400 text-black hover:bg-yellow-500'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        >
+                            <Bookmark size={20} fill={filters.saved ? "#000" : "none"} />
+                            {filters.saved ? 'Shfaq të gjitha' : 'Vetëm të ruajtura'}
+                        </button>
+                    </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {properties?.data?.length > 0 ? (
                             properties.data.map(p => (

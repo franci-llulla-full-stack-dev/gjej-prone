@@ -14,6 +14,19 @@ const Profile = ({ user }) => {
         birth_date: user.birth_date || '',
         address: user.address || '',
         notifications: user.notifications ?? true,
+        // Company/Agency fields
+        nipt: user.nipt || '',
+        company_phone_number: user.company_phone_number || '',
+        years_experience: user.years_experience || '',
+        company_description: user.company_description || '',
+        logo_path: user.logo_path || '',
+        // Developer fields
+        finished_projects: user.finished_projects || 0,
+        website: user.website || '',
+        // Investor/Business fields
+        year_budget: user.year_budget || '',
+        preferred_locations: user.preferred_locations || '',
+        logo: null, // for file upload
     });
     const profileData = profileForm.data;
     const handleChangeProfile = (e) => {
@@ -23,7 +36,10 @@ const Profile = ({ user }) => {
 
     const handleSubmitProfile = (e) => {
         e.preventDefault();
-        profileForm.put('/profile/update');
+        profileForm.post('/profile/update', {
+            forceFormData: true,
+            _method: 'put'
+        });
     };
 
     const passwordForm = useForm({
@@ -161,6 +177,157 @@ const Profile = ({ user }) => {
                             />
                             {profileForm.errors.company_name && <p className="text-red-500 text-sm">{profileForm.errors.company_name}</p>}
                         </div>
+
+                        {/* Agency/Developer/Bank specific fields */}
+                        {['agency', 'developer', 'bank'].includes(user.role?.name) && (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">NIPT</label>
+                                    <input
+                                        type="text"
+                                        name="nipt"
+                                        value={profileData.nipt}
+                                        onChange={handleChangeProfile}
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.nipt && <p className="text-red-500 text-sm">{profileForm.errors.nipt}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Numri i Kompanisë/Agjencisë</label>
+                                    <input
+                                        type="text"
+                                        name="company_phone_number"
+                                        value={profileData.company_phone_number}
+                                        onChange={handleChangeProfile}
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.company_phone_number && <p className="text-red-500 text-sm">{profileForm.errors.company_phone_number}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Vitet e Përvojës</label>
+                                    <input
+                                        type="number"
+                                        name="years_experience"
+                                        value={profileData.years_experience}
+                                        onChange={handleChangeProfile}
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.years_experience && <p className="text-red-500 text-sm">{profileForm.errors.years_experience}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Logo e Kompanisë</label>
+                                    {profileData.logo_path && (
+                                        <div className="mt-2 mb-2">
+                                            <img src={`/storage/${profileData.logo_path}`} alt="Logo" className="h-20 w-20 object-cover rounded border" />
+                                        </div>
+                                    )}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                profileForm.setData('logo', file);
+                                            }
+                                        }}
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.logo && <p className="text-red-500 text-sm">{profileForm.errors.logo}</p>}
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700">Përshkrim i Kompanisë</label>
+                                    <textarea
+                                        name="company_description"
+                                        value={profileData.company_description}
+                                        onChange={handleChangeProfile}
+                                        rows="3"
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.company_description && <p className="text-red-500 text-sm">{profileForm.errors.company_description}</p>}
+                                </div>
+                            </>
+                        )}
+
+                        {/* Developer specific fields */}
+                        {user.role?.name === 'developer' && (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Numri i Projekteve të Përfunduara</label>
+                                    <input
+                                        type="number"
+                                        name="finished_projects"
+                                        value={profileData.finished_projects}
+                                        onChange={handleChangeProfile}
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.finished_projects && <p className="text-red-500 text-sm">{profileForm.errors.finished_projects}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Faqja Zyrtare (Website)</label>
+                                    <input
+                                        type="url"
+                                        name="website"
+                                        value={profileData.website}
+                                        onChange={handleChangeProfile}
+                                        placeholder="https://example.com"
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.website && <p className="text-red-500 text-sm">{profileForm.errors.website}</p>}
+                                </div>
+                            </>
+                        )}
+
+                        {/* Investor specific fields */}
+                        {user.role?.name === 'investor' && (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Buxheti i Përafërt Vjetor (€)</label>
+                                    <input
+                                        type="number"
+                                        name="year_budget"
+                                        value={profileData.year_budget}
+                                        onChange={handleChangeProfile}
+                                        placeholder="100000"
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.year_budget && <p className="text-red-500 text-sm">{profileForm.errors.year_budget}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Zonat e Preferuara</label>
+                                    <input
+                                        type="text"
+                                        name="preferred_locations"
+                                        value={profileData.preferred_locations}
+                                        onChange={handleChangeProfile}
+                                        placeholder="Tiranë, Durrës, Vlorë"
+                                        className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                    {profileForm.errors.preferred_locations && <p className="text-red-500 text-sm">{profileForm.errors.preferred_locations}</p>}
+                                </div>
+                            </>
+                        )}
+
+                        {/* Business specific fields */}
+                        {user.role?.name === 'business' && (
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700">Zonat e Preferuara për Hapësira Komerciale</label>
+                                <input
+                                    type="text"
+                                    name="preferred_locations"
+                                    value={profileData.preferred_locations}
+                                    onChange={handleChangeProfile}
+                                    placeholder="Tiranë, Durrës, Vlorë"
+                                    className="mt-1 block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                />
+                                {profileForm.errors.preferred_locations && <p className="text-red-500 text-sm">{profileForm.errors.preferred_locations}</p>}
+                            </div>
+                        )}
                     </div>
 
                     {/* Notifications */}

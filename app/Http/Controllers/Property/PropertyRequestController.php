@@ -82,6 +82,15 @@ class PropertyRequestController
         }else {
             $users = [];
         }
+
+        // Load savedByUsers relationship
+        $user = auth()->user();
+        $propertyRequest->load(['savedByUsers' => function($q) use ($user) {
+            if ($user) {
+                $q->where('users.id', $user->id);
+            }
+        }]);
+
         $isAdmin = auth()->user()->role->name === 'admin';
         return Inertia::render('user/PropertyRequestEdit', [
             'propertyRequest' => $propertyRequest,
@@ -124,6 +133,15 @@ class PropertyRequestController
         if($user->role->name === 'admin') {
             $actualContact = $propertyRequest->user->phone_number;
         }
+        $propertyRequest->update(['views' => $propertyRequest->views + 1]);
+
+        // Load savedByUsers relationship for the saved attribute
+        $propertyRequest->load(['savedByUsers' => function($q) use ($user) {
+            if ($user) {
+                $q->where('users.id', $user->id);
+            }
+        }]);
+
         return Inertia::render('user/ViewPropertyRequest', [
             'propertyRequest' => $propertyRequest,
             'actual_contact' => $actualContact,
@@ -137,5 +155,33 @@ class PropertyRequestController
         ]);
 
         return back()->with('success', 'Kerkesa e prones u ri-ngarkua!');
+    }
+
+    public function toggleSave(PropertyRequest $propertyRequest)
+    {
+        $user = auth()->user();
+        if ($user->savedPropertyRequests()->where('property_request_id', $propertyRequest->id)->exists()) {
+            $user->savedPropertyRequests()->detach($propertyRequest->id);
+            return response()->json(['message' => 'Kerkesa e prones u hoq nga te preferuarat!']);
+        } else {
+            $user->savedPropertyRequests()->attach($propertyRequest->id);
+            return response()->json(['message' => 'Kerkesa e prones u shtua ne te preferuarat!']);
+        }
+    }
+
+    public function toggleCompleted(PropertyRequest $propertyRequest)
+    {
+        $user = auth()->user();
+
+        // Only admin or owner can toggle completed status
+        if ($user->role->name !== 'admin' && $user->id !== $propertyRequest->user_id) {
+            abort(403, 'Nuk jeni i autorizuar per kete veprim.');
+        }
+
+        $propertyRequest->update([
+            'completed' => !$propertyRequest->completed
+        ]);
+
+        return back()->with('success', $propertyRequest->completed ? 'Kerkesa u shenua si e perfunduar!' : 'Kerkesa u shenua si e paperfunduar!');
     }
 }

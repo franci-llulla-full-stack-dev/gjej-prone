@@ -12,8 +12,13 @@ const PROPERTY_TYPE_LABELS = {
 };
 
 const TRANSACTION_TYPE_LABELS = {
-    sale: 'Shitje',
+    sale: 'Blerje',
     rent: 'Qira',
+};
+
+const FUNDING_SOURCE_LABELS = {
+    kredi: 'Kredi',
+    kursime: 'Kursime',
 };
 
 const subTypeProperties = {
@@ -91,6 +96,10 @@ console.log(propertyRequest.zone_radious)
                         <Detail
                             label="Transaksioni"
                             value={TRANSACTION_TYPE_LABELS[propertyRequest.type_of_sale]}
+                        />
+                        <Detail
+                            label="Burimi i Financimit"
+                            value={propertyRequest.funds ? FUNDING_SOURCE_LABELS[propertyRequest.funds] : null}
                         />
 
                     </div>

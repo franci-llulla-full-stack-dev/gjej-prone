@@ -54,8 +54,19 @@ class AuthController extends Controller
             'phone_number' => $validatedData['phone_number'],
             'birth_date' => $validatedData['birth_date'],
             'email' => $validatedData['email'],
+            'address' => $validatedData['address'] ?? null,
+            'notifications' => $validatedData['notifications'] ?? true,
             'company_name' => $validatedData['company_name'] ?? null,
             'password' => bcrypt($validatedData['password']),
+            // Extra fields
+            'nipt' => $validatedData['nipt'] ?? null,
+            'company_phone_number' => $validatedData['company_phone_number'] ?? null,
+            'years_experience' => $validatedData['years_experience'] ?? null,
+            'company_description' => $validatedData['company_description'] ?? null,
+            'finished_projects' => $validatedData['finished_projects'] ?? 0,
+            'website' => $validatedData['website'] ?? null,
+            'year_budget' => $validatedData['year_budget'] ?? null,
+            'preferred_locations' => $validatedData['preferred_locations'] ?? null,
         ]);
 
         if(!$user){

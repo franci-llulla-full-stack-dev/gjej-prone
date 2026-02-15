@@ -78,6 +78,13 @@ class PropertyController extends Controller
                 ->with(['error' => 'You are not authorized to edit this property.']);
         }
 
+        $property->load(['savedByUsers' => function($q) {
+            $user = auth()->user();
+            if ($user) {
+                $q->where('users.id', $user->id);
+            }
+        }]);
+
         return Inertia::render('EditProperty', [
             'property' => $property,
             'propertyImages' => $property->images,
@@ -139,7 +146,23 @@ class PropertyController extends Controller
             $property->update(['views' => $property->views + 1]);
         }
         return Inertia::render('PropertyDetails',
-            ['property' => $property->load(['images', 'owner', 'documents']),]
+            ['property' => $property->load(['images', 'owner', 'documents', 'savedByUsers' => function($q) use ($user) {
+                if ($user) {
+                    $q->where('users.id', $user->id);
+                }
+            }]),]
         );
+    }
+
+    public function toggleSave(Property $property)
+    {
+        $user = auth()->user();
+        if($user->savedProperties()->where('property_id', $property->id)->exists()) {
+            $user->savedProperties()->detach($property->id);
+            return response()->json(['message' => 'Prona u hoq nga te preferuarat!.' ]);
+        } else {
+            $user->savedProperties()->attach($property->id);
+            return response()->json(['message' => 'Prona u shtua ne te preferuarat!.']);
+        }
     }
 }

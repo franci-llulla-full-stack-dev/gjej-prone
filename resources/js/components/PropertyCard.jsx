@@ -8,7 +8,7 @@ import BathtubIcon from '@mui/icons-material/Bathtub';
 import BalconyIcon from '@mui/icons-material/Balcony';
 import PersonIcon from '@mui/icons-material/Person';
 
-const PropertyCard = ({ property, onEdit, onView, onDelete, onVerify, onRestore, onPermanentDelete, isDeleted }) => {
+const PropertyCard = ({ property, onEdit, onView, onDelete, onVerify, onRestore, onPermanentDelete, onToggleSold, isDeleted }) => {
     return (
         <Card
             sx={{
@@ -173,21 +173,34 @@ const PropertyCard = ({ property, onEdit, onView, onDelete, onVerify, onRestore,
             {/* Veprimet - fiksuar në fund */}
             <CardActions sx={{ px: 2, pb: 2, pt: 0 }}>
                 {!isDeleted ? (
-                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1, width: '100%' }}>
-                        <Button size="small" variant="outlined" onClick={() => onEdit(property)}>
-                            Ndrysho
-                        </Button>
-                        <Button size="small" color="error" variant="outlined" onClick={() => onDelete(property)}>
-                            Fshi
-                        </Button>
-                        <Button
-                            size="small"
-                            color={property.verified ? "warning" : "success"}
-                            variant="outlined"
-                            onClick={() => onVerify(property)}
-                        >
-                            {property.verified ? 'Hiq' : 'Verifiko'}
-                        </Button>
+                    <Box sx={{ display: 'grid', gap: 1, width: '100%' }}>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
+                            <Button size="small" variant="outlined" onClick={() => onEdit(property)}>
+                                Ndrysho
+                            </Button>
+                            <Button size="small" color="error" variant="outlined" onClick={() => onDelete(property)}>
+                                Fshi
+                            </Button>
+                            <Button
+                                size="small"
+                                color={property.verified ? "warning" : "success"}
+                                variant="outlined"
+                                onClick={() => onVerify(property)}
+                            >
+                                {property.verified ? 'Hiq' : 'Verifiko'}
+                            </Button>
+                        </Box>
+                        {onToggleSold && (
+                            <Button
+                                fullWidth
+                                size="small"
+                                color={property.sold ? "success" : "warning"}
+                                variant="contained"
+                                onClick={() => onToggleSold(property)}
+                            >
+                                {property.sold ? 'Shëno si e Disponueshme' : 'Shëno si e Shitur'}
+                            </Button>
+                        )}
                     </Box>
                 ) : (
                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, width: '100%' }}>

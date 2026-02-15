@@ -67,6 +67,9 @@ const PropertyRequests = ({ propertyRequests, users }) => {
                             onEdit={() => {
                                 router.get(`/property/request/${p.id}/edit`);
                             }}
+                            onToggleCompleted={() => {
+                                router.put(`/property/request/${p.id}/toggle-completed`);
+                            }}
                             onDelete={() => {
                                 Swal.fire({
                                     title: 'A jeni i sigurt?',

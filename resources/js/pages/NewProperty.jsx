@@ -365,7 +365,7 @@ export default function NewProperty() {
                     </div>
 
                     <div className="mt-4">
-                        <label className={labelBase}>Plani i Katit \(opsional\)</label>
+                        <label className={labelBase}>Planimetria *</label>
                         <input
                             type="file"
                             accept=".pdf,image/*"
@@ -451,7 +451,14 @@ export default function NewProperty() {
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj Virtual Tour – <strong>150€</strong> \(Rankim Gold\)
+                                Dëshiroj Virtual Tour –  <a
+                                href="https://linktr.ee/VirtuNEX?utm_source=linktree_profile_share&ltsid=7e78dae2-3f91-43bc-a0eb-9ebd00ee835d"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline hover:text-blue-800"
+                            >
+                                Cmimi
+                            </a> \(Rankim Gold\)
                             </span>
                         </label>
 
@@ -465,7 +472,15 @@ export default function NewProperty() {
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj Rivlerësim – <strong>150€</strong> \(Rankim Silver\)
+                                Dëshiroj Rivlerësim –
+                                 <a
+                                     href="https://linktr.ee/VirtuNEX?utm_source=linktree_profile_share&ltsid=7e78dae2-3f91-43bc-a0eb-9ebd00ee835d"
+                                     target="_blank"
+                                     rel="noopener noreferrer"
+                                     className="text-blue-600 underline hover:text-blue-800"
+                                 >
+                                    Cmimi
+                                </a>\(Rankim Silver\)
                             </span>
                         </label>
 
@@ -482,7 +497,15 @@ export default function NewProperty() {
                                 }}
                             />
                             <span className="text-gray-700">
-                                Dëshiroj të dyja bashkë – <strong>250€</strong> \(Rankim Platinum\)
+                                Dëshiroj të dyja bashkë –  <a
+                                href="https://linktr.ee/VirtuNEX?utm_source=linktree_profile_share&ltsid=7e78dae2-3f91-43bc-a0eb-9ebd00ee835d"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline hover:text-blue-800"
+                            >
+                                Cmimi
+                            </a>
+                                \(Rankim Platinum\)
                             </span>
                         </label>
                     </div>

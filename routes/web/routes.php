@@ -11,7 +11,7 @@ Route::get('/api/reverse-geocode', [GeocodingController::class, 'reverseGeocode'
 Route::middleware('auth')->group(function() {
     Route::get('/dashboard', DashboardController::class)->middleware('role:admin')->name('admin.dashboard');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::match(['put', 'post'], '/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password/update', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
 Route::get('/nearby-places', [PlaceController::class, 'nearby']);

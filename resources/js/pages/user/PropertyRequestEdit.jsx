@@ -45,12 +45,14 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
         interior_design: propertyRequest.interior_design,
         architect: propertyRequest.architect,
         expires_at: propertyRequest.expires_at,
+        parkim: propertyRequest.parkim,
+        funds: propertyRequest.funds || ''
     });
     const [zoneRadius, setZoneRadius] = useState(data.zone_radious);
     const [coords,setCoords ] = useState({lat:data.latitude,lng:data.longitude});
     const saleOptions = [
         { value: '', label: 'Zgjidh Llojin e Transaksionit' },
-        { value: 'sale', label: 'Shitje' },
+        { value: 'sale', label: 'Blerje' },
         { value: 'rent', label: 'Qira' }
     ];
     const typeOfProperties = [
@@ -366,6 +368,37 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
                             <ErrorText field="expires_at" errors={errors} />
                         </div>
                         <div>
+                            <label className={labelBase}>Burimi i Financimit *</label>
+                            <Select
+                                name="funds"
+                                value={fundingSourceOptions.find(o => o.value === data.funds) || fundingSourceOptions[0]}
+                                onChange={selected => setData('funds', selected ? selected.value : '')}
+                                options={fundingSourceOptions}
+                                placeholder="Zgjidh burimin e financimit"
+                                classNamePrefix="react-select"
+                                styles={{
+                                    control: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: 'transparent',
+                                        borderColor: '#d1d5db',
+                                    }),
+                                    menu: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: 'white',
+                                    }),
+                                    singleValue: (provided) => ({
+                                        ...provided,
+                                        color: '#111827',
+                                    }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: '#6b7280',
+                                    }),
+                                }}
+                            />
+                            <ErrorText field="funds" errors={errors} />
+                        </div>
+                        <div>
                             <label className={labelBase}>Sipërfaqja *</label>
                             <div className="flex gap-2">
                                 <input
@@ -505,7 +538,7 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
                                 onChange={(e) => setData('ashensor', e.target.checked)}
                             />
                             <span className="text-gray-700">
-                                Ka ashensor
+                                Me Ashensor
                             </span>
                         </label>
 
@@ -516,7 +549,17 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
                                 onChange={(e) => setData('hipoteke', e.target.checked)}
                             />
                             <span className="text-gray-700">
-                                Ka hipoteke
+                                Me Hipoteke
+                            </span>
+                        </label>
+                        <label className="flex items-center gap-3">
+                            <input
+                                type="checkbox"
+                                checked={data.parkim}
+                                onChange={(e) => setData('parkim', e.target.checked)}
+                            />
+                            <span className="text-gray-700">
+                                Me Post Parkimi
                             </span>
                         </label>
                     </div>

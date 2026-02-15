@@ -18,8 +18,10 @@ if(! function_exists('redirectByRole')) {
             'individual' => 'properties.index',
             'agency' => 'properties.index',
             'bank' => 'properties.index',
+            'developer' => 'properties.index',
             'user' => 'properties.listed',
             'investor' => 'properties.listed',
+            'business' => 'properties.listed',
             default => 'properties.index',
         };
         return $redirectRoute;
@@ -33,8 +35,10 @@ if(! function_exists('redirectByRole')) {
             'individual' => 'verification.sent',
             'agency' => 'verification.sent',
             'bank' => 'verification.sent',
+            'developer' => 'verification.sent',
             'user' => 'properties.listed',
             'investor' => 'properties.listed',
+            'business' => 'properties.listed',
             default => 'profile',
         };
         return $redirectRoute;

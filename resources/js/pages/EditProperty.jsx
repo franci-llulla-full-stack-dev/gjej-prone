@@ -285,10 +285,10 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
             .then(res => {
                 const uploaded = { ...res.data.document, isNew: false };
                 setplanFile([uploaded]);
-                toast.success(res.data.message || 'Plani u ngarkua me sukses');
+                toast.success(res.data.message || 'Planimetria u ngarkua me sukses');
             })
             .catch(err => {
-                toast.error('Ngarkimi i planit dështoi');
+                toast.error('Ngarkimi i planimetrise dështoi');
                 console.error(err);
                 setplanFile([]);
             });
@@ -671,7 +671,7 @@ export default function EditProperty({property, propertyImages, floorPlan, hipot
 
                     <div className="my-5 pb-2 border-b">
                         <label className={labelBase}>
-                            Plani i Katit \(opsional\)
+                            Planimetria *
                         </label>
                         <input
                             type="file"

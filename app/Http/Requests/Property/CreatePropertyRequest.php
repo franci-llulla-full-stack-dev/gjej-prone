@@ -47,7 +47,7 @@ class CreatePropertyRequest extends FormRequest
             'virtual_tour_link' => ['nullable', 'url'],
             'ashensor' => ['nullable', 'boolean'],
             'hipoteke' => ['nullable', 'boolean'],
-            'floor_plan' => ['nullable', 'image', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+            'floor_plan' => ['nullable', 'file', 'max:5120'],
             'hipoteke_file' => ['nullable', 'file', 'max:5120'],
             'parkim' => ['nullable', 'boolean'],
             'mobilim' => ['nullable', 'boolean'],

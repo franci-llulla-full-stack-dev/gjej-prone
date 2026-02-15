@@ -1,10 +1,11 @@
 // resources/js/pages/PropertyDetails.jsx
 import { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Polyline, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
+import { Navigation } from "lucide-react";
 /* =====================
    LABEL MAPPINGS
 ===================== */
@@ -48,6 +49,43 @@ const subTypeProperties = {
         { value: 'kategori_te_tjera', label: 'Kategori të tjera' },
     ],
 };
+
+function DirectionsLayer({ userLocation, propertyLocation }) {
+    const [route, setRoute] = useState(null);
+    const map = useMap();
+
+    useEffect(() => {
+        if (!userLocation || !propertyLocation) return;
+
+        // Fetch route from OSRM (Open Source Routing Machine)
+        const url = `https://router.project-osrm.org/route/v1/driving/${userLocation[1]},${userLocation[0]};${propertyLocation[1]},${propertyLocation[0]}?overview=full&geometries=geojson`;
+
+        axios.get(url)
+            .then(res => {
+                if (res.data.routes && res.data.routes.length > 0) {
+                    const coords = res.data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                    setRoute(coords);
+                    // Fit map to show entire route
+                    const bounds = L.latLngBounds([userLocation, propertyLocation]);
+                    map.fitBounds(bounds, { padding: [50, 50] });
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching route:", err);
+            });
+    }, [userLocation, propertyLocation, map]);
+
+    if (!route) return null;
+
+    return (
+        <>
+            <Polyline positions={route} color="#2563eb" weight={4} opacity={0.7} />
+            <Marker position={userLocation}>
+                <Popup>Vendndodhja juaj</Popup>
+            </Marker>
+        </>
+    );
+}
 
 function NearbyPlaces({ lat, lng, selectedType }) {
     const [allPlaces, setAllPlaces] = useState({});
@@ -103,6 +141,8 @@ const PropertyDetails = ({ property }) => {
     const [previewIndex, setPreviewIndex] = useState(0);
     const [showPreview, setShowPreview] = useState(false);
     const [selectedType, setSelectedType] = useState(null);
+    const [userLocation, setUserLocation] = useState(null);
+    const [showDirections, setShowDirections] = useState(false);
 
     useEffect(() => {
         const allImages = [
@@ -129,6 +169,28 @@ const PropertyDetails = ({ property }) => {
         }, 5000);
         return () => clearInterval(interval);
     }, [images.length]);
+
+    const handleGetDirections = () => {
+        if (!showDirections && !userLocation) {
+            // Get user's current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        setUserLocation([position.coords.latitude, position.coords.longitude]);
+                        setShowDirections(true);
+                    },
+                    (error) => {
+                        console.error("Error getting location:", error);
+                        alert("Nuk mund të merret vendndodhja juaj. Ju lutem aktivizoni GPS-në.");
+                    }
+                );
+            } else {
+                alert("Shfletuesi juaj nuk mbështet gjeolokalizimin.");
+            }
+        } else {
+            setShowDirections(!showDirections);
+        }
+    };
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10 space-y-12">
@@ -229,7 +291,7 @@ const PropertyDetails = ({ property }) => {
                     </div>
                     {floorPlans.length > 0 && (
                         <div className="space-y-4">
-                            <h2 className="text-2xl font-semibold">Plani i katit</h2>
+                            <h2 className="text-2xl font-semibold">Planimetria</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                                 {floorPlans.map(plan => (
                                     <div
@@ -280,7 +342,20 @@ const PropertyDetails = ({ property }) => {
                 </div>
             </div>
             <div className="space-y-3">
-                <h2 className="text-2xl font-semibold">Vendndodhja</h2>
+                <div className="flex justify-between items-center">
+                    <h2 className="text-2xl font-semibold">Vendndodhja</h2>
+                    <button
+                        onClick={handleGetDirections}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+                            showDirections
+                                ? 'bg-primary text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                    >
+                        <Navigation size={18} />
+                        {showDirections ? 'Fsheh rrugën' : 'Shfaq rrugën'}
+                    </button>
+                </div>
                 <div className="mb-2 border-b border-gray-200">
                     <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-0">
                         {PLACE_TYPES.map(type => (
@@ -319,6 +394,12 @@ const PropertyDetails = ({ property }) => {
                             lng={property.longitude}
                             selectedType={selectedType}
                         />
+                        {showDirections && (
+                            <DirectionsLayer
+                                userLocation={userLocation}
+                                propertyLocation={[property.latitude, property.longitude]}
+                            />
+                        )}
                     </MapContainer>
                 </div>
             </div>

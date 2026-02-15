@@ -14,10 +14,12 @@ const Register = () => {
         { value: 'individual', label: 'Individ' },
         { value: 'agency', label: 'Agjenci' },
         { value: 'bank', label: 'Bankë' },
+        { value: 'developer', label: 'Zhvillues/Ndërtues' },
     ];
     const opsionetLlojiPerdoruesiBuyer = [
         { value: 'user', label: 'Individ' },
         { value: 'investor', label: 'Investitor' },
+        { value: 'business', label: 'Biznes' },
     ];
     const [opsionetFiltruara, setOpsionetFiltruara] = useState([]);
     const [opsioniZgjedhur, setOpsioniZgjedhur] = useState(null);
@@ -46,10 +48,21 @@ const Register = () => {
         email: '',
         phone_number: '',
         birth_date: null,
+        address: '',
+        notifications: true,
         company_name: '',
         password: '',
         password_confirmation: '',
         user_type: '',
+        // Extra fields
+        nipt: '',
+        company_phone_number: '',
+        years_experience: '',
+        company_description: '',
+        finished_projects: '',
+        website: '',
+        year_budget: '',
+        preferred_locations: '',
     });
     const [dataZgjedhur, setDataZgjedhur] = useState(null);
     const ndryshoDaten = (date) => {
@@ -116,8 +129,8 @@ const Register = () => {
 
                                         <div className="grid grid-cols-1 gap-4">
                                             {[
-                                                { value: 'seller', label: 'Dua të Shes Pronën Time' },
-                                                { value: 'buyer', label: 'Dua të Blej Pronë' },
+                                                { value: 'seller', label: 'Shitës/Dhënës me qira' },
+                                                { value: 'buyer', label: 'Blerës/Marrës me qira' },
                                             ].map((opsion) => (
                                                 <button
                                                     key={opsion.value}
@@ -226,19 +239,139 @@ const Register = () => {
                                             />
 
                                             <TekstGabimi fusha="birth_date" />
-                                            {['agency', 'bank'].includes(llojiPerdoruesi.value) && (
-                                                <div>
+
+                                            <input
+                                                name="address"
+                                                type="text"
+                                                value={data.address}
+                                                onChange={ndryshoTeDhenat}
+                                                placeholder="Adresa/Qyteti"
+                                                className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                            />
+                                            <TekstGabimi fusha="address" />
+
+
+
+                                            {['agency', 'bank', 'developer'].includes(data.user_type) && (
+                                                <>
                                                     <input
                                                         name="company_name"
                                                         type="text"
                                                         value={data.company_name}
                                                         onChange={ndryshoTeDhenat}
-                                                        placeholder="Emri i Kompanisë"
-                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                                        placeholder={data.user_type === 'bank' ? 'Emri i Bankës' : data.user_type === 'agency' ? 'Emri i Agjencisë' : 'Emri i Kompanisë'}
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
                                                     />
                                                     <TekstGabimi fusha="company_name" />
-                                                </div>
+
+                                                    <input
+                                                        name="nipt"
+                                                        type="text"
+                                                        value={data.nipt}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder="NIPT"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="nipt" />
+
+                                                    <textarea
+                                                        name="company_description"
+                                                        value={data.company_description}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder={data.user_type === 'bank' ? 'Përshkrimi i Bankës' : data.user_type === 'agency' ? 'Përshkrimi i Agjencisë' : 'Përshkrimi i Kompanisë'}
+                                                        rows="3"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="company_description" />
+                                                </>
                                             )}
+
+                                            {data.user_type === 'agency' && (
+                                                <>
+                                                    <input
+                                                        name="company_phone_number"
+                                                        type="text"
+                                                        value={data.company_phone_number}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder="Numri i Telefonit të Agjencisë"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="company_phone_number" />
+
+                                                    <input
+                                                        name="website"
+                                                        type="url"
+                                                        value={data.website}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder="Faqja Zyrtare (https://example.com)"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="website" />
+                                                </>
+                                            )}
+
+                                            {data.user_type === 'developer' && (
+                                                <>
+                                                    <input
+                                                        name="years_experience"
+                                                        type="number"
+                                                        value={data.years_experience}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder="Vitet e Përvojës"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="years_experience" />
+
+                                                    <input
+                                                        name="finished_projects"
+                                                        type="number"
+                                                        value={data.finished_projects}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder="Numri i Projekteve të Përfunduara"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="finished_projects" />
+                                                </>
+                                            )}
+
+                                            {data.user_type === 'investor' && (
+                                                <>
+                                                    <input
+                                                        name="year_budget"
+                                                        type="number"
+                                                        value={data.year_budget}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder="Buxheti i Përafërt Vjetor (€)"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="year_budget" />
+
+                                                    <input
+                                                        name="preferred_locations"
+                                                        type="text"
+                                                        value={data.preferred_locations}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder="Zonat e Preferuara (Tiranë, Durrës, Vlorë)"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="preferred_locations" />
+                                                </>
+                                            )}
+
+                                            {data.user_type === 'business' && (
+                                                <>
+                                                    <input
+                                                        name="preferred_locations"
+                                                        type="text"
+                                                        value={data.preferred_locations}
+                                                        onChange={ndryshoTeDhenat}
+                                                        placeholder="Zonat e Preferuara për Hapësira Komerciale"
+                                                        className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                                                    />
+                                                    <TekstGabimi fusha="preferred_locations" />
+                                                </>
+                                            )}
+
                                             <input
                                                 type="password"
                                                 name="password"
@@ -256,6 +389,15 @@ const Register = () => {
                                                 placeholder="Konfirmo Fjalëkalimin"
                                                 className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                             />
+                                            <label className="flex items-center gap-2 text-sm text-gray-700">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={data.notifications}
+                                                    onChange={(e) => setData('notifications', e.target.checked)}
+                                                    className="h-4 w-4 text-blue-500 border-gray-300 rounded focus:ring-blue-400"
+                                                />
+                                                <span>Dëshiroj të marr njoftime për prona të reja</span>
+                                            </label>
                                             <div className="flex">
                                                 <input
                                                     type="checkbox"
@@ -267,6 +409,7 @@ const Register = () => {
                                                     className="mt-1 h-4 w-4 text-blue-500 border-gray-300 rounded focus:ring-blue-400"
                                                 />
                                                 <div className="p-2">
+
                                                     <p className="text-xs">
                                                         Duke krijuar llogarinë, pranoj <Link href="/terms">Termat dhe Kushtet</Link>
 

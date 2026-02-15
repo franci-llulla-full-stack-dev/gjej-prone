@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PropertyRequest extends Model
@@ -42,11 +43,37 @@ class PropertyRequest extends Model
         'architect',
         'parkim',
         'expires_at',
-        'created_at'
+        'created_at',
+        'views',
+        'funds',
+        'completed'
     ];
+
+    protected $appends = ['saved'];
+
+    public function getSavedAttribute(): bool
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
+
+        // If savedByUsers relationship is loaded, use it (more efficient)
+        if ($this->relationLoaded('savedByUsers')) {
+            return $this->savedByUsers->isNotEmpty();
+        }
+
+        // Otherwise query the relationship
+        return $this->savedByUsers()->where('users.id', $user->id)->exists();
+    }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function savedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'users_property_requests', 'property_request_id', 'user_id');
     }
 }

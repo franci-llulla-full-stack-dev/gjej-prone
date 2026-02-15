@@ -141,6 +141,15 @@ const Properties = ({ properties, pagination, filters, showDeleted, users = [] }
         });
     };
 
+    const handleToggleSold = (row) => {
+        router.put(`/admin/properties/${row.id}/toggle-sold`, {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                router.reload({ only: ['properties'] });
+            },
+        });
+    };
+
     const applyFilters = () => {
         setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
@@ -200,6 +209,7 @@ const Properties = ({ properties, pagination, filters, showDeleted, users = [] }
                                         onEdit={handleEdit}
                                         onDelete={activeTab === 0 ? handleDelete : null}
                                         onVerify={activeTab === 0 ? handleVerify : null}
+                                        onToggleSold={activeTab === 0 ? handleToggleSold : null}
                                         onRestore={activeTab === 1 ? handleRestore : null}
                                         onPermanentDelete={activeTab === 1 ? handlePermanentDelete : null}
                                         isDeleted={activeTab === 1}

@@ -81,8 +81,7 @@ const Header = ({breadcrumbItems}) => {
                             </Link>
                         </>
                     )}
-                    {role === 'agency' || role === 'bank' || role === 'individual' &&
-                        (
+                    {(role === 'agency' || role === 'bank' || role === 'individual' || role === 'developer') && (
                             <>
                                 <Link
                                     href="/properties"
@@ -97,7 +96,7 @@ const Header = ({breadcrumbItems}) => {
                             </>
                         )
                     }
-                    {(role === 'user' || role === 'investor') && (
+                    {(role === 'user' || role === 'investor' || role === 'business') && (
                         <>
                             <Link
                                 href="/listed-properties"
@@ -206,8 +205,7 @@ const Header = ({breadcrumbItems}) => {
                                 </Link>
                             </>
                         )}
-                        {role === 'agency' || role === 'bank' || role === 'individual' &&
-                            (
+                        {(role === 'agency' || role === 'bank' || role === 'individual' || role === 'developer') && (
                                 <>
                                     <Link
                                         href="/properties"
@@ -222,7 +220,7 @@ const Header = ({breadcrumbItems}) => {
                                 </>
                             )
                         }
-                        {(role === 'user' || role === 'investor') && (
+                        {(role === 'user' || role === 'investor' || role === 'business') && (
                             <>
                                 <Link
                                     href="/listed-properties"

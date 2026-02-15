@@ -30,7 +30,32 @@ class ProfileController extends Controller
             'birth_date' => ['nullable', 'date'],
             'address' => ['nullable', 'string', 'max:255'],
             'notifications' => ['boolean'],
+            // Extra fields
+            'nipt' => ['nullable', 'string', 'max:20'],
+            'company_phone_number' => ['nullable', 'string', 'max:30'],
+            'years_experience' => ['nullable', 'numeric', 'min:0'],
+            'company_description' => ['nullable', 'string', 'max:1000'],
+            'logo' => ['nullable', 'image', 'max:2048'], // 2MB max
+            'finished_projects' => ['nullable', 'numeric', 'min:0'],
+            'website' => ['nullable', 'string', 'url', 'max:255'],
+            'year_budget' => ['nullable', 'numeric', 'min:0'],
+            'preferred_locations' => ['nullable', 'string', 'max:500'],
         ]);
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($user->logo_path && \Storage::disk('public')->exists($user->logo_path)) {
+                \Storage::disk('public')->delete($user->logo_path);
+            }
+
+            // Store new logo
+            $logoPath = $request->file('logo')->store('logos', 'public');
+            $validated['logo_path'] = $logoPath;
+        }
+
+        // Remove logo from validated data as it's already handled
+        unset($validated['logo']);
 
         $user->update($validated);
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
+import toast from "react-hot-toast";
 import {
     Home,
     Bath,
@@ -8,13 +9,17 @@ import {
     Layers,
     Building2,
     Tag,
+    Eye,
+    Bookmark
 } from "lucide-react";
 
 const PropertyItem = ({
                           id, city, expires_at, created_at, street, surface, surface_2, total_rooms, total_rooms_2, total_bathrooms, total_bathrooms_2, total_balconies, total_balconies_2,
-                          total_floors, floor_number, year_built, description, price, price_2, currency, type_of_sale, property_type,
-                          canEdit = false, canDelete = false, onEdit = null, onDelete = null, onUpload = null,
+                          completed, total_floors, floor_number, year_built, description, price, price_2, currency, type_of_sale, property_type, views, saved, funds, architect, interior_design,
+                          onToggleCompleted = null, canEdit = false, canDelete = false, onEdit = null, onDelete = null, onUpload = null,
                       }) => {
+    const [isSaved, setIsSaved] = React.useState(saved);
+
     const PROPERTY_TYPE_LABELS = {
         residential: 'Rezidenciale',
         commercial: 'Komerciale',
@@ -34,25 +39,92 @@ const PropertyItem = ({
         const expiry = new Date(created.setMonth(created.getMonth() + intervals[expires_at]));
         return expiry < new Date();
     }
+
+    const handleSave = async (id) => {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const res = await fetch(`/property/request/${id}/toggleSave`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (res.ok) {
+                setIsSaved(!isSaved); // toggle locally for instant feedback
+                const data = await res.json();
+                toast.success(data.message);
+            } else {
+                toast.error('Diçka shkoi keq!');
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error('Diçka shkoi keq!');
+        }
+    };
+
     const expired = isExpired(created_at, expires_at);
     return (
-        <div className="grid grid-cols-1 bg-white shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-200">
+        <div className="grid grid-cols-1 bg-white shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-200 relative">
+
 
             {/* CONTENT */}
             <div className="grid grid-cols-1 p-5 space-y-3">
 
                 {/* TITLE */}
-                <div className="flex justify-between items-center gap-2">
-                    <div>
-                        <Tag size={16} className="text-gray-500"/>
-                        <span className="text-sm uppercase text-gray-600">
-                            {type_of_sale === "sale" ? "Në Shitje" : "Me Qira"}
-                        </span>
+                <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-2">
+                    {/* Bookmark - visible on mobile only - at the very top right */}
+                    <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-1">
+                        <div className="grid grid-cols-[auto_1fr] items-center gap-1">
+                            <Tag size={16} className="text-gray-500"/>
+                            <span className="text-sm uppercase text-gray-600 font-medium">
+                                {type_of_sale === "sale" ? "Per Blerje" : "Per Qira"}
+                            </span>
+                        </div>
+                        {!canEdit && (
+                            <div className="grid justify-items-end md:hidden">
+                                <button
+                                    onClick={() => handleSave(id)}
+                                    className="text-gray-400 hover:text-yellow-400 transition-colors p-1"
+                                >
+                                    <Bookmark size={34} fill={isSaved ? "#facc15" : "none"} />
+                                </button>
+                            </div>
+                        )}
                     </div>
-                    <span
-                        className="bg-black/70 backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg">
-                        {price.toLocaleString()}-{price_2.toLocaleString()} {currency}
-                    </span>
+
+
+                    {/* Type of Sale Tag */}
+
+
+                    {/* Price, Views and Bookmark grouped together - aligned right */}
+                    <div className="md:col-span-9 grid grid-cols-[1fr_auto_auto_auto] justify-items-end items-center gap-2">
+                        <div>
+
+                        </div>
+
+                        {/* Price */}
+                        <span className="bg-black/70 backdrop-blur text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow-lg whitespace-nowrap">
+                            {price.toLocaleString()}-{price_2.toLocaleString()} {currency}
+                        </span>
+
+                        {/* Views */}
+                        <div className="grid grid-cols-[auto_auto] items-center gap-2 bg-black/70 backdrop-blur text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow-lg">
+                            <span>{views}</span>
+                            <Eye size={16} />
+                        </div>
+
+                        {/* Bookmark - visible on desktop only, hidden if user owns it */}
+                        {!canEdit && (
+                            <button
+                                onClick={() => handleSave(id)}
+                                className="hidden md:block text-gray-400 hover:text-yellow-400 transition-colors p-1"
+                            >
+                                <Bookmark size={36} fill={isSaved ? "#facc15" : "none"} />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* LOCATION */}
@@ -89,6 +161,25 @@ const PropertyItem = ({
                     <span className="flex items-center gap-1">
                         <Layers size={16}/> Kati {floor_number}
                     </span>
+
+                    {completed && (
+                        <span className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-md font-semibold">
+                            E Perfunduar
+                        </span>
+                    )}
+
+                    {canEdit && architect && (
+                        <span className="flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-1 rounded-md font-semibold">
+                             Kërkon Arkitekt
+                        </span>
+                    )}
+
+                    {canEdit && interior_design && (
+                        <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-1 rounded-md font-semibold">
+                             Kërkon Interior Dizajner
+                        </span>
+                    )}
+
                 </div>
 
                 {/* DESCRIPTION */}
@@ -121,6 +212,17 @@ const PropertyItem = ({
                                 className="flex-1 text-sm border border-yellow-300 text-yellow-700 rounded-lg py-2 hover:bg-yellow-50 transition"
                             >
                                 Aktivizo Përsëri
+                            </button>
+                        )}
+
+                        {canEdit && (
+                            <button
+                                onClick={() => onToggleCompleted?.(id, !completed)}
+                                className={`flex-1 text-sm border ${
+                                    completed ? "border-orange-300 text-orange-600 rounded-lg py-2 hover:bg-orange-50 transition" : "border-green-300 text-green-600 rounded-lg py-2 hover:bg-green-50 transition"
+                                }`}
+                            >
+                                {completed ? "Shëno si e Papërfunduar" : "Shëno si e Përfunduar"}
                             </button>
                         )}
                     </div>

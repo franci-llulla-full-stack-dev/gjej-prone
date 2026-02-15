@@ -56,6 +56,14 @@ class UserController extends Controller
         return back()->with('success', 'Perdoruesi u fshi!');
     }
 
+    public function show(User $user)
+    {
+        $user->load('role');
+        return Inertia::render('admin/ViewUser', [
+            'user' => $user
+        ]);
+    }
+
     public function verify(User $user)
     {
         $user->update(['email_verified_at' => now()]);
@@ -118,6 +126,16 @@ class UserController extends Controller
             'address' => 'nullable|string|max:500',
             'birth_date' => 'nullable|date',
             'role_id' => 'required|exists:roles,id',
+            'notifications' => 'nullable|boolean',
+            // Extra fields
+            'nipt' => 'nullable|string|max:20',
+            'company_phone_number' => 'nullable|string|max:30',
+            'years_experience' => 'nullable|numeric|min:0',
+            'company_description' => 'nullable|string|max:1000',
+            'finished_projects' => 'nullable|numeric|min:0',
+            'website' => 'nullable|string|url|max:255',
+            'year_budget' => 'nullable|numeric|min:0',
+            'preferred_locations' => 'nullable|string|max:500',
         ]);
 
         if (empty($validated['password'])) {

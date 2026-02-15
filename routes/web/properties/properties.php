@@ -6,7 +6,7 @@ use App\Http\Controllers\Property\{PropertyController,
     PropertyMediaController};
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
+Route::middleware(['auth', 'role:individual,bank,agency,developer', 'verified.custom'])
     ->controller(PropertyController::class)
     ->group(function () {
     Route::get('/properties', 'index')->name('properties.index');
@@ -18,14 +18,14 @@ Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
     Route::put('/properties/{property}/toggle-sold', 'toggleSold')->name('properties.sold');
 });
 
-Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
+Route::middleware(['auth', 'role:individual,bank,agency,developer', 'verified.custom'])
     ->controller(PropertyMediaController::class)
     ->group(function () {
     Route::post('/property/{property}/images','store');
     Route::delete('/property/{property}/images/{propertyMedia}', 'destroy');
 });
 
-Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
+Route::middleware(['auth', 'role:individual,bank,agency,developer', 'verified.custom'])
     ->controller(PropertyDocumentController::class)
     ->group(function () {
     Route::post('/property/{property}/document/hipoteke','storeHipoteke');
@@ -36,6 +36,8 @@ Route::middleware(['auth', 'role:individual,bank,agency', 'verified.custom'])
 
 Route::get('/properties/{property}', [PropertyController::class, 'show'])
     ->middleware('auth')->name('properties.show');
+Route::post('/properties/{property}/toggleSave', [PropertyController::class, 'toggleSave'])
+    ->middleware('auth')->name('properties.toggleSave');
 
 Route::controller(PropertyController::class)->group(function () {
    Route::get('/listed-properties', 'listedProperties')->name('properties.listed');
@@ -47,6 +49,7 @@ Route::middleware(['auth', 'role:admin'])->controller(AdminPropertyController::c
     Route::post('/admin/properties', 'store')->name('admin.properties.store');
     Route::get('/admin/properties/{property}/edit', 'edit')->name('admin.properties.edit');
     Route::put('/admin/properties/{property}/update', 'update')->name('admin.properties.update');
+    Route::put('/admin/properties/{property}/toggle-sold', 'toggleSold')->name('admin.properties.toggle-sold');
     Route::delete('/admin/properties/{property}', 'destroy')->name('admin.properties.destroy');
     Route::post('/admin/properties/{id}/restore', 'restore')->name('admin.properties.restore');
     Route::get('/admin/property/download-hipoteka/{propertyDocument}', 'downloadHipoteka');

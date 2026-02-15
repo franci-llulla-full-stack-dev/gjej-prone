@@ -52,6 +52,7 @@ class CreatePropertyRequestRequest extends FormRequest
             'user_id' => ['nullable', 'numeric'],
             'parkim' => ['nullable', 'boolean'],
             'expires_at' => ['nullable', 'string'],
+            'funds' => ['nullable', 'string', 'in:kredi,kursime'],
         ];
     }
 
@@ -98,6 +99,9 @@ class CreatePropertyRequestRequest extends FormRequest
 
             'longitude.required' => 'Vendndodhja eshte e detyrueshme.',
             'longitude.numeric' => 'Longitude duhet te jete numer.',
+
+            'funds.string' => 'Burimi i financimit duhet te jete tekst.',
+            'funds.in' => 'Burimi i financimit duhet te jete Kredi ose Kursime.',
         ];
     }
 

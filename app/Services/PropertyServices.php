@@ -14,9 +14,13 @@ class PropertyServices
             'ALL' => 96
         ];
         $user = auth()->user();
-        $query = Property::with('images');
+        $query = Property::with(['images', 'savedByUsers' => function($q) use ($user) {
+            if ($user) {
+                $q->where('users.id', $user->id);
+            }
+        }]);
 
-        if($user && $user->role->name !== 'user') {
+        if($user && $user->role->name !== 'user' && $user->role->name !== 'investor') {
             $query->where('user_id', $user->id);
         }else {
             $query->where('verified', true)
@@ -115,6 +119,15 @@ class PropertyServices
 
         if(isset($validated['surface_max'])) {
             $query->where('surface', '<=', $validated['surface_max']);
+        }
+
+        // Filter by saved properties
+        if(isset($validated['saved']) && filter_var($validated['saved'], FILTER_VALIDATE_BOOLEAN)) {
+            if($user) {
+                $query->whereHas('savedByUsers', function($q) use ($user) {
+                    $q->where('users.id', $user->id);
+                });
+            }
         }
 
         return $query;

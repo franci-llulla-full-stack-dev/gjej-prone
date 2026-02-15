@@ -162,6 +162,65 @@ export default function UserCard({ user }) {
                             </span>
                         </div>
                     )}
+
+                    {/* Extra fields based on role */}
+                    {user.nipt && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <BusinessIcon className="text-gray-400" style={{ fontSize: 20 }} />
+                            <span className="text-sm">NIPT: {user.nipt}</span>
+                        </div>
+                    )}
+
+                    {user.company_phone_number && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <PhoneIcon className="text-gray-400" style={{ fontSize: 20 }} />
+                            <span className="text-sm">Tel Kompanie: {user.company_phone_number}</span>
+                        </div>
+                    )}
+
+                    {user.years_experience && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <BusinessIcon className="text-gray-400" style={{ fontSize: 20 }} />
+                            <span className="text-sm">Përvojë: {user.years_experience} vite</span>
+                        </div>
+                    )}
+
+                    {user.finished_projects !== null && user.finished_projects !== undefined && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <BusinessIcon className="text-gray-400" style={{ fontSize: 20 }} />
+                            <span className="text-sm">Projekte: {user.finished_projects}</span>
+                        </div>
+                    )}
+
+                    {user.website && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <BusinessIcon className="text-gray-400" style={{ fontSize: 20 }} />
+                            <a href={user.website} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+                                {user.website}
+                            </a>
+                        </div>
+                    )}
+
+                    {user.year_budget && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <BusinessIcon className="text-gray-400" style={{ fontSize: 20 }} />
+                            <span className="text-sm">Buxhet Vjetor: €{Number(user.year_budget).toLocaleString()}</span>
+                        </div>
+                    )}
+
+                    {user.preferred_locations && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <LocationOnIcon className="text-gray-400" style={{ fontSize: 20 }} />
+                            <span className="text-sm">Zona: {user.preferred_locations}</span>
+                        </div>
+                    )}
+
+                    {user.company_description && (
+                        <div className="mt-2 p-3 bg-gray-50 rounded-lg">
+                            <p className="text-xs text-gray-500 mb-1">Përshkrimi:</p>
+                            <p className="text-sm text-gray-700 line-clamp-3">{user.company_description}</p>
+                        </div>
+                    )}
                 </div>
 
                 {user.email_verified_at && (
@@ -175,32 +234,40 @@ export default function UserCard({ user }) {
 
                 <div className="mt-4 pt-4 border-t border-gray-200">
                     {!user.deleted_at ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                            {!user.email_verified_at && (
+                        <>
+                            <button
+                                onClick={() => router.get(`/admin/users/${user.id}`)}
+                                className="w-full mb-2 px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm font-medium"
+                            >
+                                Shiko Detaje
+                            </button>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                {!user.email_verified_at && (
+                                    <button
+                                        onClick={handleVerify}
+                                        className="flex items-center justify-center gap-1 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-medium"
+                                    >
+                                        <VerifiedIcon style={{ fontSize: 18 }} />
+                                        <span className="hidden md:inline">Verifiko</span>
+                                    </button>
+                                )}
                                 <button
-                                    onClick={handleVerify}
-                                    className="flex items-center justify-center gap-1 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-medium"
+                                    onClick={handleEdit}
+                                    className="flex items-center justify-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
                                 >
-                                    <VerifiedIcon style={{ fontSize: 18 }} />
-                                    <span className="hidden md:inline">Verifiko</span>
+                                    <EditIcon style={{ fontSize: 18 }} />
+                                    <span className="hidden md:inline">Ndrysho</span>
                                 </button>
-                            )}
-                            <button
-                                onClick={handleEdit}
-                                className="flex items-center justify-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
-                            >
-                                <EditIcon style={{ fontSize: 18 }} />
-                                <span className="hidden md:inline">Ndrysho</span>
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                disabled={isDeleting}
-                                className="flex items-center justify-center gap-1 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium disabled:bg-gray-400"
-                            >
-                                <DeleteIcon style={{ fontSize: 18 }} />
-                                <span className="hidden md:inline">Fshij</span>
-                            </button>
-                        </div>
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={isDeleting}
+                                    className="flex items-center justify-center gap-1 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium disabled:bg-gray-400"
+                                >
+                                    <DeleteIcon style={{ fontSize: 18 }} />
+                                    <span className="hidden md:inline">Fshij</span>
+                                </button>
+                            </div>
+                        </>
                     ) : (
                         <div className="grid grid-cols-2 gap-2">
                             <button

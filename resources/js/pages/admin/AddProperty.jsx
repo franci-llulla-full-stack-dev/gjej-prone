@@ -401,7 +401,7 @@ export default function AddProperty({ users = [] }) {
                     </div>
 
                     <div className="mt-4">
-                        <label className={labelBase}>Plani i Katit (opsional)</label>
+                        <label className={labelBase}>Planimetria *</label>
                         <input
                             type="file"
                             accept=".pdf,image/*"
