@@ -59,7 +59,7 @@ const Landing = () => {
                     </div>
                 </div>
             </div>
-            <section className="relative z-20 bg-white/90 rounded-lg shadow-lg max-w-3xl mx-auto my-10 p-6 text-gray-900">
+            <section className="relative z-20 bg-white/90 rounded-lg shadow-lg max-w-6xl mx-auto my-10 p-8 text-gray-900">
                 <h2 className="text-2xl font-semibold mb-3 text-blue-700">Platforma më e mirë për prona në Shqipëri</h2>
                 <p className="mb-4">
                     Gjej-Prone është platforma kryesore për të gjetur, blerë ose dhënë me qira prona në Shqipëri. Kërkoni apartamente, shtëpi, vila dhe truall në qytete si Tiranë, Durrës, Vlorë, Shkodër dhe më shumë. Me filtrat tanë të avancuar, mund të gjeni pronën ideale sipas çmimit, vendndodhjes dhe tipit të pronës.

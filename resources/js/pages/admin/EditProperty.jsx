@@ -405,11 +405,6 @@ export default function EditProperty({ property, users = [] }) {
                             <input type="checkbox" checked={data.rivleresim_done} onChange={e => setData('rivleresim_done', e.target.checked)} />
                             <span className="text-gray-700">Rivlerësimi i Kryer</span>
                         </label>
-
-                        <label className="flex items-center gap-3">
-                            <input type="checkbox" checked={data.combo_package} onChange={e => setData('combo_package', e.target.checked)} />
-                            <span className="text-gray-700">Kërkesë për Paketë Kombinuar</span>
-                        </label>
                     </div>
 
                     <div className="mt-6 bg-green-50 p-4 rounded-xl border border-green-200">

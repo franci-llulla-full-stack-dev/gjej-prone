@@ -166,14 +166,16 @@ class PropertyServices
                 'file_type' => $image->getClientMimeType(),
             ]);
         }
+
+        return $newProperty;
     }
 
     public function logView($propertyId)
     {
         $user = auth()->user();
-        if($user->role->name === 'user') {
+        if($user->role->name === 'user' || $user->role->name === 'admin' || $user->role->name === 'investor' || $user->role->name === 'business') {
             $user->logs()->create([
-                'action_type' => 'viewed_property_listing',
+                'action_type' => 'viewed_property',
                 'property_id' => $propertyId,
             ]);
         }

@@ -15,6 +15,26 @@ export default function Logs({ logs, pagination, filters, users, action_types })
     const [selectedUser, setSelectedUser] = useState(filters.user_id || '');
     const [selectedAction, setSelectedAction] = useState(filters.action_type || '');
 
+    // Action type labels in Albanian
+    const actionLabels = {
+        'created': 'Krijoi',
+        'updated': 'Përditësoi',
+        'deleted': 'Fshiu',
+        'viewed': 'Shikoi',
+        'viewed_property': 'Shikoi pronën',
+        'viewed_property_listing': 'Shikoi kërkesën e pronës',
+        'created_property': 'Krijoi pronë',
+        'updated_property': 'Përditësoi pronë',
+        'deleted_property': 'Fshiu pronë',
+        'created_property_request': 'Krijoi kërkesë prone',
+        'updated_property_request': 'Përditësoi kërkesë prone',
+        'deleted_property_request': 'Fshiu kërkesë prone',
+        'deleted_user': 'Fshiu përdorues',
+        'force_deleted_user': 'Fshiu përdorues përgjithmonë',
+        'login': 'Hyrje',
+        'logout': 'Dalje',
+    };
+
     const handleFilter = (filterData) => {
         router.get('/admin/logs', filterData, {
             preserveState: true,
@@ -59,10 +79,20 @@ export default function Logs({ logs, pagination, filters, users, action_types })
     const getActionColor = (action) => {
         const colors = {
             'created': 'bg-green-100 text-green-800',
+            'created_property': 'bg-green-100 text-green-800',
+            'created_property_request': 'bg-green-100 text-green-800',
             'updated': 'bg-blue-100 text-blue-800',
+            'updated_property': 'bg-blue-100 text-blue-800',
+            'updated_property_request': 'bg-blue-100 text-blue-800',
             'deleted': 'bg-red-100 text-red-800',
+            'deleted_property': 'bg-red-100 text-red-800',
+            'deleted_property_request': 'bg-red-100 text-red-800',
+            'deleted_user': 'bg-red-100 text-red-800',
+            'force_deleted_user': 'bg-red-200 text-red-900',
             'viewed': 'bg-gray-100 text-gray-800',
-            'login': 'bg-purple-100 text-purple-800',
+            'viewed_property': 'bg-purple-100 text-purple-800',
+            'viewed_property_request': 'bg-purple-100 text-purple-800',
+            'login': 'bg-indigo-100 text-indigo-800',
             'logout': 'bg-orange-100 text-orange-800',
         };
         return colors[action?.toLowerCase()] || 'bg-gray-100 text-gray-800';
@@ -113,7 +143,7 @@ export default function Logs({ logs, pagination, filters, users, action_types })
                             <option value="">Të gjitha</option>
                             {action_types?.map(action => (
                                 <option key={action} value={action}>
-                                    {action}
+                                    {actionLabels[action] || action}
                                 </option>
                             ))}
                         </select>
@@ -167,7 +197,7 @@ export default function Logs({ logs, pagination, filters, users, action_types })
                                             </span>
                                         </div>
                                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${getActionColor(log.action_type)}`}>
-                                            {log.action_type}
+                                            {actionLabels[log.action_type] || log.action_type}
                                         </span>
                                     </div>
 
@@ -192,7 +222,7 @@ export default function Logs({ logs, pagination, filters, users, action_types })
                                         )}
                                         {log.property_request && (
                                             <div
-                                                onClick={() => router.get(`/property-requests/${log.property_request.id}`)}
+                                                onClick={() => router.get(`/property/request/${log.property_request.id}`)}
                                                 className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 cursor-pointer transition-colors"
                                             >
                                                 <RequestPageIcon style={{ fontSize: 18 }} />

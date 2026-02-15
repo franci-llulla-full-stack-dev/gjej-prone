@@ -1,4 +1,4 @@
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import PropertyRequestItem from '../../components/PropertyRequestItem.jsx';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
@@ -7,6 +7,7 @@ import PropertyFilter from '../../components/PropertyFilter.jsx';
 import { Bookmark } from 'lucide-react';
 
 const PropertyRequests = ({ propertyRequests }) => {
+    const { auth } = usePage().props;
     const [filters, setFilters] = useState({
         search: '',
         min_price: '',
@@ -48,24 +49,26 @@ const PropertyRequests = ({ propertyRequests }) => {
             <div className="p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="font-bold text-lg">Kërkesat e listuara</h2>
-                    <button
-                        onClick={() => {
-                            const newSavedValue = !filters.saved;
-                            setFilters({ ...filters, saved: newSavedValue });
-                            router.get('/property/requests/all', { ...filters, saved: newSavedValue }, {
-                                preserveState: true,
-                                replace: true,
-                            });
-                        }}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
-                            filters.saved
-                                ? 'bg-yellow-400 text-black hover:bg-yellow-500'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
-                    >
-                        <Bookmark size={20} fill={filters.saved ? "#000" : "none"} />
-                        {filters.saved ? 'Shfaq të gjitha' : 'Vetëm të ruajtura'}
-                    </button>
+                    {auth?.user && (
+                        <button
+                            onClick={() => {
+                                const newSavedValue = !filters.saved;
+                                setFilters({ ...filters, saved: newSavedValue });
+                                router.get('/property/requests/all', { ...filters, saved: newSavedValue }, {
+                                    preserveState: true,
+                                    replace: true,
+                                });
+                            }}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
+                                filters.saved
+                                    ? 'bg-yellow-400 text-black hover:bg-yellow-500'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        >
+                            <Bookmark size={20} fill={filters.saved ? "#000" : "none"} />
+                            {filters.saved ? 'Shfaq të gjitha' : 'Vetëm të ruajtura'}
+                        </button>
+                    )}
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {propertyRequests?.data?.length > 0 ? (

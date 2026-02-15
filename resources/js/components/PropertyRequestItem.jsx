@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import {
     Home,
@@ -40,28 +40,17 @@ const PropertyItem = ({
         return expiry < new Date();
     }
 
-    const handleSave = async (id) => {
-        try {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const res = await fetch(`/property/request/${id}/toggleSave`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (res.ok) {
-                setIsSaved(!isSaved); // toggle locally for instant feedback
-                const data = await res.json();
-                toast.success(data.message);
-            } else {
+    const handleSave = (id) => {
+        router.post(`/property/request/${id}/toggleSave`, {}, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                setIsSaved(!isSaved);
+            },
+            onError: () => {
                 toast.error('Diçka shkoi keq!');
             }
-        } catch (err) {
-            console.error(err);
-            toast.error('Diçka shkoi keq!');
-        }
+        });
     };
 
     const expired = isExpired(created_at, expires_at);

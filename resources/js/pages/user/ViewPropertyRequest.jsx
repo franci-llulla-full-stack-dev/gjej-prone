@@ -104,22 +104,6 @@ console.log(propertyRequest.zone_radious)
 
                     </div>
 
-
-                    {/* MAP */}
-                    <div className="space-y-3">
-                        <h2 className="text-2xl font-semibold">
-                            Vendndodhja
-                        </h2>
-                        <div className="w-full h-[320px] rounded-2xl overflow-hidden shadow">
-                            <PropertyMap
-                                lat={propertyRequest.latitude}
-                                lng={propertyRequest.longitude}
-                                radius={propertyRequest.zone_radious}
-                            />
-                        </div>
-                    </div>
-
-
                 </div>
 
                 {/* RIGHT SIDE */}
@@ -131,21 +115,37 @@ console.log(propertyRequest.zone_radious)
                             {Number(propertyRequest.price).toLocaleString()}-{Number(propertyRequest.price_2).toLocaleString()} {propertyRequest.currency}
                         </p>
                     </div>
+                </div>
+            </div>
 
-                    {/* CONTACT SELLER */}
-                    <div className="bg-primary/5 rounded-2xl p-6 space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Kontakto Bleresin
-                        </h3>
-                        <div className="flex gap-3">
-                            <a
-                                href={actual_contact ? actual_contact : `tel:+355697727747`}
-                                className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
-                            >
-                                Telefon
-                            </a>
-                        </div>
-                    </div>
+            {/* MAP */}
+            <div className="space-y-3">
+                <h2 className="text-2xl font-semibold">
+                    Vendndodhja
+                </h2>
+                <div className="w-full h-[320px] rounded-2xl overflow-hidden shadow">
+                    <PropertyMap
+                        lat={propertyRequest.latitude}
+                        lng={propertyRequest.longitude}
+                        radius={propertyRequest.zone_radious}
+                    />
+                </div>
+            </div>
+
+            {/* CONTACT SELLER */}
+            <div className="bg-primary/5 rounded-2xl p-6 space-y-4 max-w-md">
+                <h3 className="text-lg font-semibold">
+                    Kontakto Bleresin
+                </h3>
+                <div className="flex gap-3">
+                    <a
+                        href={`https://wa.me/${actual_contact ? actual_contact.replace(/[^0-9]/g, '') : '355697727747'}?text=${encodeURIComponent('Përshëndetje, jam i interesuar për kërkesën tuaj të pronës.')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
+                    >
+                        WhatsApp
+                    </a>
                 </div>
             </div>
         </div>

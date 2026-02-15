@@ -17,6 +17,35 @@ class User extends Authenticatable
     use HasFactory, Notifiable, SoftDeletes;
 
     /**
+     * Boot the model and add event listeners
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // When a user is soft deleted, mark their properties as sold and property requests as completed
+        static::deleting(function ($user) {
+            // Only update if it's a soft delete (not force delete)
+            if (!$user->isForceDeleting()) {
+                // Mark all user's properties as sold
+                $user->properties()->update(['sold' => true]);
+
+                // Mark all user's property requests as completed
+                $user->propertyRequests()->update(['completed' => true]);
+            }
+        });
+
+        // When a user is permanently deleted (force delete), mark their properties as sold and property requests as completed
+        static::forceDeleting(function ($user) {
+            // Mark all user's properties as sold before permanent deletion
+            $user->properties()->withTrashed()->update(['sold' => true]);
+
+            // Mark all user's property requests as completed before permanent deletion
+            $user->propertyRequests()->withTrashed()->update(['completed' => true]);
+        });
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FilterRequest;
 use App\Http\Requests\Property\CreatePropertyRequest;
 use App\Http\Requests\Property\UpdatePropertyRequest;
+use App\Models\Log;
 use App\Models\Property;
 use App\Models\PropertyMedia;
 use App\Services\PropertyServices;
@@ -62,7 +63,14 @@ class PropertyController extends Controller
     {
         try{
             $validated = $request->validated();
-            $this->propertyServices->storeProperty($validated);
+            $property = $this->propertyServices->storeProperty($validated);
+
+            // Log the creation
+            Log::create([
+                'user_id' => auth()->id(),
+                'action_type' => 'created_property',
+                'property_id' => $property->id,
+            ]);
 
             return redirect()->route('properties.index')
                 ->with(['success' => 'Property created successfully.']);
@@ -101,6 +109,14 @@ class PropertyController extends Controller
         }
         $validated = $request->validated();
         $property->update($validated);
+
+        // Log the update
+        Log::create([
+            'user_id' => auth()->id(),
+            'action_type' => 'updated_property',
+            'property_id' => $property->id,
+        ]);
+
         return back()->with(['success' => 'Property updated successfully.']);
     }
 
@@ -125,6 +141,14 @@ class PropertyController extends Controller
 //                $document->delete();
 //            }
 //        }
+
+        // Log the deletion before deleting
+        Log::create([
+            'user_id' => auth()->id(),
+            'action_type' => 'deleted_property',
+            'property_id' => $property->id,
+        ]);
+
         $property->delete();
         return redirect()->route('properties.index')
             ->with(['success' => 'Property deleted successfully.']);
@@ -159,10 +183,10 @@ class PropertyController extends Controller
         $user = auth()->user();
         if($user->savedProperties()->where('property_id', $property->id)->exists()) {
             $user->savedProperties()->detach($property->id);
-            return response()->json(['message' => 'Prona u hoq nga te preferuarat!.' ]);
+            return back()->with('success' , 'Prona u hoq nga te preferuarat!.' );
         } else {
             $user->savedProperties()->attach($property->id);
-            return response()->json(['message' => 'Prona u shtua ne te preferuarat!.']);
+            return back()->with('success' , 'Prona u shtua ne te preferuarat!.');
         }
     }
 }

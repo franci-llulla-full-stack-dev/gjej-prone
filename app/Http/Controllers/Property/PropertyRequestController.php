@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Property;
 
 use App\Http\Requests\FilterRequest;
 use App\Http\Requests\Property\CreatePropertyRequestRequest;
+use App\Models\Log;
 use App\Models\PropertyRequest;
 use App\Models\Role;
 use App\Models\User;
@@ -63,10 +64,25 @@ class PropertyRequestController
             if(!$belongingRequestUser) {
                 return redirect()->back()->withErrors(['user_id' => 'User not found.'])->withInput();
             }
-           $belongingRequestUser->propertyRequests()->create($request->except('user_id'));
+            $propertyRequest = $belongingRequestUser->propertyRequests()->create($request->except('user_id'));
+
+            // Log the creation
+            Log::create([
+                'user_id' => $belongingRequestUser->id,
+                'action_type' => 'created_property_request',
+                'property_request_id' => $propertyRequest->id,
+            ]);
+
             return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u shtua!');
         }
-        $user->propertyRequests()->create($request->except('user_id'));
+        $propertyRequest = $user->propertyRequests()->create($request->except('user_id'));
+
+        // Log the creation
+        Log::create([
+            'user_id' => $user->id,
+            'action_type' => 'created_property_request',
+            'property_request_id' => $propertyRequest->id,
+        ]);
 
         return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u shtua!');
     }
@@ -108,9 +124,24 @@ class PropertyRequestController
         $isAdmin = $user->role->name === 'admin';
         if($isAdmin) {
             $propertyRequest->update($request->validated());
+
+            // Log the update
+            Log::create([
+                'user_id' => $user->id,
+                'action_type' => 'updated_property_request',
+                'property_request_id' => $propertyRequest->id,
+            ]);
+
             return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u perditesua!');
         }
         $propertyRequest->update($request->validated()->except('user_id'));
+
+        // Log the update
+        Log::create([
+            'user_id' => $user->id,
+            'action_type' => 'updated_property_request',
+            'property_request_id' => $propertyRequest->id,
+        ]);
 
         return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u perditesua!');
     }
@@ -120,6 +151,14 @@ class PropertyRequestController
         if(auth()->id() !== $propertyRequest->user_id && auth()->user()->role->name !== 'admin') {
             abort(403);
         }
+
+        // Log the deletion before deleting
+        Log::create([
+            'user_id' => auth()->id(),
+            'action_type' => 'deleted_property_request',
+            'property_request_id' => $propertyRequest->id,
+        ]);
+
         $propertyRequest->delete();
         return redirect()->route('property.requests.index')->with('success', 'Property request deleted successfully.');
     }
@@ -131,7 +170,7 @@ class PropertyRequestController
         $this->requestServices->logView($propertyRequest->id);
         $actualContact = '';
         if($user->role->name === 'admin') {
-            $actualContact = $propertyRequest->user->phone_number;
+            $actualContact = $propertyRequest->user?->phone_number;
         }
         $propertyRequest->update(['views' => $propertyRequest->views + 1]);
 
@@ -162,10 +201,10 @@ class PropertyRequestController
         $user = auth()->user();
         if ($user->savedPropertyRequests()->where('property_request_id', $propertyRequest->id)->exists()) {
             $user->savedPropertyRequests()->detach($propertyRequest->id);
-            return response()->json(['message' => 'Kerkesa e prones u hoq nga te preferuarat!']);
+            return back()->with('success' , 'Kerkesa e prones u hoq nga te preferuarat!');
         } else {
             $user->savedPropertyRequests()->attach($propertyRequest->id);
-            return response()->json(['message' => 'Kerkesa e prones u shtua ne te preferuarat!']);
+            return back()->with('success' , 'Kerkesa e prones u shtua ne te preferuarat!');
         }
     }
 

@@ -141,8 +141,7 @@ const PropertyDetails = ({ property }) => {
     const [previewIndex, setPreviewIndex] = useState(0);
     const [showPreview, setShowPreview] = useState(false);
     const [selectedType, setSelectedType] = useState(null);
-    const [userLocation, setUserLocation] = useState(null);
-    const [showDirections, setShowDirections] = useState(false);
+
 
     useEffect(() => {
         const allImages = [
@@ -171,24 +170,27 @@ const PropertyDetails = ({ property }) => {
     }, [images.length]);
 
     const handleGetDirections = () => {
-        if (!showDirections && !userLocation) {
-            // Get user's current location
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        setUserLocation([position.coords.latitude, position.coords.longitude]);
-                        setShowDirections(true);
-                    },
-                    (error) => {
-                        console.error("Error getting location:", error);
-                        alert("Nuk mund të merret vendndodhja juaj. Ju lutem aktivizoni GPS-në.");
-                    }
-                );
+        const destination = `${property.latitude},${property.longitude}`;
+
+        // Check if on mobile device
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            // For iOS devices - try to open Apple Maps, fallback to Google Maps
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                window.location.href = `maps://maps.apple.com/?daddr=${destination}`;
+                // Fallback to Google Maps if Apple Maps doesn't open
+                setTimeout(() => {
+                    window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+                }, 500);
             } else {
-                alert("Shfletuesi juaj nuk mbështet gjeolokalizimin.");
+                // For Android - open Google Maps app or web
+                window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
             }
         } else {
-            setShowDirections(!showDirections);
+            // For desktop, open Google Maps in new tab
+            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+            window.open(googleMapsUrl, '_blank');
         }
     };
 
@@ -225,7 +227,7 @@ const PropertyDetails = ({ property }) => {
                 {property.virtual_tour_link && (
                     <div className="space-y-3">
                         <h2 className="text-2xl font-semibold">Vizitë Virtuale</h2>
-                        <div className="w-full aspect-video rounded-2xl overflow-hidden shadow">
+                        <div className="w-full h-[600px] rounded-2xl overflow-hidden shadow">
                             <iframe src={property.virtual_tour_link} className="w-full h-full" allowFullScreen />
                         </div>
                     </div>
@@ -318,7 +320,6 @@ const PropertyDetails = ({ property }) => {
                             </div>
                         </div>
                     )}
-                    {/* MAP */}
 
                 </div>
                 {/* RIGHT SIDE */}
@@ -329,31 +330,19 @@ const PropertyDetails = ({ property }) => {
                             {Number(property.price).toLocaleString()} {property.currency} {property.price_negotiable ? '(i negociueshëm)' : ''}
                         </p>
                     </div>
-                    <div className="bg-primary/5 rounded-2xl p-6 space-y-4">
-                        <div className="flex gap-3">
-                            <a
-                                href={`tel:${property.owner?.phone}`}
-                                className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
-                            >
-                                Telefon
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
+
+            {/* MAP */}
             <div className="space-y-3">
                 <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-semibold">Vendndodhja</h2>
                     <button
                         onClick={handleGetDirections}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
-                            showDirections
-                                ? 'bg-primary text-white'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg transition bg-primary text-white hover:bg-primary/90"
                     >
                         <Navigation size={18} />
-                        {showDirections ? 'Fsheh rrugën' : 'Shfaq rrugën'}
+                        Shfaq rrugën
                     </button>
                 </div>
                 <div className="mb-2 border-b border-gray-200">
@@ -394,13 +383,22 @@ const PropertyDetails = ({ property }) => {
                             lng={property.longitude}
                             selectedType={selectedType}
                         />
-                        {showDirections && (
-                            <DirectionsLayer
-                                userLocation={userLocation}
-                                propertyLocation={[property.latitude, property.longitude]}
-                            />
-                        )}
                     </MapContainer>
+                </div>
+            </div>
+
+            {/* CONTACT */}
+            <div className="bg-primary/5 rounded-2xl p-6 space-y-4 max-w-md">
+                <h3 className="text-lg font-semibold">Kontakto Shitësin</h3>
+                <div className="flex gap-3">
+                    <a
+                        href={`https://wa.me/${property.owner?.phone_number}?text=${encodeURIComponent('Përshëndetje, jam i interesuar për pronën tuaj.')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
+                    >
+                        WhatsApp
+                    </a>
                 </div>
             </div>
             {/* LIGHTBOX */}

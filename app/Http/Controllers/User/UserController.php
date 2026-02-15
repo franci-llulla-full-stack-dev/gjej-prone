@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Log;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -52,8 +53,20 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        // Count properties and property requests before deletion
+        $propertiesCount = $user->properties()->count();
+        $requestsCount = $user->propertyRequests()->count();
+
+        // Soft delete the user (this will trigger the model event to mark properties as sold and requests as completed)
         $user->delete();
-        return back()->with('success', 'Perdoruesi u fshi!');
+
+        // Log the user deletion
+        Log::create([
+            'user_id' => auth()->id(),
+            'action_type' => 'deleted_user',
+        ]);
+
+        return back()->with('success', "Perdoruesi u fshi! {$propertiesCount} prona u shenuan si te shitura dhe {$requestsCount} kerkesa u shenuan si te perfunduara.");
     }
 
     public function show(User $user)
@@ -80,7 +93,20 @@ class UserController extends Controller
     public function forceDelete($id)
     {
         $user = User::withTrashed()->findOrFail($id);
+
+        // Count properties and property requests before deletion
+        $propertiesCount = $user->properties()->withTrashed()->count();
+        $requestsCount = $user->propertyRequests()->withTrashed()->count();
+
+        // Force delete the user (this will trigger the model event to mark properties as sold and requests as completed)
         $user->forceDelete();
+
+        // Log the permanent deletion
+        Log::create([
+            'user_id' => auth()->id(),
+            'action_type' => 'force_deleted_user',
+        ]);
+
         return back()->with('success', 'Perdoruesi u fshi përgjithmonë!');
     }
 

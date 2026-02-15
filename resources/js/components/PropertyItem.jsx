@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import {
     Home,
@@ -31,28 +31,17 @@ const PropertyItem = ({
         : "/placeholder/property.jpg";
     let badge = null;
 
-    const handleSave = async (id) => {
-        try {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const res = await fetch(`/properties/${id}/toggleSave`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (res.ok) {
-                setIsSaved(!isSaved); // toggle locally for instant feedback
-                const data = await res.json();
-                toast.success(data.message);
-            } else {
+    const handleSave = (id) => {
+        router.post(`/properties/${id}/toggleSave`, {}, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                setIsSaved(!isSaved);
+            },
+            onError: () => {
                 toast.error('Diçka shkoi keq!');
             }
-        } catch (err) {
-            console.error(err);
-            toast.error('Diçka shkoi keq!');
-        }
+        });
     };
     if (combo_package || (virtual_tour && rivleresim)) badge = { text: "Platinum", bg: "bg-purple-600", textColor: "text-white" };
     else if (virtual_tour) badge = { text: "Gold", bg: "bg-yellow-500", textColor: "text-black" };
@@ -79,11 +68,6 @@ const PropertyItem = ({
                         {verified ? "E verifikuar" : "Jo e verifikuar"}
                     </span>
                 )}
-                {sold && (
-                    <span className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg">
-                        E Shitur
-                    </span>
-                )}
                 {/* SINGLE PRIORITY BADGE (Ribbon) */}
                 {badge && (
                     <div className={`absolute top-0 right-0 overflow-hidden w-24 h-24`}>
@@ -91,6 +75,11 @@ const PropertyItem = ({
                             {badge.text}
                         </span>
                     </div>
+                )}
+                {sold && (
+                    <span className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg z-10">
+                        E Shitur
+                    </span>
                 )}
 
                 <div className={`absolute bottom-0 right-0 overflow-hidden grid grid-cols-2 items-center bg-black/70 backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg`}>

@@ -155,7 +155,7 @@ class PropertyRequestServices
     public function logView($propertyRequestId)
     {
         $user = auth()->user();
-        if($user->role->name !== 'user' && $user->role->name !== 'admin' && $user->role->name !== 'investor') {
+        if($user->role->name !== 'user' && $user->role->name !== 'admin' && $user->role->name !== 'investor' && $user->role->name !== 'business') {
             $user->logs()->create([
                 'action_type' => 'viewed_property_listing',
                 'property_request_id' => $propertyRequestId,
