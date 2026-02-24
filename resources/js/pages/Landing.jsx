@@ -34,12 +34,13 @@ const Landing = () => {
                     <h2
                         className={`text-2xl md:text-5xl font-bold text-white mb-4 transform transition-all duration-1000 ease-out ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
                     >
-                        Gjej pronën perfekte në Shqipëri
+                        Tregu i Pronave ne Shqiperi, i Organizuar nga Kërkesa tek Oferta
+
                     </h2>
                     <p
-                        className={`mt-2 text-lg md:text-xl text-white/90 mb-6 max-w-2xl transform transition-all duration-1000 delay-200 ease-out ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                        className={`mt-2 text-lg md:text-xl text-white/90 mb-6 max-w-4xl transform transition-all duration-1000 delay-200 ease-out ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
                     >
-                        Bli, jep me qira ose publiko shtëpinë apo apartamentin tënd. Shpejt, e sigurt dhe e lehtë.
+                        Publiko falas kërkesën ose pronën tënde. Lidhje direkte mes blerësit dhe shitësit, me verifikim profesional, shërbime arkitekturore dhe prezantim premium për një proces të sigurt dhe efikas.
                     </p>
                     <div
                         className={`flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 transform transition-all duration-1000 delay-400 ease-out ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
@@ -60,16 +61,59 @@ const Landing = () => {
                 </div>
             </div>
             <section className="relative z-20 bg-white/90 rounded-lg shadow-lg max-w-6xl mx-auto my-10 p-8 text-gray-900">
-                <h2 className="text-2xl font-semibold mb-3 text-blue-700">Platforma më e mirë për prona në Shqipëri</h2>
+                <h2 className="text-2xl font-semibold mb-3 text-blue-700">Platformë Digjitale për Kërkesë & Ofertë Pronash në Shqipëri
+                </h2>
                 <p className="mb-4">
-                    Gjej-Prone është platforma kryesore për të gjetur, blerë ose dhënë me qira prona në Shqipëri. Kërkoni apartamente, shtëpi, vila dhe truall në qytete si Tiranë, Durrës, Vlorë, Shkodër dhe më shumë. Me filtrat tanë të avancuar, mund të gjeni pronën ideale sipas çmimit, vendndodhjes dhe tipit të pronës.
+                    Platforma jonë është një hapësirë e dedikuar për tregun imobiliar në Shqipëri,
+                    ku blerësit mund të publikojnë falas kërkesat e tyre për pronën që dëshirojnë të blejnë, ndërsa shitësit mund të listojnë falas pronat që kanë në shitje.
                 </p>
-                <h3 className="text-xl font-semibold mb-2 text-blue-600">Si funksionon?</h3>
-                <p className="mb-4">
-                    Publikoni pronën tuaj falas ose shikoni ofertat më të fundit të pronave në shitje dhe me qira. Platforma jonë ofron siguri, transparencë dhe mbështetje të dedikuar për çdo përdorues. Qindra pronarë dhe blerës të kënaqur kanë gjetur zgjidhjen e tyre për prona në Shqipëri përmes nesh.
+                <h3 className="text-xl font-semibold mb-3 text-blue-600">Si funksionon?</h3>
+                <ul className="mb-6 space-y-2 list-disc list-inside">
+                    <li>
+                        Blerësit publikojnë kriteret e tyre (zonë, buxhet, tipologji, sipërfaqe, etj.).
+                    </li>
+                    <li>
+                        Shitësit listojnë pronën me detaje dhe dokumentacion përkatës.
+                    </li>
+                    <li>
+                        Platforma ofron filtra të avancuar për kërkim të shpejtë dhe të saktë.
+                    </li>
+                    <li>
+                        Çdo pronë verifikohet nëpërmjet certifikatës së pronësisë, me qëllim shmangien e postimeve nga agjenci dhe garantimin e transparencës.
+                    </li>
+                </ul>
+                <h3 className="text-xl font-semibold mb-2 text-blue-600">Shërbime për Blerësit</h3>
+                <p className="">
+                    Përtej lidhjes direkte me shitësin, ne ofrojmë shërbime profesionale shtesë:
+
                 </p>
-                <p className="mb-4">
-                    Nëse jeni duke kërkuar prona në shitje apo apartamente me qira në Shqipëri, platforma jonë ju ofron mundësinë të eksploroni oferta të ndryshme nga agjenci imobiliare dhe pronarë të drejtpërdrejtë. Zbuloni shtëpi të reja, vila luksoze, ose prona komerciale në qytete të ndryshme si Elbasan, Fier, Korçë dhe Sarandë. Me ndihmën tonë, procesi i gjetjes së pronës së duhur është më i lehtë dhe më i shpejtë se kurrë më parë.
+                <ul>
+                    <li>
+                        Rivlerësim nga vlerësues të licencuar, me qëllim optimizimin fiskal dhe mundësinë e uljes së tatimit nga 15% në 5%, sipas legjislacionit në fuqi.
+                    </li>
+                    <li>
+                        Virtual Tour & Prezantim Profesional, për t’i dhënë pronës një imazh më të avancuar dhe për të rritur interesin e blerësve.
+                    </li>
+                </ul>
+                <h3 className="text-xl font-semibold mb-3 text-blue-600">Modeli i Platformës</h3>
+                <ul className="mb-6 space-y-2 list-disc list-inside">
+                    <li>
+                        Listimi i pronës dhe publikimi i kërkesave është falas.
+                    </li>
+                    <li>
+                        Shërbimet profesionale shtesë ofrohen me pagesë, sipas listës së çmimeve të VirtuNEX.
+                    </li>
+                    <li>
+                        Në rast se një shitës kërkon kontaktin e drejtpërdrejtë të një blerësi, aplikohet një tarifë e vogël.
+                    </li>
+                    <li>
+                        Brenda kësaj tarife përfshihet edhe koordinimi nga ana jonë: ne konfirmojmë paraprakisht nëse blerësi është ende i interesuar për pronën përkatëse, përpara se të realizohet kontakti.
+                    </li>
+                </ul>
+
+                <p className="mt-6">
+                    Platforma synon të krijojë një ekosistem transparent, profesional dhe të strukturuar, duke kombinuar teknologjinë me
+                    shërbime arkitekturore dhe vlerësuese, për ta bërë procesin e blerjes dhe shitjes së pronës më të sigurt dhe më efikas.
                 </p>
             </section>
         </>
