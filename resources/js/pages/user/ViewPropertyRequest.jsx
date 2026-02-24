@@ -133,13 +133,13 @@ console.log(propertyRequest.zone_radious)
             </div>
 
             {/* CONTACT SELLER */}
-            <div className="bg-primary/5 rounded-2xl p-6 space-y-4 max-w-md">
+            <div className="bg-blue-50 rounded-2xl p-6 space-y-4 max-w-md">
                 <h3 className="text-lg font-semibold">
                     Kontakto Bleresin
                 </h3>
                 <div className="flex gap-3">
                     <a
-                        href={`https://wa.me/${actual_contact ? actual_contact.replace(/[^0-9]/g, '') : '355697727747'}?text=${encodeURIComponent('Përshëndetje, jam i interesuar për kërkesën tuaj të pronës.')}`}
+                        href={`https://wa.me/${actual_contact ? actual_contact.replace(/[^0-9]/g, '') : '355697727747'}?text=${encodeURIComponent(`Përshëndetje, jam i interesuar për kërkesën tuaj të pronës.\n\n${window.location.href}`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"

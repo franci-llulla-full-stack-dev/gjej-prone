@@ -326,7 +326,7 @@ const PropertyDetails = ({ property }) => {
                 <div className="space-y-6">
                     <div className="bg-white rounded-2xl p-6 shadow">
                         <p className="text-sm text-gray-500">Çmimi</p>
-                        <p className="text-4xl font-bold text-primary">
+                        <p className="text-4xl font-bold text-blue-600">
                             {Number(property.price).toLocaleString()} {property.currency} {property.price_negotiable ? '(i negociueshëm)' : ''}
                         </p>
                     </div>
@@ -339,7 +339,7 @@ const PropertyDetails = ({ property }) => {
                     <h2 className="text-2xl font-semibold">Vendndodhja</h2>
                     <button
                         onClick={handleGetDirections}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg transition bg-primary text-white hover:bg-primary/90"
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg transition bg-gray-700 text-white hover:bg-gray-800"
                     >
                         <Navigation size={18} />
                         Shfaq rrugën
@@ -354,8 +354,8 @@ const PropertyDetails = ({ property }) => {
                                 onClick={() => setSelectedType(type.key)}
                                 className={`px-4 py-2 -mb-px font-medium transition border-b-2
                     ${selectedType === type.key
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-gray-600 hover:text-primary"
+                                    ? "border-blue-600 text-blue-600"
+                                    : "border-transparent text-gray-600 hover:text-blue-600"
                                 }`}
                                 style={{ minWidth: 110 }}
                             >
@@ -388,11 +388,11 @@ const PropertyDetails = ({ property }) => {
             </div>
 
             {/* CONTACT */}
-            <div className="bg-primary/5 rounded-2xl p-6 space-y-4 max-w-md">
+            <div className="bg-blue-50 rounded-2xl p-6 space-y-4 max-w-md">
                 <h3 className="text-lg font-semibold">Kontakto Shitësin</h3>
                 <div className="flex gap-3">
                     <a
-                        href={`https://wa.me/${property.owner?.phone_number}?text=${encodeURIComponent('Përshëndetje, jam i interesuar për pronën tuaj.')}`}
+                        href={`https://wa.me/${property.owner?.phone_number}?text=${encodeURIComponent(`Përshëndetje, jam i interesuar për pronën tuaj.\n\n${window.location.href}`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
