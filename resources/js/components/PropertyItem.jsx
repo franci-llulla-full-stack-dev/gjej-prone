@@ -76,21 +76,18 @@ const PropertyItem = ({
                         </span>
                     </div>
                 )}
-                {sold && (
+                {sold === true && (
                     <span className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg z-10">
                         E Shitur
                     </span>
                 )}
 
-                <div className={`absolute bottom-0 right-0 overflow-hidden grid grid-cols-2 items-center bg-black/70 backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg`}>
-
-                    <div className="justify-items-end">
-                        {views}
+                {views > 0 && (
+                    <div className="absolute bottom-0 right-0 flex items-center gap-2 bg-black/70 backdrop-blur text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-lg">
+                        <span>{views}</span>
+                        <Eye size={16} />
                     </div>
-                    <div className="justify-items-end">
-                        <Eye />
-                    </div>
-                </div>
+                )}
             </div>
 
             {/* CONTENT */}
@@ -128,13 +125,17 @@ const PropertyItem = ({
                 {/* FEATURES */}
                 <div className="flex flex-wrap gap-4 text-gray-600 text-sm mt-2">
 
-                    <span className="flex items-center gap-1">
-                        <Bed size={16}/> {total_rooms} dhoma
-                    </span>
+                    {total_rooms > 0 && (
+                        <span className="flex items-center gap-1">
+                            <Bed size={16}/> {total_rooms} dhoma
+                        </span>
+                    )}
 
-                    <span className="flex items-center gap-1">
-                        <Bath size={16}/> {total_bathrooms} banjo
-                    </span>
+                    {total_bathrooms > 0 && (
+                        <span className="flex items-center gap-1">
+                            <Bath size={16}/> {total_bathrooms} banjo
+                        </span>
+                    )}
 
                     {total_balconies > 0 && (
                         <span className="flex items-center gap-1">
@@ -146,19 +147,25 @@ const PropertyItem = ({
                         <Maximize2 size={16}/> {surface} m²
                     </span>
 
-                    <span className="flex items-center gap-1">
-                        <Layers size={16}/> Kati {floor_number}/{total_floors}
-                    </span>
+                    {floor_number != null && floor_number !== 0 && (
+                        <span className="flex items-center gap-1">
+                            <Layers size={16}/> Kati {floor_number}/{total_floors}
+                        </span>
+                    )}
 
-                    <span className="flex items-center gap-1">
-                        <Building2 size={16}/> Ndërtuar: {year_built}
-                    </span>
+                    {year_built && (
+                        <span className="flex items-center gap-1">
+                            <Building2 size={16}/> Ndërtuar: {year_built}
+                        </span>
+                    )}
                 </div>
 
                 {/* DESCRIPTION */}
-                <p className="text-gray-600 text-sm line-clamp-3">
-                    {description}
-                </p>
+                {description && (
+                    <p className="text-gray-600 text-sm line-clamp-3">
+                        {description}
+                    </p>
+                )}
                 {(canEdit || canDelete) && (
                     <div className="flex gap-2 pt-2">
                         {canEdit && (

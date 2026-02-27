@@ -7,7 +7,6 @@ import {
     Bed,
     Maximize2,
     Layers,
-    Building2,
     Tag,
     Eye,
     Bookmark
@@ -99,10 +98,12 @@ const PropertyItem = ({
                         </span>
 
                         {/* Views */}
-                        <div className="grid grid-cols-[auto_auto] items-center gap-2 bg-black/70 backdrop-blur text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow-lg">
-                            <span>{views}</span>
-                            <Eye size={16} />
-                        </div>
+                        {views > 0 && (
+                            <div className="grid grid-cols-[auto_auto] items-center gap-2 bg-black/70 backdrop-blur text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow-lg">
+                                <span>{views}</span>
+                                <Eye size={16} />
+                            </div>
+                        )}
 
                         {/* Bookmark - visible on desktop only, hidden if user owns it */}
                         {!canEdit && (
@@ -129,13 +130,17 @@ const PropertyItem = ({
                 {/* FEATURES */}
                 <div className="flex flex-wrap gap-4 text-gray-600 text-sm mt-2">
 
-                    <span className="flex items-center gap-1">
-                        <Bed size={16}/> {total_rooms}-{total_rooms_2} dhoma
-                    </span>
+                    {total_rooms > 0 && (
+                        <span className="flex items-center gap-1">
+                            <Bed size={16}/> {total_rooms}-{total_rooms_2} dhoma
+                        </span>
+                    )}
 
-                    <span className="flex items-center gap-1">
-                        <Bath size={16}/> {total_bathrooms}-{total_bathrooms_2} banjo
-                    </span>
+                    {total_bathrooms > 0 && (
+                        <span className="flex items-center gap-1">
+                            <Bath size={16}/> {total_bathrooms}-{total_bathrooms_2} banjo
+                        </span>
+                    )}
 
                     {total_balconies > 0 && (
                         <span className="flex items-center gap-1">
@@ -147,23 +152,25 @@ const PropertyItem = ({
                         <Maximize2 size={16}/> {surface}-{surface_2} m²
                     </span>
 
-                    <span className="flex items-center gap-1">
-                        <Layers size={16}/> Kati {floor_number}
-                    </span>
+                    {floor_number != null && floor_number !== 0 && (
+                        <span className="flex items-center gap-1">
+                            <Layers size={16}/> Kati {floor_number}
+                        </span>
+                    )}
 
-                    {completed && (
+                    {completed === true && (
                         <span className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-md font-semibold">
                             E Perfunduar
                         </span>
                     )}
 
-                    {canEdit && architect && (
+                    {canEdit && architect === true && (
                         <span className="flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-1 rounded-md font-semibold">
                              Kërkon Arkitekt
                         </span>
                     )}
 
-                    {canEdit && interior_design && (
+                    {canEdit && interior_design === true && (
                         <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-1 rounded-md font-semibold">
                              Kërkon Interior Dizajner
                         </span>
@@ -172,9 +179,11 @@ const PropertyItem = ({
                 </div>
 
                 {/* DESCRIPTION */}
-                <p className="text-gray-600 text-sm line-clamp-3">
-                    {description}
-                </p>
+                {description && (
+                    <p className="text-gray-600 text-sm line-clamp-3">
+                        {description}
+                    </p>
+                )}
                 {(canEdit || canDelete) && (
                     <div className="flex gap-2 pt-2">
                         {canEdit && (

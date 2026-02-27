@@ -44,7 +44,8 @@ class PropertyRequestController
     {
         $isAdmin = auth()->user()->role->name === 'admin';
         if($isAdmin) {
-            $roleIds = Role::where('name', 'user')->orWhere('name', 'users')->pluck('id')->toArray();
+            // Get all buyer roles: user, investor, business
+            $roleIds = Role::whereIn('name', ['user', 'investor', 'business'])->pluck('id')->toArray();
             $users = User::whereIn('role_id', $roleIds)->select('id', 'name', 'surname')->get();
         }else {
             $users = [];
@@ -93,7 +94,8 @@ class PropertyRequestController
             abort(403);
         }
         if(auth()->user()->role->name === 'admin') {
-            $roleIds = Role::where('name', 'user')->orWhere('name', 'users')->pluck('id')->toArray();
+            // Get all buyer roles: user, investor, business
+            $roleIds = Role::whereIn('name', ['user', 'investor', 'business'])->pluck('id')->toArray();
             $users = User::whereIn('role_id', $roleIds)->select('id', 'name', 'surname')->get();
         }else {
             $users = [];
