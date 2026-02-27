@@ -2,15 +2,30 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Head } from '@inertiajs/react';
 import backgroundImage from '../media/background.jpeg';
-import Header from '../components/Header.jsx';
-import Footer from '../components/Footer.jsx';
 
 const Landing = () => {
     const [animate, setAnimate] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     useEffect(() => {
-        const timer = setTimeout(() => setAnimate(true), 100); // vonesë e vogël për të nisur animacionin
-        return () => clearTimeout(timer);
+        // Preload the background image
+        const img = new Image();
+        img.src = backgroundImage;
+        img.onload = () => {
+            setImageLoaded(true);
+            // Start animation after image loads
+            setTimeout(() => setAnimate(true), 100);
+        };
+
+        // Fallback in case image takes too long
+        const fallbackTimer = setTimeout(() => {
+            if (!imageLoaded) {
+                setImageLoaded(true);
+                setAnimate(true);
+            }
+        }, 3000);
+
+        return () => clearTimeout(fallbackTimer);
     }, []);
 
     return (
@@ -18,13 +33,16 @@ const Landing = () => {
             <Head>
                 <title>Gjej pronën perfekte në Shqipëri | Gjej-Prone</title>
                 <meta name="description" content="Platforma më e mirë për të gjetur, blerë, ose dhënë me qira prona në Shqipëri. Publiko pronën tënde lehtësisht dhe shiko ofertat më të fundit." />
+                <link rel="preload" as="image" href={backgroundImage} />
             </Head>
             <div className="relative pb-25">
 
                 {/* Imazhi i sfondit */}
                 <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url(${backgroundImage})` }}
+                    className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${
+                        imageLoaded ? 'opacity-100 bg-gray-200' : 'opacity-0 bg-gray-300 animate-pulse'
+                    }`}
+                    style={{ backgroundImage: imageLoaded ? `url(${backgroundImage})` : 'none' }}
                 >
                     <div className="absolute inset-0 bg-black/40"></div> {/* mbulesë e errët për lexueshmëri më të mirë */}
                 </div>

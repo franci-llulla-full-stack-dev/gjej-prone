@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 
 
 export default function Layout({ children, breadcrumbItems }) {
-    const { flash } = usePage().props;
+    const { flash, errors } = usePage().props;
 
     useEffect(() => {
         if (flash?.success) {
@@ -16,7 +16,15 @@ export default function Layout({ children, breadcrumbItems }) {
         if (flash?.error) {
             toast.error(flash.error);
         }
-    }, [flash]);
+        // Handle validation errors
+        if (errors && Object.keys(errors).length > 0) {
+            Object.values(errors).forEach(error => {
+                const errorMessage = Array.isArray(error) ? error[0] : error;
+                toast.error(errorMessage);
+            });
+        }
+    }, [flash, errors]);
+
     return (
         <>
             <Head title="GjejProne" />
