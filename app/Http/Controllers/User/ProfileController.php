@@ -35,7 +35,7 @@ class ProfileController extends Controller
             'company_phone_number' => ['nullable', 'string', 'max:30'],
             'years_experience' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'company_description' => ['nullable', 'string', 'max:1000'],
-            'logo' => ['nullable', 'image', 'max:2048'], // 2MB max
+            'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'], // 2MB max
             'finished_projects' => ['nullable', 'numeric', 'min:0', 'max:10000'],
             'website' => ['nullable', 'string', 'url', 'max:255'],
             'year_budget' => ['nullable', 'numeric', 'min:0'],

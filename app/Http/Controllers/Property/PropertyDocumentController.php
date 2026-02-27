@@ -18,7 +18,7 @@ class PropertyDocumentController extends Controller
         }
 
         $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,doc,docx,jpg,jpeg,png', 'max:5120'] // 5MB
+            'file' => ['required', 'file', 'mimes:pdf,doc,docx,jpg,jpeg,png,webp', 'max:5120'] // 5MB
         ]);
 
         $existingFile = $property->documents()->where('file_type', 'hipoteka')->first();
@@ -69,7 +69,7 @@ class PropertyDocumentController extends Controller
         }
 
         $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'] // 5MB
+            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'] // 5MB
         ]);
 
         $existingFile = $property->documents()->where('file_type', 'floor_plan')->first();
