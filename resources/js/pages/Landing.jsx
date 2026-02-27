@@ -82,17 +82,28 @@ const Landing = () => {
                         Çdo pronë verifikohet nëpërmjet certifikatës së pronësisë, me qëllim shmangien e postimeve nga agjenci dhe garantimin e transparencës.
                     </li>
                 </ul>
-                <h3 className="text-xl font-semibold mb-2 text-blue-600">Shërbime për Blerësit</h3>
-                <p className="">
+                <h3 className="text-xl font-semibold mb-3 text-blue-600">Shërbime për Blerësit</h3>
+                <p className="mb-3">
                     Përtej lidhjes direkte me shitësin, ne ofrojmë shërbime profesionale shtesë:
-
                 </p>
-                <ul>
+                <ul className="mb-6 space-y-2 list-disc list-inside">
+                    <li>
+                        Interior Design – Propozime për mobilimin dhe optimizimin e hapësirës së pronës që planifikoni të blini.
+                    </li>
+                    <li>
+                        Shërbime Arkitekturore & Verifikim Teknik – Kontroll i sipërfaqes reale, planimetrisë dhe përputhshmërisë me dokumentacionin ekzistues, përpara finalizimit të blerjes.
+                    </li>
+                </ul>
+                <h3 className="text-xl font-semibold mb-3 text-blue-600">Shërbime për Shitësit</h3>
+                <p className="mb-3">
+                    Për të rritur vlerën dhe potencialin e shitjes së pronës suaj, ofrojmë:
+                </p>
+                <ul className="mb-6 space-y-2 list-disc list-inside">
                     <li>
                         Rivlerësim nga vlerësues të licencuar, me qëllim optimizimin fiskal dhe mundësinë e uljes së tatimit nga 15% në 5%, sipas legjislacionit në fuqi.
                     </li>
                     <li>
-                        Virtual Tour & Prezantim Profesional, për t’i dhënë pronës një imazh më të avancuar dhe për të rritur interesin e blerësve.
+                        Virtual Tour & Prezantim Profesional, për t'i dhënë pronës një imazh më të avancuar dhe për të rritur interesin e blerësve.
                     </li>
                 </ul>
                 <h3 className="text-xl font-semibold mb-3 text-blue-600">Modeli i Platformës</h3>
