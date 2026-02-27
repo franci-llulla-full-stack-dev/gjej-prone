@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import PropertyMap from '../../components/PropertyMap.jsx';
 
 /* =====================
@@ -41,7 +40,6 @@ const subTypeProperties = {
     ],
 };
 const ViewPropertyRequest = ({ propertyRequest, actual_contact }) => {
-console.log(propertyRequest.zone_radious)
     return (
         <div className="max-w-7xl mx-auto mt-5 px-4 py-10 space-y-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -51,9 +49,11 @@ console.log(propertyRequest.zone_radious)
                         <h1 className="text-4xl font-bold">
                             {PROPERTY_TYPE_LABELS[propertyRequest.property_type]}
                         </h1>
-                        <p className="text-gray-500 mt-1">
-                            {propertyRequest.street}, {propertyRequest.city}
-                        </p>
+                        {(propertyRequest.street || propertyRequest.city) && (
+                            <p className="text-gray-500 mt-1">
+                                {propertyRequest.street}{propertyRequest.street && propertyRequest.city ? ', ' : ''}{propertyRequest.city}
+                            </p>
+                        )}
                     </div>
 
                     {/* DESCRIPTION */}
@@ -88,20 +88,37 @@ console.log(propertyRequest.zone_radious)
                             value={propertyRequest.ashensor ? "Po" : "Jo"}
                         />
                         <Detail label="Siperfaqe" value={`${propertyRequest.surface}-${propertyRequest.surface_2} m²`} />
-                        <Detail label="Dhoma" value={`${propertyRequest.total_rooms}-${propertyRequest.total_rooms_2}`} />
-                        <Detail label="Banjo" value={`${propertyRequest.total_bathrooms}-${propertyRequest.total_bathrooms_2}`} />
-                        <Detail label="Ballkone" value={`${propertyRequest.total_balconies}-${propertyRequest.total_balconies_2}`} />
-                        <Detail label="Kati" value={propertyRequest.floor_number} />
-                        <Detail label="Kate totale" value={propertyRequest.total_floors} />
+                        {propertyRequest.total_rooms > 0 && (
+                            <Detail label="Dhoma" value={`${propertyRequest.total_rooms}-${propertyRequest.total_rooms_2}`} />
+                        )}
+                        {propertyRequest.total_bathrooms > 0 && (
+                            <Detail label="Banjo" value={`${propertyRequest.total_bathrooms}-${propertyRequest.total_bathrooms_2}`} />
+                        )}
+                        {propertyRequest.total_balconies > 0 && (
+                            <Detail label="Ballkone" value={`${propertyRequest.total_balconies}-${propertyRequest.total_balconies_2}`} />
+                        )}
+                        {propertyRequest.floor_number != null && propertyRequest.floor_number !== 0 && (
+                            <Detail label="Kati" value={propertyRequest.floor_number} />
+                        )}
+                        {propertyRequest.total_floors > 0 && (
+                            <Detail label="Kate totale" value={propertyRequest.total_floors} />
+                        )}
                         <Detail
                             label="Transaksioni"
                             value={TRANSACTION_TYPE_LABELS[propertyRequest.type_of_sale]}
                         />
-                        <Detail
-                            label="Burimi i Financimit"
-                            value={propertyRequest.funds ? FUNDING_SOURCE_LABELS[propertyRequest.funds] : null}
-                        />
-
+                        {propertyRequest.funds && (
+                            <Detail
+                                label="Burimi i Financimit"
+                                value={FUNDING_SOURCE_LABELS[propertyRequest.funds]}
+                            />
+                        )}
+                        {propertyRequest.architect === true && (
+                            <Detail label="Shërbime" value="Kërkon Arkitekt" />
+                        )}
+                        {propertyRequest.interior_design === true && (
+                            <Detail label="Shërbime" value="Kërkon Interior Dizajner" />
+                        )}
                     </div>
 
                 </div>
@@ -158,7 +175,9 @@ console.log(propertyRequest.zone_radious)
    SMALL COMPONENTS
 ===================== */
 const Detail = ({ label, value }) => {
-    if (!value) return null;
+    // Don't render if value is null, undefined, empty string, or 0
+    if (!value && value !== 0) return null;
+    if (value === 0) return null;
 
     return (
         <div className="bg-gray-50 p-4 rounded-xl text-center">

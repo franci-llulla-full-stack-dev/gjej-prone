@@ -241,9 +241,11 @@ const PropertyDetails = ({ property }) => {
                         <h1 className="text-4xl font-bold">
                             {PROPERTY_TYPE_LABELS[property.property_type]}
                         </h1>
-                        <p className="text-gray-500 mt-1">
-                            {property.street}, {property.city}
-                        </p>
+                        {(property.street || property.city) && (
+                            <p className="text-gray-500 mt-1">
+                                {property.street}{property.street && property.city ? ', ' : ''}{property.city}
+                            </p>
+                        )}
                     </div>
                     {property.description && (
                         <div>
@@ -282,13 +284,15 @@ const PropertyDetails = ({ property }) => {
                         <Detail label="Ashensor" value={property.ashensor ? 'Po' : 'Jo'} />
                         <Detail label="Parkim" value={property.parkim ? 'Po' : 'Jo'} />
                         <Detail label="Mobiluar" value={property.mobilim ? 'Po' : 'Jo'} />
-                        <Detail label="Sipërfaqe" value={`${property.surface} m²`} />
-                        <Detail label="Dhoma" value={property.total_rooms} />
-                        <Detail label="Banjo" value={property.total_bathrooms} />
-                        <Detail label="Ballkone" value={property.total_balconies} />
-                        <Detail label="Kati" value={property.floor_number} />
-                        <Detail label="Kate totale" value={property.total_floors} />
-                        <Detail label="Viti ndërtimit" value={property.year_built} />
+                        <Detail label="Sipërfaqe" value={property.surface ? `${property.surface} m²` : null} />
+                        {property.total_rooms > 0 && <Detail label="Dhoma" value={property.total_rooms} />}
+                        {property.total_bathrooms > 0 && <Detail label="Banjo" value={property.total_bathrooms} />}
+                        {property.total_balconies > 0 && <Detail label="Ballkone" value={property.total_balconies} />}
+                        {property.floor_number != null && property.floor_number !== 0 && (
+                            <Detail label="Kati" value={property.floor_number} />
+                        )}
+                        {property.total_floors > 0 && <Detail label="Kate totale" value={property.total_floors} />}
+                        {property.year_built && <Detail label="Viti ndërtimit" value={property.year_built} />}
                         <Detail label="Transaksioni" value={TRANSACTION_TYPE_LABELS[property.type_of_sale]} />
                     </div>
                     {floorPlans.length > 0 && (
@@ -327,7 +331,8 @@ const PropertyDetails = ({ property }) => {
                     <div className="bg-white rounded-2xl p-6 shadow">
                         <p className="text-sm text-gray-500">Çmimi</p>
                         <p className="text-4xl font-bold text-blue-600">
-                            {Number(property.price).toLocaleString()} {property.currency} {property.price_negotiable ? '(i negociueshëm)' : ''}
+                            {Number(property.price).toLocaleString()} {property.currency}
+                            {property.price_negotiable && <span className="text-lg"> (i negociueshëm)</span>}
                         </p>
                     </div>
                 </div>
@@ -388,19 +393,21 @@ const PropertyDetails = ({ property }) => {
             </div>
 
             {/* CONTACT */}
-            <div className="bg-blue-50 rounded-2xl p-6 space-y-4 max-w-md">
-                <h3 className="text-lg font-semibold">Kontakto Shitësin</h3>
-                <div className="flex gap-3">
-                    <a
-                        href={`https://wa.me/${property.owner?.phone_number}?text=${encodeURIComponent(`Përshëndetje, jam i interesuar për pronën tuaj.\n\n${window.location.href}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
-                    >
-                        WhatsApp
-                    </a>
+            {property.owner?.phone_number && (
+                <div className="bg-blue-50 rounded-2xl p-6 space-y-4 max-w-md">
+                    <h3 className="text-lg font-semibold">Kontakto Shitësin</h3>
+                    <div className="flex gap-3">
+                        <a
+                            href={`https://wa.me/${property.owner.phone_number}?text=${encodeURIComponent(`Përshëndetje, jam i interesuar për pronën tuaj.\n\n${window.location.href}`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
+                        >
+                            WhatsApp
+                        </a>
+                    </div>
                 </div>
-            </div>
+            )}
             {/* LIGHTBOX */}
             {lightbox && (
                 <div
@@ -478,7 +485,10 @@ const PropertyDetails = ({ property }) => {
    SMALL COMPONENTS
 ===================== */
 const Detail = ({ label, value }) => {
-    if (!value) return null;
+    // Don't render if value is null, undefined, empty string, or 0
+    if (!value && value !== 0) return null;
+    if (value === 0) return null;
+
     return (
         <div className="bg-gray-50 p-4 rounded-xl text-center">
             <p className="text-xs uppercase tracking-wide text-gray-500">{label}</p>
