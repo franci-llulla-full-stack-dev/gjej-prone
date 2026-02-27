@@ -17,7 +17,9 @@ class PropertyDocumentController extends Controller
             abort(403);
         }
 
-        $request->validate(['file' => 'required|file|max:5120']); // 5MB
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:pdf,doc,docx,jpg,jpeg,png', 'max:5120'] // 5MB
+        ]);
 
         $existingFile = $property->documents()->where('file_type', 'hipoteka')->first();
         if($existingFile) {
@@ -66,7 +68,10 @@ class PropertyDocumentController extends Controller
             abort(403);
         }
 
-        $request->validate(['file' => 'required|file|max:5120']); // 5MB
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'] // 5MB
+        ]);
+
         $existingFile = $property->documents()->where('file_type', 'floor_plan')->first();
         if($existingFile) {
             Storage::disk('public')->delete($existingFile->path);

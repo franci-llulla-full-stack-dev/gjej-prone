@@ -111,7 +111,9 @@ class AuthController extends Controller
 
     public function sendResetLink(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate([
+            'email' => ['required', 'email', 'max:254']
+        ]);
 
         $email = $request->input('email');
         $user = User::where('email', $email)->first();
@@ -132,15 +134,17 @@ class AuthController extends Controller
     {
         // 1️⃣ Validate inputs
         $request->validate([
-            'token' => ['required', 'string'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed'],
+            'token' => ['required', 'string', 'max:500'],
+            'email' => ['required', 'email', 'max:254'],
+            'password' => ['required', 'confirmed', 'min:8', 'max:255'],
         ], [
             'email.required' => 'Email-i është i detyrueshëm.',
             'email.email' => 'Email-i nuk është valid.',
+            'email.max' => 'Email-i është shumë i gjatë.',
             'password.required' => 'Fjalëkalimi është i detyrueshëm.',
             'password.confirmed' => 'Fjalëkalimet nuk përputhen.',
             'password.min' => 'Fjalëkalimi duhet të ketë së paku 8 karaktere.',
+            'password.max' => 'Fjalëkalimi është shumë i gjatë.',
             'token.required' => 'Tokeni është i detyrueshëm.',
         ]);
 

@@ -22,12 +22,12 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'surname' => ['required', 'string'],
-            'phone_number' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:100'],
+            'surname' => ['required', 'string', 'max:100'],
+            'phone_number' => ['required', 'string', 'max:20'],
             'birth_date' => ['required', 'date'],
-            'email' => ['required', 'string', 'email', 'unique:users,email'],
-            'company_name' => ['nullable', 'string'],
+            'email' => ['required', 'string', 'email', 'unique:users,email', 'max:254'],
+            'company_name' => ['nullable', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'user_type' => ['required'],
             'address' => ['nullable', 'string', 'max:255'],
@@ -35,9 +35,9 @@ class RegisterUserRequest extends FormRequest
             // Extra fields
             'nipt' => ['nullable', 'string', 'max:20'],
             'company_phone_number' => ['nullable', 'string', 'max:30'],
-            'years_experience' => ['nullable', 'numeric', 'min:0'],
+            'years_experience' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'company_description' => ['nullable', 'string', 'max:1000'],
-            'finished_projects' => ['nullable', 'numeric', 'min:0'],
+            'finished_projects' => ['nullable', 'numeric', 'min:0', 'max:10000'],
             'website' => ['nullable', 'string', 'url', 'max:255'],
             'year_budget' => ['nullable', 'numeric', 'min:0'],
             'preferred_locations' => ['nullable', 'string', 'max:500'],

@@ -17,7 +17,8 @@ class PropertyMediaController extends Controller
             abort(403);
         }
         $request->validate([
-            'images.*' => 'required|image|max:5120', // max 5MB
+            'images' => ['required', 'array', 'max:20'], // max 20 images at once
+            'images.*' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'], // max 5MB
         ]);
 
         $uploaded = [];

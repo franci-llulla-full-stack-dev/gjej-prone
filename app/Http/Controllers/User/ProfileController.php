@@ -22,10 +22,10 @@ class ProfileController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'phone_number' => ['nullable', 'string', 'max:30'],
+            'name' => ['required', 'string', 'max:100'],
+            'surname' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:254', 'unique:users,email,' . $user->id],
+            'phone_number' => ['nullable', 'string', 'max:20'],
             'company_name' => ['nullable', 'string', 'max:255'],
             'birth_date' => ['nullable', 'date'],
             'address' => ['nullable', 'string', 'max:255'],
@@ -33,10 +33,10 @@ class ProfileController extends Controller
             // Extra fields
             'nipt' => ['nullable', 'string', 'max:20'],
             'company_phone_number' => ['nullable', 'string', 'max:30'],
-            'years_experience' => ['nullable', 'numeric', 'min:0'],
+            'years_experience' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'company_description' => ['nullable', 'string', 'max:1000'],
             'logo' => ['nullable', 'image', 'max:2048'], // 2MB max
-            'finished_projects' => ['nullable', 'numeric', 'min:0'],
+            'finished_projects' => ['nullable', 'numeric', 'min:0', 'max:10000'],
             'website' => ['nullable', 'string', 'url', 'max:255'],
             'year_budget' => ['nullable', 'numeric', 'min:0'],
             'preferred_locations' => ['nullable', 'string', 'max:500'],
