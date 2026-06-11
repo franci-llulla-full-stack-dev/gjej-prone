@@ -53,6 +53,8 @@ class CreatePropertyRequestRequest extends FormRequest
             'parkim' => ['nullable', 'boolean'],
             'expires_at' => ['nullable', 'string', 'max:100'],
             'funds' => ['nullable', 'string', 'in:kredi,kursime'],
+            'tracking_phone' => ['nullable', 'string', 'max:20'],
+            'tracking_email' => ['nullable', 'email', 'max:255'],
         ];
     }
 

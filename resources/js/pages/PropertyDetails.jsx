@@ -1,6 +1,5 @@
 // resources/js/pages/PropertyDetails.jsx
 import { useEffect, useState } from "react";
-import { usePage } from "@inertiajs/react";
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Polyline, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -135,8 +134,7 @@ function NearbyPlaces({ lat, lng, selectedType }) {
     );
 }
 
-const PropertyDetails = ({ property }) => {
-    const isAdmin = usePage().props.auth?.user?.role === 'admin';
+const PropertyDetails = ({ property, isAdmin }) => {
     const [previewImages, setPreviewImages] = useState([]);
     const [previewIndex, setPreviewIndex] = useState(0);
     const [showPreview, setShowPreview] = useState(false);
@@ -247,6 +245,28 @@ const PropertyDetails = ({ property }) => {
                             </p>
                         )}
                     </div>
+
+                    {/* ADMIN TRACKING INFO */}
+                    {isAdmin && (property.tracking_phone || property.tracking_email) && (
+                        <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
+                            <h3 className="text-lg font-semibold mb-3 text-gray-800">Të Dhëna për Gjurmim (Vetëm Admin)</h3>
+                            <div className="space-y-2">
+                                {property.tracking_phone && (
+                                    <div>
+                                        <p className="text-sm text-gray-500">Telefon për Gjurmim:</p>
+                                        <p className="text-base font-medium">{property.tracking_phone}</p>
+                                    </div>
+                                )}
+                                {property.tracking_email && (
+                                    <div>
+                                        <p className="text-sm text-gray-500">Email për Gjurmim:</p>
+                                        <p className="text-base font-medium">{property.tracking_email}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     {property.description && (
                         <div>
                             <h3 className="text-xl font-semibold mb-2">Përshkrimi</h3>

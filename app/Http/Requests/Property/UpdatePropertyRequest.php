@@ -48,6 +48,8 @@ class UpdatePropertyRequest extends FormRequest
             'parkim' => ['nullable', 'boolean'],
             'mobilim' => ['nullable', 'boolean'],
             'price_negotiable' => ['nullable', 'boolean'],
+            'tracking_phone' => ['nullable', 'string', 'max:20'],
+            'tracking_email' => ['nullable', 'email', 'max:255'],
         ];
     }
 

@@ -4,7 +4,6 @@ import AsyncSelect from 'react-select/async';
 import React, { useState } from 'react';
 import locations from '../../../data/locations.json';
 import MapPicker from '../../components/MapPicker.jsx';
-import toast from 'react-hot-toast';
 import ErrorText from '../../components/ErrorText.jsx';
 import { Box, Button } from '@mui/material';
 import { router } from '@inertiajs/react';
@@ -48,6 +47,8 @@ export default function EditProperty({ property, users = [] }) {
         mobilim: property.mobilim,
         parkim: property.parkim,
         price_negotiable: property.price_negotiable,
+        tracking_phone: property.tracking_phone || '',
+        tracking_email: property.tracking_email || '',
         _method: 'PUT',
     });
 
@@ -412,6 +413,34 @@ export default function EditProperty({ property, users = [] }) {
                             <input type="checkbox" checked={data.verified} onChange={e => setData('verified', e.target.checked)} />
                             <span className="text-gray-700 font-semibold">Verifiko Pronën</span>
                         </label>
+                    </div>
+
+                    <div className="mt-6 bg-blue-50 p-4 rounded-xl border border-blue-200">
+                        <h3 className="text-lg font-semibold mb-3 text-gray-800">Të Dhëna për Gjurmim (Vetëm Admin)</h3>
+
+                        <div className="mb-4">
+                            <label className={labelBase}>Numri i Telefonit për Gjurmim</label>
+                            <input
+                                type="text"
+                                value={data.tracking_phone}
+                                onChange={e => setData('tracking_phone', e.target.value)}
+                                placeholder="Numri i telefonit për gjurmim..."
+                                className={inputBase}
+                            />
+                            <ErrorText field="tracking_phone" errors={errors} />
+                        </div>
+
+                        <div>
+                            <label className={labelBase}>Email për Gjurmim</label>
+                            <input
+                                type="email"
+                                value={data.tracking_email}
+                                onChange={e => setData('tracking_email', e.target.value)}
+                                placeholder="Email për gjurmim..."
+                                className={inputBase}
+                            />
+                            <ErrorText field="tracking_email" errors={errors} />
+                        </div>
                     </div>
 
                     <button

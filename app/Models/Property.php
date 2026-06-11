@@ -50,6 +50,8 @@ class Property extends Model
         'parkim',
         'mobilim',
         'price_negotiable',
+        'tracking_phone',
+        'tracking_email',
     ];
 
     protected $appends = ['saved'];

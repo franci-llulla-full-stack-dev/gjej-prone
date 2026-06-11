@@ -198,6 +198,8 @@ class AdminPropertyController extends Controller
             'parkim' => 'nullable|boolean',
             'mobilim' => 'nullable|boolean',
             'price_negotiable' => 'nullable|boolean',
+            'tracking_phone' => 'nullable|string|max:20',
+            'tracking_email' => 'nullable|email|max:255',
         ]);
 
         // Create property
@@ -232,6 +234,8 @@ class AdminPropertyController extends Controller
             'parkim' => $validated['parkim'] ?? false,
             'mobilim' => $validated['mobilim'] ?? false,
             'price_negotiable' => $validated['price_negotiable'] ?? false,
+            'tracking_phone' => $validated['tracking_phone'] ?? null,
+            'tracking_email' => $validated['tracking_email'] ?? null,
         ]);
 
         // Upload images
@@ -314,6 +318,8 @@ class AdminPropertyController extends Controller
             'parkim' => 'nullable|boolean',
             'mobilim' => 'nullable|boolean',
             'price_negotiable' => 'nullable|boolean',
+            'tracking_phone' => 'nullable|string|max:20',
+            'tracking_email' => 'nullable|email|max:255',
         ]);
 
         $property->update([
@@ -347,6 +353,8 @@ class AdminPropertyController extends Controller
             'parkim' => $validated['parkim'] ?? false,
             'mobilim' => $validated['mobilim'] ?? false,
             'price_negotiable' => $validated['price_negotiable'] ?? false,
+            'tracking_phone' => $validated['tracking_phone'] ?? null,
+            'tracking_email' => $validated['tracking_email'] ?? null,
         ]);
 
         // Handle new images upload

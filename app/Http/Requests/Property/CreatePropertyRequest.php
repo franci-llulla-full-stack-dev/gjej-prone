@@ -51,7 +51,9 @@ class CreatePropertyRequest extends FormRequest
             'hipoteke_file' => ['nullable', 'file', 'mimes:pdf,doc,docx,jpg,jpeg,png,webp', 'max:5120'],
             'parkim' => ['nullable', 'boolean'],
             'mobilim' => ['nullable', 'boolean'],
-            'price_negotiable' => ['nullable', 'boolean']
+            'price_negotiable' => ['nullable', 'boolean'],
+            'tracking_phone' => ['nullable', 'string', 'max:20'],
+            'tracking_email' => ['nullable', 'email', 'max:255'],
         ];
     }
 

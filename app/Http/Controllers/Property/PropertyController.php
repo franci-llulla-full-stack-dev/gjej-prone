@@ -12,6 +12,7 @@ use App\Models\PropertyMedia;
 use App\Services\PropertyServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class PropertyController extends Controller
@@ -26,6 +27,16 @@ class PropertyController extends Controller
 
         $query = $this->propertyServices->filterProperties($validated);
         $properties = $query->paginate(20);
+
+        // Security: Hide tracking fields from non-admins
+        $user = auth()->user();
+        if ($user && $user->role->name !== 'admin') {
+            $properties->getCollection()->transform(function ($property) {
+                $property->tracking_phone = null;
+                $property->tracking_email = null;
+                return $property;
+            });
+        }
 
         return Inertia::render('Properties', [
             'properties' => $properties,
@@ -47,6 +58,16 @@ class PropertyController extends Controller
         $validated = $request->validated();
         $query = $this->propertyServices->filterProperties($validated);
         $properties = $query->paginate(20);
+
+        // Security: Hide tracking fields from non-admins
+        if ($user && $user->role->name !== 'admin') {
+            $properties->getCollection()->transform(function ($property) {
+                $property->tracking_phone = null;
+                $property->tracking_email = null;
+                return $property;
+            });
+        }
+
         return Inertia::render('user/AllProperties', [
             'properties' => $properties,
             'filters' => request()->all(),
@@ -63,6 +84,12 @@ class PropertyController extends Controller
     {
         try{
             $validated = $request->validated();
+
+            // Security: Remove tracking fields if user is not admin
+            if (auth()->user()->role->name !== 'admin') {
+                unset($validated['tracking_phone'], $validated['tracking_email']);
+            }
+
             $property = $this->propertyServices->storeProperty($validated);
 
             // Log the creation
@@ -93,6 +120,13 @@ class PropertyController extends Controller
             }
         }]);
 
+        // Security: Hide tracking fields from non-admins
+        $user = auth()->user();
+        if ($user->role->name !== 'admin') {
+            $property->tracking_phone = null;
+            $property->tracking_email = null;
+        }
+
         return Inertia::render('EditProperty', [
             'property' => $property,
             'propertyImages' => $property->images,
@@ -108,6 +142,12 @@ class PropertyController extends Controller
                 ->with(['error' => 'You are not authorized to edit this property.']);
         }
         $validated = $request->validated();
+
+        // Security: Remove tracking fields if user is not admin
+        if (auth()->user()->role->name !== 'admin') {
+            unset($validated['tracking_phone'], $validated['tracking_email']);
+        }
+
         $property->update($validated);
 
         // Log the update
@@ -169,12 +209,25 @@ class PropertyController extends Controller
         if($user->role->name === 'user') {
             $property->update(['views' => $property->views + 1]);
         }
+
+        // Load relationships
+        $property->load(['images', 'owner', 'documents', 'savedByUsers' => function($q) use ($user) {
+            if ($user) {
+                $q->where('users.id', $user->id);
+            }
+        }]);
+
+        // Security: Hide tracking fields from non-admins
+        if ($user->role->name !== 'admin') {
+            $property->tracking_phone = null;
+            $property->tracking_email = null;
+        }
+
         return Inertia::render('PropertyDetails',
-            ['property' => $property->load(['images', 'owner', 'documents', 'savedByUsers' => function($q) use ($user) {
-                if ($user) {
-                    $q->where('users.id', $user->id);
-                }
-            }]),]
+            [
+                'property' => $property,
+                'isAdmin' => $user && $user->role->name === 'admin',
+            ]
         );
     }
 

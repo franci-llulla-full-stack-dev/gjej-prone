@@ -24,6 +24,16 @@ class PropertyRequestController
         $propertyRequests = $query->latest()
             ->paginate(20);
 
+        // Security: Hide tracking fields from non-admins
+        $user = auth()->user();
+        if ($user && $user->role->name !== 'admin') {
+            $propertyRequests->getCollection()->transform(function ($propertyRequest) {
+                $propertyRequest->tracking_phone = null;
+                $propertyRequest->tracking_email = null;
+                return $propertyRequest;
+            });
+        }
+
         return Inertia::render('user/PropertyRequests', [
             'propertyRequests' => $propertyRequests,
             'users' => $users,
@@ -34,6 +44,16 @@ class PropertyRequestController
     {
         [$query] = $this->requestServices->filterRequests($request->validated());
         $propertyRequests = $query->paginate($request->perPage ?? 12);
+
+        // Security: Hide tracking fields from non-admins
+        $user = auth()->user();
+        if ($user && $user->role->name !== 'admin') {
+            $propertyRequests->getCollection()->transform(function ($propertyRequest) {
+                $propertyRequest->tracking_phone = null;
+                $propertyRequest->tracking_email = null;
+                return $propertyRequest;
+            });
+        }
 
         return Inertia::render('seller/PropertyRequests', [
             'propertyRequests' => $propertyRequests,
@@ -60,12 +80,21 @@ class PropertyRequestController
     {
         $user = auth()->user();
         $isAdmin = $user->role->name === 'admin';
+
+        // Get validated data
+        $data = $request->validated();
+
+        // Security: Remove tracking fields if user is not admin
+        if (!$isAdmin) {
+            unset($data['tracking_phone'], $data['tracking_email']);
+        }
+
         if($isAdmin) {
             $belongingRequestUser = User::find((int)$request->user_id);
             if(!$belongingRequestUser) {
                 return redirect()->back()->withErrors(['user_id' => 'User not found.'])->withInput();
             }
-            $propertyRequest = $belongingRequestUser->propertyRequests()->create($request->except('user_id'));
+            $propertyRequest = $belongingRequestUser->propertyRequests()->create(array_diff_key($data, ['user_id' => '']));
 
             // Log the creation
             Log::create([
@@ -76,7 +105,7 @@ class PropertyRequestController
 
             return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u shtua!');
         }
-        $propertyRequest = $user->propertyRequests()->create($request->except('user_id'));
+        $propertyRequest = $user->propertyRequests()->create(array_diff_key($data, ['user_id' => '']));
 
         // Log the creation
         Log::create([
@@ -110,6 +139,13 @@ class PropertyRequestController
         }]);
 
         $isAdmin = auth()->user()->role->name === 'admin';
+
+        // Security: Hide tracking fields from non-admins
+        if (!$isAdmin) {
+            $propertyRequest->tracking_phone = null;
+            $propertyRequest->tracking_email = null;
+        }
+
         return Inertia::render('user/PropertyRequestEdit', [
             'propertyRequest' => $propertyRequest,
             'users' => $users,
@@ -124,8 +160,17 @@ class PropertyRequestController
         }
         $user = auth()->user();
         $isAdmin = $user->role->name === 'admin';
+
+        // Get validated data
+        $data = $request->validated();
+
+        // Security: Remove tracking fields if user is not admin
+        if (!$isAdmin) {
+            unset($data['tracking_phone'], $data['tracking_email']);
+        }
+
         if($isAdmin) {
-            $propertyRequest->update($request->validated());
+            $propertyRequest->update($data);
 
             // Log the update
             Log::create([
@@ -136,7 +181,7 @@ class PropertyRequestController
 
             return redirect()->route('property.requests.index')->with('success', 'Kerkesa e prones u perditesua!');
         }
-        $propertyRequest->update($request->validated()->except('user_id'));
+        $propertyRequest->update(array_diff_key($data, ['user_id' => '']));
 
         // Log the update
         Log::create([
@@ -183,9 +228,16 @@ class PropertyRequestController
             }
         }]);
 
+        // Security: Hide tracking fields from non-admins
+        if ($user->role->name !== 'admin') {
+            $propertyRequest->tracking_phone = null;
+            $propertyRequest->tracking_email = null;
+        }
+
         return Inertia::render('user/ViewPropertyRequest', [
             'propertyRequest' => $propertyRequest,
             'actual_contact' => $actualContact,
+            'isAdmin' => $user && $user->role->name === 'admin',
         ]);
     }
 

@@ -46,7 +46,9 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
         architect: propertyRequest.architect,
         expires_at: propertyRequest.expires_at,
         parkim: propertyRequest.parkim,
-        funds: propertyRequest.funds || ''
+        funds: propertyRequest.funds || '',
+        tracking_phone: propertyRequest.tracking_phone || '',
+        tracking_email: propertyRequest.tracking_email || '',
     });
     const [zoneRadius, setZoneRadius] = useState(data.zone_radious);
     const [coords,setCoords ] = useState({lat:data.latitude,lng:data.longitude});
@@ -596,6 +598,37 @@ export default function PropertyRequestEdit({propertyRequest, isAdmin, users}) {
                             </span>
                         </label>
                     </div>
+
+                    {isAdmin && (
+                        <div className="mt-6 bg-blue-50 p-4 rounded-xl border border-blue-200">
+                            <h3 className="text-lg font-semibold mb-3 text-gray-800">Të Dhëna për Gjurmim (Vetëm Admin)</h3>
+
+                            <div className="mb-4">
+                                <label className={labelBase}>Numri i Telefonit për Gjurmim</label>
+                                <input
+                                    type="text"
+                                    value={data.tracking_phone}
+                                    onChange={e => setData('tracking_phone', e.target.value)}
+                                    placeholder="Numri i telefonit për gjurmim..."
+                                    className={inputBase}
+                                />
+                                <ErrorText field="tracking_phone" errors={errors} />
+                            </div>
+
+                            <div>
+                                <label className={labelBase}>Email për Gjurmim</label>
+                                <input
+                                    type="email"
+                                    value={data.tracking_email}
+                                    onChange={e => setData('tracking_email', e.target.value)}
+                                    placeholder="Email për gjurmim..."
+                                    className={inputBase}
+                                />
+                                <ErrorText field="tracking_email" errors={errors} />
+                            </div>
+                        </div>
+                    )}
+
                     <button
                         type="submit"
                         disabled={processing}

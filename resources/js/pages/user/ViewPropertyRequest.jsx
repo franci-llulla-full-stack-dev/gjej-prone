@@ -39,7 +39,7 @@ const subTypeProperties = {
         { value: 'kategori_te_tjera', label: 'Kategori të tjera' },
     ],
 };
-const ViewPropertyRequest = ({ propertyRequest, actual_contact }) => {
+const ViewPropertyRequest = ({ propertyRequest, actual_contact, isAdmin }) => {
     return (
         <div className="max-w-7xl mx-auto mt-5 px-4 py-10 space-y-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -55,6 +55,27 @@ const ViewPropertyRequest = ({ propertyRequest, actual_contact }) => {
                             </p>
                         )}
                     </div>
+
+                    {/* ADMIN TRACKING INFO */}
+                    {isAdmin && (propertyRequest.tracking_phone || propertyRequest.tracking_email) && (
+                        <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
+                            <h3 className="text-lg font-semibold mb-3 text-gray-800">Të Dhëna për Gjurmim (Vetëm Admin)</h3>
+                            <div className="space-y-2">
+                                {propertyRequest.tracking_phone && (
+                                    <div>
+                                        <p className="text-sm text-gray-500">Telefon për Gjurmim:</p>
+                                        <p className="text-base font-medium">{propertyRequest.tracking_phone}</p>
+                                    </div>
+                                )}
+                                {propertyRequest.tracking_email && (
+                                    <div>
+                                        <p className="text-sm text-gray-500">Email për Gjurmim:</p>
+                                        <p className="text-base font-medium">{propertyRequest.tracking_email}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     {/* DESCRIPTION */}
                     {propertyRequest.description && (

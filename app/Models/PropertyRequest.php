@@ -46,7 +46,9 @@ class PropertyRequest extends Model
         'created_at',
         'views',
         'funds',
-        'completed'
+        'completed',
+        'tracking_phone',
+        'tracking_email',
     ];
 
     protected $appends = ['saved'];
