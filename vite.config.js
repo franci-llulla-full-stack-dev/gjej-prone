@@ -7,9 +7,10 @@ export default defineConfig({
     plugins: [
         laravel({
             input: 'resources/js/app.jsx',
+            ssr: 'resources/js/ssr.jsx',
             refresh: true,
         }),
         tailwindcss(),
-        react()
+        react(),
     ],
 });

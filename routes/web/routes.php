@@ -3,10 +3,12 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\GeocodingController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\PlaceController;
 use Illuminate\Support\Facades\Route;
 Route::get('/api/reverse-geocode', [GeocodingController::class, 'reverseGeocode']);
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::middleware('auth')->group(function() {
     Route::get('/dashboard', DashboardController::class)->middleware('role:admin')->name('admin.dashboard');

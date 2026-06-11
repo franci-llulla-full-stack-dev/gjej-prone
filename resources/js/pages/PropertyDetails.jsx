@@ -1,27 +1,11 @@
-// resources/js/pages/PropertyDetails.jsx
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Polyline, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import axios from "axios";
-import { Navigation } from "lucide-react";
-/* =====================
-   LABEL MAPPINGS
-===================== */
-const PLACE_TYPES = [
-    { key: "school", label: "Shkolla", color: "#2563eb" },
-    { key: "hospital", label: "Spitale", color: "#dc2626" },
-    { key: "police", label: "Polici", color: "#0ea5e9" },
-    { key: "fire_station", label: "Zjarrfikës", color: "#f59e42" },
-    { key: "supermarket", label: "Supermarkete", color: "#22c55e" },
-    { key: "bakery", label: "Furrë buke", color: "#eab308" },
-    { key: "pharmacy", label: "Farmaci", color: "#a21caf" },
-];
+import { useEffect, useState } from 'react';
+import { Head } from '@inertiajs/react';
+
 const PROPERTY_TYPE_LABELS = {
     residential: 'Rezidenciale',
-    commercial: 'Komerciale',
-    land: 'Tokë',
-    others: 'Të tjera',
+    commercial:  'Komerciale',
+    land:        'Tokë',
+    others:      'Të tjera',
 };
 
 const TRANSACTION_TYPE_LABELS = {
@@ -31,115 +15,38 @@ const TRANSACTION_TYPE_LABELS = {
 
 const subTypeProperties = {
     residential: [
-        { value: 'apartment', label: 'Apartament' },
-        { value: 'house', label: 'Shtëpi Private' },
+        { value: 'apartment',         label: 'Apartament' },
+        { value: 'house',             label: 'Shtëpi Private' },
         { value: 'kategori te tjera', label: 'Kategori të tjera' },
     ],
     commercial: [
-        { value: 'office', label: 'Zyrë' },
-        { value: 'warehouse', label: 'Magazinë' },
+        { value: 'office',     label: 'Zyrë' },
+        { value: 'warehouse',  label: 'Magazinë' },
     ],
     land: [
         { value: 'agricultural', label: 'Tokë Bujqësore' },
-        { value: 'truall', label: 'Truall' },
+        { value: 'truall',        label: 'Truall' },
     ],
     others: [
-        { value: 'parkim', label: 'Parkim' },
+        { value: 'parkim',           label: 'Parkim' },
         { value: 'kategori_te_tjera', label: 'Kategori të tjera' },
     ],
 };
-
-function DirectionsLayer({ userLocation, propertyLocation }) {
-    const [route, setRoute] = useState(null);
-    const map = useMap();
-
-    useEffect(() => {
-        if (!userLocation || !propertyLocation) return;
-
-        // Fetch route from OSRM (Open Source Routing Machine)
-        const url = `https://router.project-osrm.org/route/v1/driving/${userLocation[1]},${userLocation[0]};${propertyLocation[1]},${propertyLocation[0]}?overview=full&geometries=geojson`;
-
-        axios.get(url)
-            .then(res => {
-                if (res.data.routes && res.data.routes.length > 0) {
-                    const coords = res.data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-                    setRoute(coords);
-                    // Fit map to show entire route
-                    const bounds = L.latLngBounds([userLocation, propertyLocation]);
-                    map.fitBounds(bounds, { padding: [50, 50] });
-                }
-            })
-            .catch(err => {
-                console.error("Error fetching route:", err);
-            });
-    }, [userLocation, propertyLocation, map]);
-
-    if (!route) return null;
-
-    return (
-        <>
-            <Polyline positions={route} color="#2563eb" weight={4} opacity={0.7} />
-            <Marker position={userLocation}>
-                <Popup>Vendndodhja juaj</Popup>
-            </Marker>
-        </>
-    );
-}
-
-function NearbyPlaces({ lat, lng, selectedType }) {
-    const [allPlaces, setAllPlaces] = useState({});
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (!lat || !lng) return;
-        setLoading(true);
-        axios.get("/nearby-places", { params: { lat, lng, radius: 2000 } })
-            .then(res => {
-                // Group by type
-                const grouped = {};
-                for (const place of res.data) {
-                    if (!grouped[place.type]) grouped[place.type] = [];
-                    grouped[place.type].push(place);
-                }
-                setAllPlaces(grouped);
-                setLoading(false);
-            })
-            .catch(() => {
-                setAllPlaces({});
-                setLoading(false);
-            });
-    }, [lat, lng]);
-
-    if (!selectedType) return null;
-    const typeObj = PLACE_TYPES.find(t => t.key === selectedType);
-    const places = allPlaces[selectedType] || [];
-
-    return (
-        <>
-            {loading && <div>Loading...</div>}
-            {!loading && places.map(place => (
-                <CircleMarker
-                    key={place.id}
-                    center={[place.latitude, place.longitude]}
-                    radius={12}
-                    pathOptions={{ color: typeObj.color, fillColor: typeObj.color, fillOpacity: 0.7 }}
-                >
-                    <Popup>
-                        {place.name || "Pa emër"}<br />
-                        {typeObj.label}
-                    </Popup>
-                </CircleMarker>
-            ))}
-        </>
-    );
-}
 
 const PropertyDetails = ({ property, isAdmin }) => {
     const [previewImages, setPreviewImages] = useState([]);
     const [previewIndex, setPreviewIndex] = useState(0);
     const [showPreview, setShowPreview] = useState(false);
-    const [selectedType, setSelectedType] = useState(null);
+    const [MapSection, setMapSection] = useState(null);
+    const [pageUrl, setPageUrl] = useState('');
 
+    // Load map client-side only (Leaflet requires browser APIs)
+    useEffect(() => {
+        import('../components/PropertyMapSection').then(mod => {
+            setMapSection(() => mod.default);
+        });
+        setPageUrl(window.location.href);
+    }, []);
 
     useEffect(() => {
         const allImages = [
@@ -167,33 +74,28 @@ const PropertyDetails = ({ property, isAdmin }) => {
         return () => clearInterval(interval);
     }, [images.length]);
 
-    const handleGetDirections = () => {
-        const destination = `${property.latitude},${property.longitude}`;
-
-        // Check if on mobile device
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        if (isMobile) {
-            // For iOS devices - try to open Apple Maps, fallback to Google Maps
-            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                window.location.href = `maps://maps.apple.com/?daddr=${destination}`;
-                // Fallback to Google Maps if Apple Maps doesn't open
-                setTimeout(() => {
-                    window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-                }, 500);
-            } else {
-                // For Android - open Google Maps app or web
-                window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-            }
-        } else {
-            // For desktop, open Google Maps in new tab
-            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-            window.open(googleMapsUrl, '_blank');
-        }
-    };
+    const typeLabel = PROPERTY_TYPE_LABELS[property.property_type] ?? property.property_type;
+    const ogTitle   = `${typeLabel} në ${property.city} — ${Number(property.price).toLocaleString()} ${property.currency}`;
+    const ogDesc    = property.description
+        ? property.description.substring(0, 200)
+        : `${typeLabel} për ${TRANSACTION_TYPE_LABELS[property.type_of_sale] ?? ''} në ${property.city}.`;
+    const ogImage   = images[0] ? `/storage/${images[0].path}` : '/logo-2.png';
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10 space-y-12">
+            <Head>
+                <title>{`${ogTitle} | Gjej-Prone`}</title>
+                <meta name="description"         content={ogDesc} />
+                <meta property="og:title"        content={ogTitle} />
+                <meta property="og:description"  content={ogDesc} />
+                <meta property="og:image"        content={ogImage} />
+                <meta property="og:type"         content="website" />
+                <meta name="twitter:card"        content="summary_large_image" />
+                <meta name="twitter:title"       content={ogTitle} />
+                <meta name="twitter:description" content={ogDesc} />
+                <meta name="twitter:image"       content={ogImage} />
+            </Head>
+
             {/* IMAGE GALLERY */}
             <div className="space-y-4">
                 <div
@@ -231,6 +133,7 @@ const PropertyDetails = ({ property, isAdmin }) => {
                     </div>
                 )}
             </div>
+
             {/* CONTENT */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 {/* LEFT SIDE */}
@@ -273,6 +176,7 @@ const PropertyDetails = ({ property, isAdmin }) => {
                             <p className="text-gray-700 leading-relaxed">{property.description}</p>
                         </div>
                     )}
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <Detail
                             label="Lloji i pronës"
@@ -301,20 +205,21 @@ const PropertyDetails = ({ property, isAdmin }) => {
                                 </>
                             }
                         />
-                        <Detail label="Ashensor" value={property.ashensor ? 'Po' : 'Jo'} />
-                        <Detail label="Parkim" value={property.parkim ? 'Po' : 'Jo'} />
-                        <Detail label="Mobiluar" value={property.mobilim ? 'Po' : 'Jo'} />
+                        <Detail label="Ashensor"  value={property.ashensor ? 'Po' : 'Jo'} />
+                        <Detail label="Parkim"    value={property.parkim ? 'Po' : 'Jo'} />
+                        <Detail label="Mobiluar"  value={property.mobilim ? 'Po' : 'Jo'} />
                         <Detail label="Sipërfaqe" value={property.surface ? `${property.surface} m²` : null} />
-                        {property.total_rooms > 0 && <Detail label="Dhoma" value={property.total_rooms} />}
-                        {property.total_bathrooms > 0 && <Detail label="Banjo" value={property.total_bathrooms} />}
-                        {property.total_balconies > 0 && <Detail label="Ballkone" value={property.total_balconies} />}
+                        {property.total_rooms > 0      && <Detail label="Dhoma"         value={property.total_rooms} />}
+                        {property.total_bathrooms > 0  && <Detail label="Banjo"         value={property.total_bathrooms} />}
+                        {property.total_balconies > 0  && <Detail label="Ballkone"      value={property.total_balconies} />}
                         {property.floor_number != null && property.floor_number !== 0 && (
                             <Detail label="Kati" value={property.floor_number} />
                         )}
-                        {property.total_floors > 0 && <Detail label="Kate totale" value={property.total_floors} />}
-                        {property.year_built && <Detail label="Viti ndërtimit" value={property.year_built} />}
+                        {property.total_floors > 0 && <Detail label="Kate totale"   value={property.total_floors} />}
+                        {property.year_built       && <Detail label="Viti ndërtimit" value={property.year_built} />}
                         <Detail label="Transaksioni" value={TRANSACTION_TYPE_LABELS[property.type_of_sale]} />
                     </div>
+
                     {floorPlans.length > 0 && (
                         <div className="space-y-4">
                             <h2 className="text-2xl font-semibold">Planimetria</h2>
@@ -344,8 +249,8 @@ const PropertyDetails = ({ property, isAdmin }) => {
                             </div>
                         </div>
                     )}
-
                 </div>
+
                 {/* RIGHT SIDE */}
                 <div className="space-y-6">
                     <div className="bg-white rounded-2xl p-6 shadow">
@@ -360,56 +265,11 @@ const PropertyDetails = ({ property, isAdmin }) => {
 
             {/* MAP */}
             <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold">Vendndodhja</h2>
-                    <button
-                        onClick={handleGetDirections}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg transition bg-gray-700 text-white hover:bg-gray-800"
-                    >
-                        <Navigation size={18} />
-                        Shfaq rrugën
-                    </button>
-                </div>
-                <div className="mb-2 border-b border-gray-200">
-                    <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-0">
-                        {PLACE_TYPES.map(type => (
-                            <button
-                                key={type.key}
-                                type="button"
-                                onClick={() => setSelectedType(type.key)}
-                                className={`px-4 py-2 -mb-px font-medium transition border-b-2
-                    ${selectedType === type.key
-                                    ? "border-blue-600 text-blue-600"
-                                    : "border-transparent text-gray-600 hover:text-blue-600"
-                                }`}
-                                style={{ minWidth: 110 }}
-                            >
-                                {type.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-                <div className="w-full h-[320px] rounded-2xl overflow-hidden shadow">
-                    <MapContainer
-                        center={[property.latitude, property.longitude]}
-                        zoom={16}
-                        style={{ height: "100%", width: "100%" }}
-                        scrollWheelZoom={false}
-                    >
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution="&copy; OpenStreetMap contributors"
-                        />
-                        <Marker position={[property.latitude, property.longitude]}>
-                            <Popup>Prona</Popup>
-                        </Marker>
-                        <NearbyPlaces
-                            lat={property.latitude}
-                            lng={property.longitude}
-                            selectedType={selectedType}
-                        />
-                    </MapContainer>
-                </div>
+                <h2 className="text-2xl font-semibold">Vendndodhja</h2>
+                {MapSection
+                    ? <MapSection lat={property.latitude} lng={property.longitude} />
+                    : <div className="w-full h-[320px] bg-gray-100 rounded-2xl animate-pulse" />
+                }
             </div>
 
             {/* CONTACT */}
@@ -418,7 +278,9 @@ const PropertyDetails = ({ property, isAdmin }) => {
                     <h3 className="text-lg font-semibold">Kontakto Shitësin</h3>
                     <div className="flex gap-3">
                         <a
-                            href={`https://wa.me/${property.owner.phone_number}?text=${encodeURIComponent(`Përshëndetje, jam i interesuar për pronën tuaj.\n\n${window.location.href}`)}`}
+                            href={`https://wa.me/${property.owner.phone_number}?text=${encodeURIComponent(
+                                `Përshëndetje, jam i interesuar për pronën tuaj.\n\n${pageUrl}`
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg"
@@ -428,6 +290,7 @@ const PropertyDetails = ({ property, isAdmin }) => {
                     </div>
                 </div>
             )}
+
             {/* LIGHTBOX */}
             {lightbox && (
                 <div
@@ -443,19 +306,13 @@ const PropertyDetails = ({ property, isAdmin }) => {
                         <>
                             <button
                                 className="absolute left-7 text-white text-7xl font-bold"
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    setCurrent((current - 1 + images.length) % images.length);
-                                }}
+                                onClick={e => { e.stopPropagation(); setCurrent((current - 1 + images.length) % images.length); }}
                             >
                                 ‹
                             </button>
                             <button
                                 className="absolute right-7 text-white text-7xl font-bold"
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    setCurrent((current + 1) % images.length);
-                                }}
+                                onClick={e => { e.stopPropagation(); setCurrent((current + 1) % images.length); }}
                             >
                                 ›
                             </button>
@@ -463,6 +320,7 @@ const PropertyDetails = ({ property, isAdmin }) => {
                     )}
                 </div>
             )}
+
             {showPreview && previewImages.length > 0 && (
                 <div
                     className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
@@ -477,19 +335,13 @@ const PropertyDetails = ({ property, isAdmin }) => {
                         <>
                             <button
                                 className="absolute left-4 text-white text-3xl font-bold"
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    setPreviewIndex((previewIndex - 1 + previewImages.length) % previewImages.length);
-                                }}
+                                onClick={e => { e.stopPropagation(); setPreviewIndex((previewIndex - 1 + previewImages.length) % previewImages.length); }}
                             >
                                 ‹
                             </button>
                             <button
                                 className="absolute right-4 text-white text-3xl font-bold"
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    setPreviewIndex((previewIndex + 1) % previewImages.length);
-                                }}
+                                onClick={e => { e.stopPropagation(); setPreviewIndex((previewIndex + 1) % previewImages.length); }}
                             >
                                 ›
                             </button>
@@ -501,14 +353,9 @@ const PropertyDetails = ({ property, isAdmin }) => {
     );
 };
 
-/* =====================
-   SMALL COMPONENTS
-===================== */
 const Detail = ({ label, value }) => {
-    // Don't render if value is null, undefined, empty string, or 0
     if (!value && value !== 0) return null;
     if (value === 0) return null;
-
     return (
         <div className="bg-gray-50 p-4 rounded-xl text-center">
             <p className="text-xs uppercase tracking-wide text-gray-500">{label}</p>
@@ -516,18 +363,5 @@ const Detail = ({ label, value }) => {
         </div>
     );
 };
-
-const Status = ({ label, active }) => (
-    <div className="flex justify-between items-center">
-        <span>{label}</span>
-        <span
-            className={`px-3 py-1 text-xs rounded-full ${
-                active ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'
-            }`}
-        >
-            {active ? 'Po' : 'Jo'}
-        </span>
-    </div>
-);
 
 export default PropertyDetails;

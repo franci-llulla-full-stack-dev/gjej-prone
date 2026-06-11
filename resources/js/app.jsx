@@ -13,14 +13,15 @@ import markerIcon2x from './leaflet-images/marker-icon-2x.png';
 import markerIcon from './leaflet-images/marker-icon.png';
 import markerShadow from './leaflet-images/marker-shadow.png';
 
-// Override Leaflet default icon globally
-delete L.Icon.Default.prototype._getIconUrl;
-
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: markerIcon2x,
-    iconUrl: markerIcon,
-    shadowUrl: markerShadow,
-});
+// Override Leaflet default icon globally (browser only)
+if (typeof window !== 'undefined') {
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+        iconRetinaUrl: markerIcon2x,
+        iconUrl: markerIcon,
+        shadowUrl: markerShadow,
+    });
+}
 
 createInertiaApp({
     resolve: name => {

@@ -206,29 +206,50 @@ class PropertyController extends Controller
     {
         $user = auth()->user();
         $this->propertyServices->logView($property->id);
-        if($user->role->name === 'user') {
+
+        if ($user && $user->role->name === 'user') {
             $property->update(['views' => $property->views + 1]);
         }
 
-        // Load relationships
-        $property->load(['images', 'owner', 'documents', 'savedByUsers' => function($q) use ($user) {
+        $property->load(['images', 'owner', 'documents', 'savedByUsers' => function ($q) use ($user) {
             if ($user) {
                 $q->where('users.id', $user->id);
             }
         }]);
 
-        // Security: Hide tracking fields from non-admins
-        if ($user->role->name !== 'admin') {
+        $isAdmin = $user && $user->role->name === 'admin';
+
+        if (!$isAdmin) {
             $property->tracking_phone = null;
             $property->tracking_email = null;
         }
 
-        return Inertia::render('PropertyDetails',
-            [
-                'property' => $property,
-                'isAdmin' => $user && $user->role->name === 'admin',
-            ]
-        );
+        $propertyTypeLabels = [
+            'residential' => 'Rezidenciale',
+            'commercial'  => 'Komerciale',
+            'land'        => 'Tokë',
+            'others'      => 'Të tjera',
+        ];
+
+        $typeLabel   = $propertyTypeLabels[$property->property_type] ?? $property->property_type;
+        $ogTitle     = "{$typeLabel} në {$property->city} — " . number_format($property->price) . " {$property->currency}";
+        $ogDesc      = $property->description
+            ? Str::limit($property->description, 200)
+            : "{$typeLabel} për " . ($property->type_of_sale === 'sale' ? 'shitje' : 'qira') . " në {$property->city}.";
+        $firstImage  = $property->images->first();
+        $ogImage     = $firstImage ? url('/storage/' . $firstImage->path) : url('/logo-2.png');
+
+        return Inertia::render('PropertyDetails', [
+            'property' => $property,
+            'isAdmin'  => $isAdmin,
+            'meta'     => [
+                'title'          => "{$ogTitle} | Gjej-Prone",
+                'og_title'       => $ogTitle,
+                'og_description' => $ogDesc,
+                'og_image'       => $ogImage,
+                'og_url'         => url("/properties/{$property->id}"),
+            ],
+        ]);
     }
 
     public function toggleSave(Property $property)

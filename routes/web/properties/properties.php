@@ -35,7 +35,7 @@ Route::middleware(['auth', 'role:individual,bank,agency,developer', 'verified.cu
 });
 
 Route::get('/properties/{property}', [PropertyController::class, 'show'])
-    ->middleware('auth')->name('properties.show');
+    ->name('properties.show');
 Route::post('/properties/{property}/toggleSave', [PropertyController::class, 'toggleSave'])
     ->middleware('auth')->name('properties.toggleSave');
 
