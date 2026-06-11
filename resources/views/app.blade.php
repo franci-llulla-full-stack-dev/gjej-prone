@@ -35,14 +35,14 @@
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
 
-        @if(env('GA_MEASUREMENT_ID'))
+        @if(config('services.google.analytics_id'))
         <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ env('GA_MEASUREMENT_ID') }}"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google.analytics_id') }}"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '{{ env('GA_MEASUREMENT_ID') }}');
+            gtag('config', '{{ config('services.google.analytics_id') }}');
         </script>
         @endif
 
